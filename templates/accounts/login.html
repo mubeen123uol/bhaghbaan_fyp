@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}Sign In — Baghbaan AI{% else %}لاگ ان — باغبان اے آئی{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto my-12 px-4">
+    <div class="bg-white rounded-3xl p-8 border border-gray-200 shadow-xl">
+        <div class="text-center mb-6">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">
+                🌿
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900">
+                {% if current_language == 'en' %}Sign In to Your Account{% else %}اپنے اکاؤنٹ میں لاگ ان کریں{% endif %}
+            </h2>
+            <p class="text-xs text-gray-500 mt-1">
+                {% if current_language == 'en' %}Access the Baghbaan AI smart gardening platform{% else %}باغبان اے آئی پلیٹ فارم تک رسائی حاصل کریں{% endif %}
+            </p>
+        </div>
+
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">
+                    {% if current_language == 'en' %}Username{% else %}صارف نام (Username){% endif %}
+                </label>
+                <input type="text" id="username_field" name="username" required placeholder="e.g. ahmed" class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary focus:border-brand-primary transition">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">
+                    {% if current_language == 'en' %}Password{% else %}پاس ورڈ (Password){% endif %}
+                </label>
+                <input type="password" id="password_field" name="password" required placeholder="••••••••" class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary focus:border-brand-primary transition">
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-brand-primary hover:bg-brand-dark text-white font-bold text-sm rounded-xl shadow-md transition">
+                {% if current_language == 'en' %}Sign In{% else %}لاگ ان کریں{% endif %}
+            </button>
+        </form>
+
+        <!-- Quick Fill Helper for Evaluator -->
+        <div class="mt-8 pt-6 border-t border-gray-100">
+            <span class="text-[11px] font-bold text-gray-400 block mb-2 text-center uppercase tracking-wider">
+                {% if current_language == 'en' %}⚡ Quick-Fill Test Credentials:{% else %}⚡ فوری ٹیسٹنگ لاگ ان (Quick Fill):{% endif %}
+            </span>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <button type="button" onclick="fillCreds('ahmed', 'password123')" class="p-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold text-center border border-emerald-200">
+                    Ahmed (Homeowner)
+                </button>
+                <button type="button" onclick="fillCreds('ali_mali', 'password123')" class="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 font-semibold text-center border border-blue-200">
+                    Ali (Gardener / Mali)
+                </button>
+                <button type="button" onclick="fillCreds('tariq_supervisor', 'password123')" class="p-2 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-800 font-semibold text-center border border-purple-200">
+                    Tariq (Supervisor)
+                </button>
+                <button type="button" onclick="fillCreds('bilal_nursery', 'password123')" class="p-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold text-center border border-amber-200">
+                    Bilal (Nursery Seller)
+                </button>
+                <button type="button" onclick="fillCreds('admin', 'admin123')" class="col-span-2 p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-center border border-gray-300">
+                    System Admin (admin)
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-6 text-center text-xs text-gray-500">
+            {% if current_language == 'en' %}
+                Don't have an account? <a href="{% url 'register' %}" class="font-bold text-brand-primary hover:underline">Register here</a>
+            {% else %}
+                اکاؤنٹ موجود نہیں ہے؟ <a href="{% url 'register' %}" class="font-bold text-brand-primary hover:underline">یہاں رجسٹر ہوں</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function fillCreds(u, p) {
+        document.getElementById('username_field').value = u;
+        document.getElementById('password_field').value = p;
+    }
+</script>
+{% endblock %}

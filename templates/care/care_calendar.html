@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Smart Care Calendar — Baghbaan AI
+    {% else %}
+        دیکھ بھال کیلنڈر — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900">
+                {% if current_language == 'en' %}
+                    Weather-Aware Smart Care Calendar
+                {% else %}
+                    موسم آگاہ دیکھ بھال کیلنڈر
+                {% endif %}
+            </h1>
+            <p class="text-xs text-gray-500 mt-1">
+                {% if current_language == 'en' %}
+                    Automated watering, fertilization, and pruning schedule for all your plants
+                {% else %}
+                    آپ کے تمام پودوں کے پانی، کھاد اور کٹائی کا خودکار شیڈول
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Weather Mini-Badge -->
+        <div class="bg-white px-4 py-2 rounded-2xl border border-gray-200 shadow-sm flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+            <span class="text-2xl">⛅</span>
+            <div class="text-xs">
+                <span class="font-bold text-gray-800">{{ weather.city }}: {{ weather.temperature }}°C</span>
+                <span class="text-gray-500 block">{{ weather.weather_condition }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Rules Alert Notice -->
+    <div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-200 mb-8 flex items-start space-x-3 {% if is_rtl %}space-x-reverse{% endif %} text-xs text-emerald-900">
+        <i class="fa-solid fa-cloud-rain text-emerald-700 text-lg mt-0.5 ml-2 mr-2 flex-shrink-0"></i>
+        <div>
+            <strong>{% if current_language == 'en' %}Automated Weather Adjustment:{% else %}خودکار موسمی ایڈجسٹمنٹ:{% endif %}</strong>
+            {% if current_language == 'en' %}
+                If $\ge$ 5 mm of rainfall is forecast within 24 hours, outdoor plant watering tasks are automatically postponed to save water and prevent root rot.
+            {% else %}
+                اگر 24 گھنٹوں میں 5 ملی میٹر یا اس سے زائد بارش کی پیشگوئی ہو تو کھلے پودوں کو پانی دینے کا ٹاسک خود بخود مؤخر ہو جاتا ہے۔
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Tasks List Grouped -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-sm">
+        <div class="space-y-4">
+            {% for task in tasks %}
+                <div class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:bg-gray-50/80 transition {% if task.scheduled_date == today %}bg-emerald-50/40 border-emerald-200{% endif %}">
+                    <div class="flex items-center space-x-4 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <form action="{% url 'toggle-task' task.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="w-7 h-7 rounded-xl border {% if task.status == 'COMPLETED' %}bg-emerald-600 border-emerald-600 text-white{% else %}border-gray-300 hover:border-emerald-600{% endif %} flex items-center justify-center transition shadow-sm" title="{% if current_language == 'en' %}Mark complete{% else %}مکمل کریں{% endif %}">
+                                {% if task.status == 'COMPLETED' %}<i class="fa-solid fa-check text-xs"></i>{% endif %}
+                            </button>
+                        </form>
+
+                        <div>
+                            <div class="flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                                <h3 class="text-sm font-bold text-gray-900 {% if task.status == 'COMPLETED' %}line-through text-gray-400{% endif %}">
+                                    {% if current_language == 'en' %}{{ task.user_plant.nickname_en }}{% else %}{{ task.user_plant.nickname_ur }}{% endif %}
+                                </h3>
+                                {% if task.scheduled_date == today %}
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-600 text-white">
+                                        {% if current_language == 'en' %}Today{% else %}آج{% endif %}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <p class="text-xs text-gray-500 mt-0.5">
+                                {% if current_language == 'en' %}
+                                    {% if task.task_type == 'WATER' %}Watering
+                                    {% elif task.task_type == 'FERTILIZE' %}Fertilization
+                                    {% elif task.task_type == 'PRUNE' %}Pruning
+                                    {% elif task.task_type == 'PEST_INSPECT' %}Pest Inspection
+                                    {% else %}{{ task.get_task_type_display }}{% endif %}
+                                {% else %}
+                                    {{ task.get_task_type_display }}
+                                {% endif %}
+                                • 
+                                <span class="font-medium text-gray-700">{{ task.scheduled_date|date:"l, d F Y" }}</span>
+                            </p>
+                            {% if task.weather_note %}
+                                <p class="text-xs text-amber-700 font-semibold mt-1">
+                                    ⚠️ {% if current_language == 'en' %}{{ task.weather_note_en }}{% else %}{{ task.weather_note }}{% endif %}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <span class="text-xs px-3 py-1 rounded-full font-semibold {% if task.status == 'COMPLETED' %}bg-emerald-100 text-emerald-800{% elif task.status == 'POSTPONED' %}bg-amber-100 text-amber-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {% if current_language == 'en' %}
+                                {% if task.status == 'COMPLETED' %}Completed
+                                {% elif task.status == 'POSTPONED' %}Postponed
+                                {% else %}Pending{% endif %}
+                            {% else %}
+                                {{ task.get_status_display }}
+                            {% endif %}
+                        </span>
+                        <a href="{% url 'user-plant-detail' task.user_plant.id %}" class="text-xs text-gray-400 hover:text-brand-primary p-2">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </a>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="text-center py-12 text-gray-400 text-sm">
+                    {% if current_language == 'en' %}
+                        No care tasks scheduled yet. Add your plants to generate a 30-day smart calendar.
+                    {% else %}
+                        کیلنڈر میں کوئی ٹاسک درج نہیں ہے۔ پہلے اپنے پودے شامل کریں۔
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

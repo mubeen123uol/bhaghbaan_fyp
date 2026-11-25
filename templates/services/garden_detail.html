@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        {{ garden.name_en }} — Garden Management | Baghbaan AI
+    {% else %}
+        {{ garden.name_ur }} — باغ کا انتظام | باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex items-center justify-between mb-6">
+        <a href="{% url 'garden-list' %}"
+            class="inline-flex items-center text-xs font-semibold text-gray-500 hover:text-brand-primary">
+            <i class="fa-solid {% if is_rtl %}fa-arrow-right{% else %}fa-arrow-left{% endif %} ml-1 mr-1"></i>
+            <span>{% if current_language == 'en' %}Back to Gardens{% else %}واپس باغات کی فہرست{% endif %}</span>
+        </a>
+        <div class="flex gap-2">
+            <a href="{% url 'task-create' garden.id %}"
+                class="px-4 py-2 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center">
+                <i class="fa-solid fa-plus ml-1.5 mr-1.5"></i>
+                {% if current_language == 'en' %}Assign New Task{% else %}نیا ٹاسک تفویض کریں{% endif %}
+            </a>
+            <a href="{% url 'gardener-directory' %}?city={{ garden.city }}"
+                class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs rounded-xl transition flex items-center">
+                <i class="fa-solid fa-user-plus ml-1.5 mr-1.5"></i>
+                {% if current_language == 'en' %}Add Mali{% else %}مالی شامل کریں{% endif %}
+            </a>
+        </div>
+    </div>
+
+    <!-- Garden Header Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-sm mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            <div class="md:col-span-7">
+                <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
+                    {{ garden.city }}
+                </span>
+                <h1 class="text-3xl font-extrabold text-gray-900 mt-2">
+                    {% if current_language == 'en' %}{{ garden.name_en }}{% else %}{{ garden.name_ur }}{% endif %}
+                </h1>
+                <p class="text-xs text-gray-500 mt-1">{{ garden.location_address }}</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                    <span class="px-3 py-1 rounded-lg bg-gray-100 text-gray-700">
+                        {% if current_language == 'en' %}Owner:{% else %}مالک:{% endif %} {% if current_language == 'en' %}{{ garden.owner.display_name_en }}{% else %}{{ garden.owner.display_name_ur }}{% endif %}
+                    </span>
+                    <span class="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 font-semibold">
+                        {% if current_language == 'en' %}Team Members:{% else %}ٹیم ارکان:{% endif %} {{ members.count }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Budget Health Widget -->
+            <div class="md:col-span-5 bg-gradient-to-br from-emerald-50 to-teal-50/50 p-5 rounded-2xl border border-emerald-100 space-y-3">
+                <h4 class="text-xs font-bold text-emerald-900 uppercase">
+                    {% if current_language == 'en' %}Budget Health & Balance{% else %}بجٹ کا جائزہ و صورتحال{% endif %}
+                </h4>
+                <div class="flex justify-between text-xs">
+                    <span class="text-gray-600">{% if current_language == 'en' %}Total Allocated Budget:{% else %}کل مختص بجٹ:{% endif %}</span>
+                    <strong class="text-gray-900">Rs {{ garden.total_budget|floatformat:0 }}</strong>
+                </div>
+                <div class="flex justify-between text-xs">
+                    <span class="text-gray-600">{% if current_language == 'en' %}Spent Expenses:{% else %}خرچ شدہ رقم:{% endif %}</span>
+                    <strong class="text-emerald-800">Rs {{ garden.total_expenses|floatformat:0 }}</strong>
+                </div>
+                <div class="flex justify-between text-xs pt-2 border-t border-emerald-200 font-bold">
+                    <span>{% if current_language == 'en' %}Remaining Balance:{% else %}باقی ماندہ بجٹ:{% endif %}</span>
+                    <span class="{% if garden.remaining_budget >= 0 %}text-emerald-700{% else %}text-red-700{% endif %}">
+                        Rs {{ garden.remaining_budget|floatformat:0 }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Grid: 5-State Tasks Board & Expenses -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- Left 8 Cols: 5-State Tasks -->
+        <div class="lg:col-span-8 space-y-6">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-sm">
+                <div class="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
+                    <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                        <i class="fa-solid fa-list-check text-brand-primary ml-2 mr-2"></i>
+                        {% if current_language == 'en' %}Garden Tasks (5-State Lifecycle){% else %}باغبانی ٹاسک (5 اسٹیٹ لائف سائیکل){% endif %}
+                    </h2>
+                    <span class="text-xs text-gray-400">
+                        {{ tasks.count }} {% if current_language == 'en' %}tasks{% else %}کام درج{% endif %}
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    {% for task in tasks %}
+                    <div class="p-5 rounded-2xl border border-gray-100 hover:border-gray-200 transition space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="text-base font-bold text-gray-900">
+                                    {% if current_language == 'en' %}{{ task.title_en }}{% else %}{{ task.title_ur }}{% endif %}
+                                </h3>
+                                <p class="text-xs text-gray-600 mt-1 leading-relaxed">
+                                    {% if current_language == 'en' %}{{ task.description_en }}{% else %}{{ task.description }}{% endif %}
+                                </p>
+                            </div>
+                            <span class="text-xs px-3 py-1 rounded-full font-bold whitespace-nowrap {% if task.state == 'CREATED' %}bg-gray-100 text-gray-700{% elif task.state == 'ASSIGNED' %}bg-blue-100 text-blue-800{% elif task.state == 'IN_PROGRESS' %}bg-amber-100 text-amber-800{% elif task.state == 'SUBMITTED' %}bg-purple-100 text-purple-800{% else %}bg-emerald-100 text-emerald-800{% endif %}">
+                                {% if current_language == 'en' %}
+                                    {{ task.state_en }}
+                                {% else %}
+                                    {{ task.get_state_display }}
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between text-xs text-gray-500 pt-3 border-t border-gray-100 gap-2">
+                            <div class="flex gap-4">
+                                <span>
+                                    {% if current_language == 'en' %}Assigned To:{% else %}سونپا گیا:{% endif %}
+                                    <strong class="text-gray-800">
+                                        {% if current_language == 'en' %}{{ task.assigned_to_name_en }}{% else %}{{ task.assigned_to_name_ur }}{% endif %}
+                                    </strong>
+                                </span>
+                                {% if task.due_date %}
+                                <span>
+                                    {% if current_language == 'en' %}Due Date:{% else %}آخری تاریخ:{% endif %}
+                                    <strong class="text-gray-800">{{ task.due_date|date:"d M Y" }}</strong>
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <a href="{% url 'task-detail' task.id %}" class="font-bold text-brand-primary hover:underline flex items-center">
+                                <span>{% if current_language == 'en' %}Task Details & Stepper{% else %}تفصیل و اسٹیپر{% endif %}</span>
+                                <i class="fa-solid {% if is_rtl %}fa-arrow-left{% else %}fa-arrow-right{% endif %} mr-1 ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-xs text-gray-400 text-center py-6">
+                        {% if current_language == 'en' %}No tasks assigned in this garden yet.{% else %}اس باغ میں کوئی ٹاسک درج نہیں ہے۔ نیا ٹاسک بنائیں!{% endif %}
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right 4 Cols: Mali Team & Expenses -->
+        <div class="lg:col-span-4 space-y-6">
+
+            <!-- Mali & Supervisor Team Members -->
+            <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <h3 class="text-sm font-bold text-gray-900 flex items-center">
+                        <i class="fa-solid fa-users text-emerald-600 ml-2 mr-2"></i>
+                        {% if current_language == 'en' %}Mali & Supervisor Team{% else %}مالی و نگران ٹیم{% endif %}
+                    </h3>
+                </div>
+
+                <div class="space-y-3">
+                    {% for m in members %}
+                    <div class="flex items-center justify-between p-2 rounded-xl border border-gray-100">
+                        <div class="flex items-center space-x-2.5 {% if is_rtl %}space-x-reverse{% endif %}">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">
+                                {{ m.user.first_name|slice:":1"|default:m.user.username|slice:":1"|upper }}
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-900">
+                                    {% if current_language == 'en' %}{{ m.user.display_name_en }}{% else %}{{ m.user.display_name_ur }}{% endif %}
+                                </h4>
+                                <span class="text-[10px] text-gray-400">
+                                    {% if current_language == 'en' %}{{ m.user.get_role_display_en }}{% else %}{{ m.user.get_role_display_ur }}{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <a href="{% url 'start-direct-chat' m.user.id %}" class="text-gray-400 hover:text-brand-primary p-1.5" title="{% if current_language == 'en' %}Chat{% else %}چیٹ کریں{% endif %}">
+                            <i class="fa-solid fa-comment-dots text-sm"></i>
+                        </a>
+                    </div>
+                    {% empty %}
+                    <p class="text-xs text-gray-400 text-center py-2">
+                        {% if current_language == 'en' %}No team members added.{% else %}کوئی مالی شامل نہیں ہے۔{% endif %}
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Garden Expenses List -->
+            <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <h3 class="text-sm font-bold text-gray-900 flex items-center">
+                        <i class="fa-solid fa-receipt text-amber-600 ml-2 mr-2"></i>
+                        {% if current_language == 'en' %}Garden Expenses Log{% else %}باغ کے اخراجات (Expenses){% endif %}
+                    </h3>
+                </div>
+
+                <div class="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                    {% for exp in expenses %}
+                    <div class="p-2.5 rounded-xl border border-gray-100 flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-bold text-gray-800 block">{{ exp.title }}</span>
+                            <span class="text-[10px] text-gray-400">{{ exp.date|date:"d M Y" }}</span>
+                        </div>
+                        <span class="font-bold text-emerald-700">Rs {{ exp.amount|floatformat:0 }}</span>
+                    </div>
+                    {% empty %}
+                    <p class="text-xs text-gray-400 text-center py-2">
+                        {% if current_language == 'en' %}No expenses recorded yet.{% else %}کوئی خرچ درج نہیں ہے۔{% endif %}
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

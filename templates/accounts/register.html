@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Create New Account — Baghbaan AI
+    {% else %}
+        نیا اکاؤنٹ بنائیں — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto my-12 px-4">
+    <div class="bg-white rounded-3xl p-8 border border-gray-200 shadow-xl">
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">
+                {% if current_language == 'en' %}
+                    Join Baghbaan AI
+                {% else %}
+                    باغبان اے آئی پر نیا اکاؤنٹ بنائیں
+                {% endif %}
+            </h2>
+            <p class="text-xs text-gray-500 mt-1">
+                {% if current_language == 'en' %}
+                    Start your smart gardening journey and connect with Pakistan's green community
+                {% else %}
+                    اپنے باغبانی سفر کا آغاز کریں اور کمیونٹی سے جڑیں
+                {% endif %}
+            </p>
+        </div>
+
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">
+                        {% if current_language == 'en' %}Username*{% else %}صارف نام (Username)*{% endif %}
+                    </label>
+                    <input type="text" name="username" required class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">
+                        {% if current_language == 'en' %}Email (Optional){% else %}ای میل (Email){% endif %}
+                    </label>
+                    <input type="email" name="email" class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">
+                    {% if current_language == 'en' %}Password*{% else %}پاس ورڈ (Password)*{% endif %}
+                </label>
+                <input type="password" name="password" required class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">
+                    {% if current_language == 'en' %}Select Your Role*{% else %}آپ کا کردار منتخب کریں (Select Role)*{% endif %}
+                </label>
+                <select name="role" required class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary">
+                    <option value="HOMEOWNER">{% if current_language == 'en' %}Homeowner / Kitchen Gardener{% else %}گھر کا باغبانی شوقین (Homeowner){% endif %}</option>
+                    <option value="GARDENER">{% if current_language == 'en' %}Professional Gardener (Mali){% else %}پیشہ ور مالی (Gardener / Mali){% endif %}</option>
+                    <option value="SUPERVISOR">{% if current_language == 'en' %}Horticulture Supervisor{% else %}ہارٹیکلچر نگران (Supervisor){% endif %}</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">
+                        {% if current_language == 'en' %}Phone Number*{% else %}فون نمبر (Phone)*{% endif %}
+                    </label>
+                    <input type="text" name="phone" placeholder="03001234567" required class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">
+                        {% if current_language == 'en' %}City*{% else %}شہر (City)*{% endif %}
+                    </label>
+                    <select name="city" required class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary">
+                        <option value="Lahore">Lahore (لاہور)</option>
+                        <option value="Karachi">Karachi (کراچی)</option>
+                        <option value="Islamabad">Islamabad (اسلام آباد)</option>
+                        <option value="Rawalpindi">Rawalpindi (راولپنڈی)</option>
+                        <option value="Faisalabad">Faisalabad (فیصل آباد)</option>
+                        <option value="Multan">Multan (ملتان)</option>
+                        <option value="Peshawar">Peshawar (پشاور)</option>
+                        <option value="Quetta">Quetta (کوئٹہ)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">
+                    {% if current_language == 'en' %}Preferred Language{% else %}پسندیدہ زبان (Language){% endif %}
+                </label>
+                <select name="preferred_language" class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary">
+                    <option value="en" {% if current_language == 'en' %}selected{% endif %}>English</option>
+                    <option value="ur" {% if current_language == 'ur' %}selected{% endif %}>اردو (Urdu)</option>
+                    <option value="ur_ro">Roman Urdu</option>
+                </select>
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-brand-primary hover:bg-brand-dark text-white font-bold text-sm rounded-xl shadow-md transition">
+                {% if current_language == 'en' %}Register and Get Started{% else %}رجسٹر کریں اور شروع کریں{% endif %}
+            </button>
+        </form>
+
+        <div class="mt-6 text-center text-xs text-gray-500">
+            {% if current_language == 'en' %}
+                Already have an account? 
+                <a href="{% url 'login' %}" class="font-bold text-brand-primary hover:underline">Log in here</a>
+            {% else %}
+                پہلے سے اکاؤنٹ ہے؟ 
+                <a href="{% url 'login' %}" class="font-bold text-brand-primary hover:underline">یہاں لاگ ان کریں</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

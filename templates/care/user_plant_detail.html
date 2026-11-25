@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        {{ plant.nickname_en }} — Health Timeline & Care | Baghbaan AI
+    {% else %}
+        {{ plant.nickname_ur }} — تفصیل و ٹائم لائن
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex items-center justify-between mb-6">
+        <a href="{% url 'my-plants' %}" class="inline-flex items-center text-xs font-semibold text-gray-500 hover:text-brand-primary">
+            <i class="fa-solid {% if is_rtl %}fa-arrow-right{% else %}fa-arrow-left{% endif %} ml-1 mr-1"></i>
+            <span>{% if current_language == 'en' %}Back to My Plants{% else %}واپس میری نباتات{% endif %}</span>
+        </a>
+        <a href="{% url 'diagnose' %}" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center">
+            <i class="fa-solid fa-camera ml-1.5 mr-1.5"></i>
+            {% if current_language == 'en' %}Diagnose Leaf Disease{% else %}اس پودے کی بیماری چیک کریں{% endif %}
+        </a>
+    </div>
+
+    <!-- Header Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-sm mb-8">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="flex items-center space-x-4 {% if is_rtl %}space-x-reverse{% endif %}">
+                {% if plant.primary_photo %}
+                    <img src="{{ plant.primary_photo.url }}" alt="{{ plant.nickname }}" class="w-20 h-20 rounded-2xl object-cover shadow-sm border border-gray-200">
+                {% else %}
+                    <div class="w-20 h-20 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl">
+                        🌱
+                    </div>
+                {% endif %}
+                <div>
+                    <h1 class="text-2xl font-extrabold text-gray-900">
+                        {% if current_language == 'en' %}{{ plant.nickname_en }}{% else %}{{ plant.nickname_ur }}{% endif %}
+                    </h1>
+                    <p class="text-xs text-gray-500 mt-0.5">
+                        {% if current_language == 'en' %}
+                            {{ plant.plant_template.name_en|default:"Local Variety" }}
+                            {% if plant.plant_template %}({{ plant.plant_template.scientific_name }}){% endif %}
+                        {% else %}
+                            {{ plant.plant_template.name_ur|default:"دیسی پودا" }}
+                            {% if plant.plant_template %}({{ plant.plant_template.scientific_name }}){% endif %}
+                        {% endif %}
+                    </p>
+                    <span class="inline-block mt-2 text-[11px] font-semibold px-2.5 py-0.5 rounded-full {% if plant.is_indoor %}bg-purple-100 text-purple-800{% else %}bg-emerald-100 text-emerald-800{% endif %}">
+                        {% if plant.is_indoor %}
+                            {% if current_language == 'en' %}Indoor Plant{% else %}انڈور پودا{% endif %}
+                        {% else %}
+                            {% if current_language == 'en' %}Outdoor Plant (Weather-Synced){% else %}آؤٹ ڈور پودا (موسم سے جڑا ہوا){% endif %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 text-xs w-full md:w-auto">
+                <div class="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <span class="text-gray-500 block">{% if current_language == 'en' %}Watering Interval{% else %}پانی کا وقفہ{% endif %}</span>
+                    <strong class="text-gray-800">
+                        {% if current_language == 'en' %}Every {{ plant.watering_interval_days }} days{% else %}ہر {{ plant.watering_interval_days }} دن بعد{% endif %}
+                    </strong>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <span class="text-gray-500 block">{% if current_language == 'en' %}Location{% else %}مقام{% endif %}</span>
+                    <strong class="text-gray-800">
+                        {% if current_language == 'en' %}{{ plant.location_description_en }}{% else %}{{ plant.location_description }}{% endif %}
+                    </strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2 Columns: Care Tasks & Health Timeline -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left 7 Cols: Care Schedule -->
+        <div class="lg:col-span-7 space-y-4">
+            <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm">
+                <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
+                    <h3 class="font-bold text-gray-900 text-base flex items-center">
+                        <i class="fa-solid fa-calendar-days text-brand-primary ml-2 mr-2"></i>
+                        {% if current_language == 'en' %}Care Schedule (Next 30 Days){% else %}دیکھ بھال کا شیڈول (اگلے 30 دن){% endif %}
+                    </h3>
+                    <span class="text-xs text-gray-400">
+                        {{ tasks.count }} {% if current_language == 'en' %}tasks{% else %}ٹاسک درج{% endif %}
+                    </span>
+                </div>
+
+                <div class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                    {% for task in tasks %}
+                        <div class="flex items-center justify-between p-3.5 rounded-xl border border-gray-100 hover:bg-gray-50 transition">
+                            <div class="flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                                <form action="{% url 'toggle-task' task.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="w-6 h-6 rounded-lg border {% if task.status == 'COMPLETED' %}bg-emerald-500 border-emerald-500 text-white{% else %}border-gray-300 hover:border-emerald-500{% endif %} flex items-center justify-center transition">
+                                        {% if task.status == 'COMPLETED' %}<i class="fa-solid fa-check text-xs"></i>{% endif %}
+                                    </button>
+                                </form>
+                                <div>
+                                    <h4 class="text-xs font-bold text-gray-800 {% if task.status == 'COMPLETED' %}line-through text-gray-400{% endif %}">
+                                        {% if current_language == 'en' %}
+                                            {% if task.task_type == 'WATER' %}Watering
+                                            {% elif task.task_type == 'FERTILIZE' %}Fertilization
+                                            {% elif task.task_type == 'PRUNE' %}Pruning
+                                            {% elif task.task_type == 'PEST_INSPECT' %}Pest Inspection
+                                            {% else %}{{ task.get_task_type_display }}{% endif %}
+                                        {% else %}
+                                            {{ task.get_task_type_display }}
+                                        {% endif %}
+                                    </h4>
+                                    <p class="text-[11px] text-gray-500">
+                                        {% if current_language == 'en' %}Date:{% else %}تاریخ:{% endif %} <span class="font-semibold">{{ task.scheduled_date|date:"d M Y (D)" }}</span>
+                                        {% if task.weather_note %}
+                                            <span class="text-amber-600 font-semibold block mt-0.5">• {% if current_language == 'en' %}{{ task.weather_note_en }}{% else %}{{ task.weather_note }}{% endif %}</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full {% if task.status == 'COMPLETED' %}bg-emerald-100 text-emerald-800{% elif task.status == 'POSTPONED' %}bg-amber-100 text-amber-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                                {% if current_language == 'en' %}
+                                    {% if task.status == 'COMPLETED' %}Completed
+                                    {% elif task.status == 'POSTPONED' %}Postponed
+                                    {% else %}Pending{% endif %}
+                                {% else %}
+                                    {{ task.get_status_display }}
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% empty %}
+                        <p class="text-xs text-gray-400 text-center py-4">
+                            {% if current_language == 'en' %}No care tasks scheduled.{% else %}کوئی ٹاسک موجود نہیں۔{% endif %}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right 5 Cols: Health Timeline & Photo Upload -->
+        <div class="lg:col-span-5 space-y-6">
+            
+            <!-- Upload Photo Modal / Form Card -->
+            <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm">
+                <h3 class="font-bold text-gray-900 text-base mb-3 flex items-center">
+                    <i class="fa-solid fa-camera text-emerald-600 ml-2 mr-2"></i>
+                    {% if current_language == 'en' %}Add Photo to Growth Timeline{% else %}ٹائم لائن میں نئی تصویر جوڑیں{% endif %}
+                </h3>
+                <form action="{% url 'add-plant-photo' plant.id %}" method="POST" enctype="multipart/form-data" class="space-y-3">
+                    {% csrf_token %}
+                    <div>
+                        <input type="file" name="photo" accept="image/*" required class="block w-full text-xs text-gray-500 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-100 file:text-emerald-800 hover:file:bg-emerald-200">
+                    </div>
+                    <div>
+                        <input type="text" name="note" placeholder="{% if current_language == 'en' %}Growth note (e.g. new fresh shoots appearing)...{% else %}پودے کی حالت یا نوٹ (مثلاً: نئے پتے نکل آئے ہیں)...{% endif %}" class="w-full px-3 py-2 text-xs rounded-xl border border-gray-300">
+                    </div>
+                    <button type="submit" class="w-full py-2 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-sm transition">
+                        {% if current_language == 'en' %}Save Photo{% else %}تصویر محفوظ کریں{% endif %}
+                    </button>
+                </form>
+            </div>
+
+            <!-- Health Timeline Photos Archive -->
+            <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm">
+                <h3 class="font-bold text-gray-900 text-base mb-4 border-b border-gray-100 pb-3 flex items-center">
+                    <i class="fa-solid fa-timeline text-brand-primary ml-2 mr-2"></i>
+                    {% if current_language == 'en' %}Growth & Health Timeline{% else %}صحت و بڑھوتری کی ٹائم لائن{% endif %}
+                </h3>
+
+                <div class="space-y-4 max-h-[360px] overflow-y-auto pr-1">
+                    {% for p in photos %}
+                        <div class="flex items-start space-x-3 {% if is_rtl %}space-x-reverse{% endif %} p-2 rounded-xl border border-gray-100">
+                            <img src="{{ p.photo.url }}" alt="Log" class="w-16 h-16 rounded-xl object-cover flex-shrink-0 shadow-sm border border-gray-200">
+                            <div>
+                                <span class="text-[10px] text-gray-400 font-semibold block">{{ p.taken_at|date:"d M Y" }}</span>
+                                <p class="text-xs text-gray-700 mt-0.5 leading-relaxed">{{ p.note|default:"No notes added" }}</p>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-xs text-gray-400 text-center py-4">
+                            {% if current_language == 'en' %}No growth photos uploaded yet.{% else %}ابھی تک کوئی تصویر اپلوڈ نہیں ہوئی۔{% endif %}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

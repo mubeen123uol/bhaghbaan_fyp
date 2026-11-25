@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        My Plants (Digital Garden) — Baghbaan AI
+    {% else %}
+        میری نباتات — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900">
+                {% if current_language == 'en' %}
+                    My Plants (Digital Garden)
+                {% else %}
+                    میری نباتات (ڈیجیٹل باغ)
+                {% endif %}
+            </h1>
+            <p class="text-xs text-gray-500 mt-1">
+                {% if current_language == 'en' %}
+                    Digital tracking, care logs, and automated schedule for all your house and garden plants
+                {% else %}
+                    آپ کے گھر اور باغ میں موجود تمام پودوں کا مکمل ریکارڈ اور دیکھ بھال کا شیڈول
+                {% endif %}
+            </p>
+        </div>
+        <a href="{% url 'add-user-plant' %}" class="px-5 py-2.5 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center">
+            <i class="fa-solid fa-plus ml-1.5 mr-1.5"></i>
+            {% if current_language == 'en' %}Register New Plant{% else %}نیا پودا رجسٹر کریں{% endif %}
+        </a>
+    </div>
+
+    {% if user_plants %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for plant in user_plants %}
+                <div class="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    {% if plant.primary_photo %}
+                        <img src="{{ plant.primary_photo.url }}" alt="{{ plant.nickname }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-emerald-50 flex items-center justify-center text-4xl">
+                            🪴
+                        </div>
+                    {% endif %}
+
+                    <div class="p-6 flex-grow">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full {% if plant.is_indoor %}bg-purple-100 text-purple-800{% else %}bg-emerald-100 text-emerald-800{% endif %}">
+                                {% if plant.is_indoor %}
+                                    {% if current_language == 'en' %}Indoor Plant{% else %}انڈور پودا{% endif %}
+                                {% else %}
+                                    {% if current_language == 'en' %}Outdoor Plant{% else %}آؤٹ ڈور پودا{% endif %}
+                                {% endif %}
+                            </span>
+                            <span class="text-xs text-gray-400">{{ plant.created_at|date:"d M Y" }}</span>
+                        </div>
+
+                        <h2 class="text-xl font-bold text-gray-900 mt-1">
+                            {% if current_language == 'en' %}{{ plant.nickname_en }}{% else %}{{ plant.nickname_ur }}{% endif %}
+                        </h2>
+                        <p class="text-xs text-gray-500 font-medium">
+                            {% if current_language == 'en' %}
+                                {{ plant.plant_template.name_en|default:"Local Variety" }}
+                            {% else %}
+                                {{ plant.plant_template.name_ur|default:"دیسی ورائٹی" }}
+                            {% endif %}
+                        </p>
+
+                        <div class="mt-4 pt-3 border-t border-gray-100 space-y-1.5 text-xs text-gray-600">
+                            <div>
+                                <i class="fa-solid fa-location-dot text-brand-primary ml-1 mr-1"></i>
+                                {% if current_language == 'en' %}Location:{% else %}مقام:{% endif %} {% if current_language == 'en' %}{{ plant.location_description_en }}{% else %}{{ plant.location_description }}{% endif %}
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-droplet text-blue-500 ml-1 mr-1"></i>
+                                {% if current_language == 'en' %}Watering: Every {{ plant.watering_interval_days }} days{% else %}پانی کا وقفہ: ہر {{ plant.watering_interval_days }} دن بعد{% endif %}
+                            </div>
+                            {% if plant.garden %}
+                                <div>
+                                    <i class="fa-solid fa-seedling text-emerald-600 ml-1 mr-1"></i>
+                                    {% if current_language == 'en' %}Garden: {{ plant.garden.name_en }}{% else %}منسلک باغ: {{ plant.garden.name_ur }}{% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                        <a href="{% url 'user-plant-detail' plant.id %}" class="text-xs font-bold text-brand-primary hover:underline">
+                            {% if current_language == 'en' %}Care & Health Timeline &rarr;{% else %}دیکھ بھال اور صحت ٹائم لائن &larr;{% endif %}
+                        </a>
+                        <span class="text-xs text-gray-400">
+                            {{ plant.care_tasks.count }} {% if current_language == 'en' %}Tasks{% else %}ٹاسک{% endif %}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-white rounded-3xl p-12 text-center border border-gray-200 shadow-sm max-w-md mx-auto">
+            <span class="text-5xl block mb-3">🪴</span>
+            <h3 class="text-base font-bold text-gray-800">
+                {% if current_language == 'en' %}Your Digital Garden is Empty{% else %}آپ کا ڈیجیٹل باغ خالی ہے{% endif %}
+            </h3>
+            <p class="text-xs text-gray-500 mt-1 mb-6">
+                {% if current_language == 'en' %}
+                    Add your potted plants, herbs, or garden beds to receive daily watering alerts and weather protection notices.
+                {% else %}
+                    اپنے گملوں اور کیاریوں کے پودوں کو شامل کریں تاکہ روزانہ دیکھ بھال اور موسم کے مطابق الرٹ مل سکیں۔
+                {% endif %}
+            </p>
+            <a href="{% url 'add-user-plant' %}" class="px-6 py-3 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-md transition">
+                {% if current_language == 'en' %}Add First Plant{% else %}پہلا پودا شامل کریں{% endif %}
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

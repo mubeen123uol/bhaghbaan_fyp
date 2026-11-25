@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Notifications — Baghbaan AI
+    {% else %}
+        نوٹیفیکیشنز — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">
+                {% if current_language == 'en' %}
+                    Notification Center
+                {% else %}
+                    نوٹیفیکیشن سنٹر (Notifications)
+                {% endif %}
+            </h1>
+            <p class="text-xs text-gray-500 mt-1">
+                {% if current_language == 'en' %}
+                    Plant care reminders, order progress, and garden task updates
+                {% else %}
+                    پودوں کے دیکھ بھال الرٹس، آرڈر اسٹیٹس اور ٹاسک اپڈیٹس
+                {% endif %}
+            </p>
+        </div>
+        {% if notifications %}
+            <a href="{% url 'notification-mark-all-read' %}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-xl transition">
+                {% if current_language == 'en' %}Mark All as Read{% else %}سب پڑھ لیے گئے مارک کریں{% endif %}
+            </a>
+        {% endif %}
+    </div>
+
+    {% if notifications %}
+        <div class="space-y-3">
+            {% for notif in notifications %}
+                <div class="p-4 rounded-2xl border transition flex items-start justify-between gap-4 {% if not notif.is_read %}bg-emerald-50/50 border-emerald-200{% else %}bg-white border-gray-200{% endif %}">
+                    <div class="flex items-start space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 {% if not notif.is_read %}bg-emerald-100 text-emerald-800{% else %}bg-gray-100 text-gray-500{% endif %}">
+                            {% if notif.notification_type == 'CARE_REMINDER' %}💧{% elif notif.notification_type == 'TASK_UPDATE' %}🛠️{% elif notif.notification_type == 'ORDER_UPDATE' %}📦{% else %}🔔{% endif %}
+                        </div>
+
+                        <div>
+                            <div class="flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                                <h3 class="text-sm font-bold text-gray-900">{{ notif.title }}</h3>
+                                {% if not notif.is_read %}
+                                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                                {% endif %}
+                            </div>
+                            <p class="text-xs text-gray-600 mt-1 leading-relaxed">{{ notif.body }}</p>
+                            <span class="text-[10px] text-gray-400 mt-2 block">{{ notif.created_at|date:"d M Y, H:i" }}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        {% if notif.target_url %}
+                            <a href="{% url 'notification-read' notif.id %}" class="px-3 py-1.5 bg-brand-primary text-white hover:bg-brand-dark font-bold text-xs rounded-lg transition">
+                                {% if current_language == 'en' %}View &rarr;{% else %}دیکھیں &larr;{% endif %}
+                            </a>
+                        {% elif not notif.is_read %}
+                            <a href="{% url 'notification-read' notif.id %}" class="px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 font-semibold text-xs rounded-lg transition">
+                                {% if current_language == 'en' %}Mark Read{% else %}پڑھ لیا{% endif %}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-white rounded-3xl p-12 text-center border border-gray-200 shadow-sm max-w-md mx-auto">
+            <i class="fa-solid fa-bell-slash text-4xl text-gray-300 mb-3"></i>
+            <h3 class="text-base font-bold text-gray-800">
+                {% if current_language == 'en' %}No New Notifications{% else %}کوئی نیا نوٹیفیکیشن نہیں ہے{% endif %}
+            </h3>
+            <p class="text-xs text-gray-500 mt-1">
+                {% if current_language == 'en' %}All your care reminders and task logs are up to date.{% else %}آپ کا تمام ریکارڈ اور الرٹس اپ ٹو ڈیٹ ہیں۔{% endif %}
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

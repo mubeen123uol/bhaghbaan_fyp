@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Garden Management & Mali Services — Baghbaan AI
+    {% else %}
+        میرے باغات و مالی سروسز — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900">
+                {% if current_language == 'en' %}
+                    Garden Management & Mali Services
+                {% else %}
+                    باغات کا انتظام و مالی سروسز
+                {% endif %}
+            </h1>
+            <p class="text-xs text-gray-500 mt-1">
+                {% if current_language == 'en' %}
+                    Garden budgets, assigned gardeners, 5-state task lifecycle, and expense tracking
+                {% else %}
+                    باغات کے بجٹ، مالی ٹیم، 5 اسٹیٹ ٹاسک اور اخراجات کا جامع نظام
+                {% endif %}
+            </p>
+        </div>
+        <div class="flex gap-2">
+            <a href="{% url 'gardener-directory' %}" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs rounded-xl transition flex items-center">
+                <i class="fa-solid fa-user-plus ml-1.5 mr-1.5"></i>
+                {% if current_language == 'en' %}Find a Mali{% else %}مالی تلاش کریں{% endif %}
+            </a>
+            {% if user.role != 'GARDENER' %}
+                <a href="{% url 'garden-create' %}" class="px-5 py-2.5 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center">
+                    <i class="fa-solid fa-plus ml-1.5 mr-1.5"></i>
+                    {% if current_language == 'en' %}Create New Garden{% else %}نیا باغ بنائیں{% endif %}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if gardens %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for garden in gardens %}
+                <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                                {{ garden.city }}
+                            </span>
+                            <span class="text-xs text-gray-400">
+                                {% if current_language == 'en' %}Owner:{% else %}مالک:{% endif %} {% if current_language == 'en' %}{{ garden.owner.display_name_en }}{% else %}{{ garden.owner.display_name_ur }}{% endif %}
+                            </span>
+                        </div>
+
+                        <h2 class="text-xl font-bold text-gray-900">
+                            {% if current_language == 'en' %}{{ garden.name_en }}{% else %}{{ garden.name_ur }}{% endif %}
+                        </h2>
+                        <p class="text-xs text-gray-500 mt-1">{{ garden.location_address }}</p>
+
+                        <!-- Budget & Expense Progress -->
+                        <div class="mt-5 p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-2">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-gray-500">{% if current_language == 'en' %}Allocated Budget:{% else %}مختص بجٹ:{% endif %}</span>
+                                <strong class="text-gray-900">Rs {{ garden.total_budget|floatformat:0 }}</strong>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-gray-500">{% if current_language == 'en' %}Total Expenses:{% else %}کل اخراجات:{% endif %}</span>
+                                <strong class="text-emerald-700">Rs {{ garden.total_expenses|floatformat:0 }}</strong>
+                            </div>
+                            <div class="flex justify-between text-xs pt-1 border-t border-gray-200 font-bold">
+                                <span>{% if current_language == 'en' %}Remaining Budget:{% else %}باقی ماندہ رقم:{% endif %}</span>
+                                <span class="{% if garden.remaining_budget >= 0 %}text-emerald-600{% else %}text-red-600{% endif %}">
+                                    Rs {{ garden.remaining_budget|floatformat:0 }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Stats Overview -->
+                        <div class="grid grid-cols-3 gap-2 mt-4 text-center text-xs">
+                            <div class="p-2 bg-emerald-50/50 rounded-xl">
+                                <span class="font-bold text-gray-900 block text-sm">{{ garden.tasks.count }}</span>
+                                <span class="text-[10px] text-gray-500">{% if current_language == 'en' %}Tasks{% else %}کل ٹاسک{% endif %}</span>
+                            </div>
+                            <div class="p-2 bg-emerald-50/50 rounded-xl">
+                                <span class="font-bold text-gray-900 block text-sm">{{ garden.members.count }}</span>
+                                <span class="text-[10px] text-gray-500">{% if current_language == 'en' %}Mali Team{% else %}مالی ٹیم{% endif %}</span>
+                            </div>
+                            <div class="p-2 bg-emerald-50/50 rounded-xl">
+                                <span class="font-bold text-gray-900 block text-sm">{{ garden.plants.count }}</span>
+                                <span class="text-[10px] text-gray-500">{% if current_language == 'en' %}Plants{% else %}پودے{% endif %}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <a href="{% url 'garden-detail' garden.id %}" class="w-full py-2.5 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl text-center shadow-sm transition">
+                            {% if current_language == 'en' %}Open Garden Dashboard &rarr;{% else %}باغ ڈیش بورڈ کھولیں &larr;{% endif %}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-white rounded-3xl p-12 text-center border border-gray-200 shadow-sm max-w-md mx-auto">
+            <span class="text-5xl block mb-3">🏡</span>
+            <h3 class="text-base font-bold text-gray-800">
+                {% if current_language == 'en' %}No Gardens Registered{% else %}کوئی باغ رجسٹرڈ نہیں ہے{% endif %}
+            </h3>
+            <p class="text-xs text-gray-500 mt-1 mb-6">
+                {% if current_language == 'en' %}
+                    Register your rooftop, home, or farmhouse garden to manage tasks, budgets, and mali teams.
+                {% else %}
+                    اپنے گھر، چھت یا فارم ہاؤس کا باغ شامل کریں اور بجٹ و مالی ٹیم کی نگرانی کریں۔
+                {% endif %}
+            </p>
+            <a href="{% url 'garden-create' %}" class="px-6 py-3 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-md transition">
+                {% if current_language == 'en' %}Create New Garden{% else %}نیا باغ بنائیں{% endif %}
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

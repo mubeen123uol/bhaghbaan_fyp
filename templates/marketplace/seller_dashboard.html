@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Seller Portal — {{ profile.business_name }} | Baghbaan AI
+    {% else %}
+        سیلر پورٹل — {{ profile.business_name }} | باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+            <div class="flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                <h1 class="text-3xl font-extrabold text-gray-900">{{ profile.business_name }}</h1>
+                <span class="text-xs font-bold px-3 py-1 rounded-full {% if profile.verification_status == 'VERIFIED' %}bg-emerald-100 text-emerald-800 border border-emerald-200{% else %}bg-amber-100 text-amber-800 border border-amber-200{% endif %}">
+                    {% if current_language == 'en' %}
+                        {% if profile.verification_status == 'VERIFIED' %}Verified Nursery
+                        {% elif profile.verification_status == 'REJECTED' %}Rejected
+                        {% else %}Pending Verification{% endif %}
+                    {% else %}
+                        {{ profile.get_verification_status_display }}
+                    {% endif %}
+                </span>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">
+                {{ profile.shop_address }} | {% if current_language == 'en' %}Phone:{% else %}فون:{% endif %} {{ profile.contact_phone }}
+            </p>
+        </div>
+    </div>
+
+    <!-- 2 Column Layout: Product Listings & Incoming Orders -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left 7 Cols: Received Orders -->
+        <div class="lg:col-span-7 space-y-6">
+            <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm">
+                <h2 class="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-3 flex items-center">
+                    <i class="fa-solid fa-truck-fast text-emerald-600 ml-2 mr-2"></i>
+                    {% if current_language == 'en' %}Incoming Customer Orders & Status Updates{% else %}موصولہ آرڈرز اور اسٹیٹس اپڈیٹ{% endif %}
+                </h2>
+
+                <div class="space-y-4">
+                    {% for ord in orders %}
+                        <div class="p-4 rounded-2xl border border-gray-100 space-y-3">
+                            <div class="flex justify-between items-center text-xs">
+                                <div>
+                                    <strong class="text-gray-900">{% if current_language == 'en' %}Order #{{ ord.id }}{% else %}آرڈر #{{ ord.id }}{% endif %}</strong>
+                                    <span class="text-gray-500 mr-2 ml-2">{% if current_language == 'en' %}Buyer:{% else %}خریدار:{% endif %} {{ ord.buyer.first_name|default:ord.buyer.username }}</span>
+                                </div>
+                                <span class="px-2.5 py-0.5 rounded-full font-bold {% if ord.status == 'DELIVERED' %}bg-emerald-100 text-emerald-800{% elif ord.status == 'SHIPPED' %}bg-blue-100 text-blue-800{% else %}bg-amber-100 text-amber-800{% endif %}">
+                                    {% if current_language == 'en' %}
+                                        {% if ord.status == 'DELIVERED' %}Delivered
+                                        {% elif ord.status == 'SHIPPED' %}Dispatched
+                                        {% elif ord.status == 'CONFIRMED' %}Confirmed
+                                        {% elif ord.status == 'CANCELLED' %}Cancelled
+                                        {% else %}Placed{% endif %}
+                                    {% else %}
+                                        {{ ord.get_status_display }}
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <p class="text-xs text-gray-600">{% if current_language == 'en' %}Address:{% else %}پتہ:{% endif %} {{ ord.shipping_address }}, {{ ord.shipping_city }} ({{ ord.contact_phone }})</p>
+                            
+                            <div class="flex justify-between items-center pt-2 border-t border-gray-100 text-xs">
+                                <span class="font-bold text-emerald-700">{% if current_language == 'en' %}Total Amount:{% else %}کل رقم:{% endif %} Rs {{ ord.total_amount }}</span>
+                                
+                                <!-- Update Order Status Form -->
+                                <form method="POST" class="flex items-center gap-2">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="update_order_status" value="1">
+                                    <input type="hidden" name="order_id" value="{{ ord.id }}">
+                                    <select name="new_status" class="text-xs py-1 px-2 rounded-lg border border-gray-300">
+                                        {% if ord.status == 'PLACED' %}
+                                            <option value="CONFIRMED">{% if current_language == 'en' %}Confirm Order{% else %}آرڈر تصدیق کریں (Confirmed){% endif %}</option>
+                                            <option value="CANCELLED">{% if current_language == 'en' %}Cancel Order{% else %}منسوخ کریں{% endif %}</option>
+                                        {% elif ord.status == 'CONFIRMED' %}
+                                            <option value="SHIPPED">{% if current_language == 'en' %}Dispatch Parcel{% else %}روانہ کریں (Dispatched){% endif %}</option>
+                                            <option value="CANCELLED">{% if current_language == 'en' %}Cancel Order{% else %}منسوخ کریں{% endif %}</option>
+                                        {% elif ord.status == 'SHIPPED' %}
+                                            <option value="DELIVERED">{% if current_language == 'en' %}Mark Delivered & Paid{% else %}ڈیلیور ہو گیا (Delivered & Paid){% endif %}</option>
+                                        {% endif %}
+                                    </select>
+                                    {% if ord.status != 'DELIVERED' and ord.status != 'CANCELLED' %}
+                                        <button type="submit" class="px-3 py-1 bg-brand-primary text-white font-bold text-xs rounded-lg transition hover:bg-brand-dark">
+                                            {% if current_language == 'en' %}Update{% else %}اپڈیٹ{% endif %}
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-xs text-gray-400 py-6 text-center">
+                            {% if current_language == 'en' %}No customer orders received yet.{% else %}ابھی تک کوئی آرڈر موصول نہیں ہوا۔{% endif %}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right 5 Cols: Add Product & My Listings -->
+        <div class="lg:col-span-5 space-y-6">
+            
+            <!-- Add Product Form Card -->
+            <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm">
+                <h3 class="font-bold text-gray-900 text-base mb-3 flex items-center">
+                    <i class="fa-solid fa-plus text-emerald-600 ml-2 mr-2"></i>
+                    {% if current_language == 'en' %}List New Product{% else %}نیا پروڈکٹ لسٹ کریں{% endif %}
+                </h3>
+                <form method="POST" enctype="multipart/form-data" class="space-y-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="add_product" value="1">
+                    <div>
+                        <input type="text" name="title" required placeholder="{% if current_language == 'en' %}Product title (e.g. Organic Neem Oil 500ml)*{% else %}پروڈکٹ کا عنوان*{% endif %}" class="w-full px-3 py-2 text-xs rounded-xl border border-gray-300">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select name="category" class="w-full px-2 py-2 text-xs rounded-xl border border-gray-300">
+                            {% for c_key, c_label in categories %}
+                                <option value="{{ c_key }}">
+                                    {% if current_language == 'en' %}
+                                        {% if c_key == 'PLANT' %}Live Plants
+                                        {% elif c_key == 'SEED' %}Seeds
+                                        {% elif c_key == 'FERTILIZER' %}Fertilizers
+                                        {% elif c_key == 'PESTICIDE' %}Neem & Pesticides
+                                        {% elif c_key == 'POT' %}Pots & Planters
+                                        {% elif c_key == 'TOOL' %}Tools
+                                        {% else %}{{ c_label }}{% endif %}
+                                    {% else %}
+                                        {{ c_label }}
+                                    {% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <input type="number" name="price" required placeholder="{% if current_language == 'en' %}Price (PKR)*{% else %}قیمت (Rs)*{% endif %}" min="1" class="w-full px-3 py-2 text-xs rounded-xl border border-gray-300">
+                    </div>
+                    <div>
+                        <input type="number" name="stock_quantity" value="10" placeholder="{% if current_language == 'en' %}Stock quantity*{% else %}اسٹاک تعداد*{% endif %}" min="1" class="w-full px-3 py-2 text-xs rounded-xl border border-gray-300">
+                    </div>
+                    <div>
+                        <textarea name="description" rows="2" placeholder="{% if current_language == 'en' %}Product details and usage instructions*{% else %}پروڈکٹ کی تفصیل و فوائد*{% endif %}" class="w-full px-3 py-2 text-xs rounded-xl border border-gray-300"></textarea>
+                    </div>
+                    <div>
+                        <input type="file" name="main_image" accept="image/*" class="w-full text-[10px] text-gray-500">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow transition">
+                        {% if current_language == 'en' %}Publish Product in Marketplace{% else %}پروڈکٹ شائع کریں{% endif %}
+                    </button>
+                </form>
+            </div>
+
+            <!-- Current Active Products -->
+            <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm">
+                <h3 class="font-bold text-gray-900 text-base mb-3 border-b border-gray-100 pb-2">
+                    {% if current_language == 'en' %}My Active Listings ({{ products.count }}){% else %}میری دکان کی اشیاء ({{ products.count }}){% endif %}
+                </h3>
+                <div class="space-y-2 max-h-60 overflow-y-auto">
+                    {% for p in products %}
+                        <div class="p-3 bg-gray-50 rounded-xl flex justify-between items-center text-xs">
+                            <div>
+                                <strong class="text-gray-900 block">{{ p.title }}</strong>
+                                <span class="text-[10px] text-gray-500">
+                                    {% if current_language == 'en' %}Stock:{% else %}اسٹاک:{% endif %} {{ p.stock_quantity }} | {{ p.get_category_display }}
+                                </span>
+                            </div>
+                            <span class="font-bold text-emerald-700">Rs {{ p.price }}</span>
+                        </div>
+                    {% empty %}
+                        <p class="text-xs text-gray-400 py-3 text-center">
+                            {% if current_language == 'en' %}No products listed yet.{% else %}کوئی پروڈکٹ شامل نہیں ہے۔{% endif %}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

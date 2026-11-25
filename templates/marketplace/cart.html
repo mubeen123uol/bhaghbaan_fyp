@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Shopping Cart — Baghbaan AI
+    {% else %}
+        شاپنگ کارٹ — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-2xl font-extrabold text-gray-900 mb-6 flex items-center">
+        <i class="fa-solid fa-cart-shopping text-emerald-600 ml-2 mr-2"></i>
+        {% if current_language == 'en' %}
+            Your Shopping Cart
+        {% else %}
+            آپ کی شاپنگ کارٹ
+        {% endif %}
+    </h1>
+
+    {% if cart_items %}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left 8 Cols: Items Table -->
+            <div class="lg:col-span-8 bg-white rounded-3xl p-6 border border-gray-200 shadow-sm space-y-4">
+                {% for item in cart_items %}
+                    <div class="flex items-center justify-between p-4 rounded-2xl border border-gray-100">
+                        <div class="flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                            <div class="w-14 h-14 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl flex-shrink-0">
+                                📦
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-gray-900">
+                                    {% if current_language == 'en' %}{{ item.product.title_en }}{% else %}{{ item.product.title_ur }}{% endif %}
+                                </h3>
+                                <p class="text-xs text-gray-500">
+                                    {% if current_language == 'en' %}Nursery:{% else %}نرسری:{% endif %} 
+                                    {% if current_language == 'en' %}{{ item.product.seller.business_name_en }}{% else %}{{ item.product.seller.business_name_ur }}{% endif %}
+                                </p>
+                                <span class="text-xs font-semibold text-emerald-700">Rs {{ item.product.price }} x {{ item.quantity }}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-4 {% if is_rtl %}space-x-reverse{% endif %}">
+                            <span class="text-sm font-bold text-gray-900">Rs {{ item.total_price }}</span>
+                            <a href="{% url 'remove-from-cart' item.product.id %}" class="text-red-500 hover:text-red-700 text-sm p-1.5" title="{% if current_language == 'en' %}Remove{% else %}خارج کریں{% endif %}">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Right 4 Cols: Order Summary -->
+            <div class="lg:col-span-4 bg-white rounded-3xl p-6 border border-gray-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-gray-900 text-base border-b border-gray-100 pb-3">
+                    {% if current_language == 'en' %}Order Summary{% else %}آرڈر کا خلاصہ{% endif %}
+                </h3>
+
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between text-gray-600">
+                        <span>{% if current_language == 'en' %}Items Subtotal:{% else %}اشیاء کی قیمت:{% endif %}</span>
+                        <strong class="text-gray-900">Rs {{ subtotal|floatformat:0 }}</strong>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>{% if current_language == 'en' %}Delivery Fee (Pakistan-wide):{% else %}ڈیلیوری چارجز (پورے پاکستان میں):{% endif %}</span>
+                        <strong class="text-gray-900">Rs {{ delivery_fee|floatformat:0 }}</strong>
+                    </div>
+                    <div class="flex justify-between text-sm font-extrabold text-gray-900 pt-3 border-t border-gray-200">
+                        <span>{% if current_language == 'en' %}Total Payable:{% else %}کل واجب الادا رقم:{% endif %}</span>
+                        <span class="text-emerald-700">Rs {{ grand_total|floatformat:0 }}</span>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-800">
+                    <i class="fa-solid fa-hand-holding-dollar ml-1 mr-1"></i>
+                    {% if current_language == 'en' %}
+                        Payment is <strong>Cash on Delivery (COD)</strong> upon receiving your parcel safely.
+                    {% else %}
+                        ادائیگی صرف <strong>کیش آن ڈیلیوری (COD)</strong> پر ہو گی جب سامان آپ کے ہاتھ میں پہنچے گا۔
+                    {% endif %}
+                </div>
+
+                <a href="{% url 'checkout' %}" class="w-full py-3.5 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-md transition text-center block">
+                    {% if current_language == 'en' %}Proceed to COD Checkout &rarr;{% else %}کیش آن ڈیلیوری چیک آؤٹ کریں &larr;{% endif %}
+                </a>
+            </div>
+
+        </div>
+    {% else %}
+        <div class="bg-white rounded-3xl p-12 text-center border border-gray-200 shadow-sm max-w-md mx-auto">
+            <i class="fa-solid fa-cart-arrow-down text-4xl text-gray-300 mb-3"></i>
+            <h3 class="text-base font-bold text-gray-800">
+                {% if current_language == 'en' %}Your Cart is Empty{% else %}آپ کی کارٹ خالی ہے{% endif %}
+            </h3>
+            <p class="text-xs text-gray-500 mt-1 mb-6">
+                {% if current_language == 'en' %}
+                    Browse plants, cold-pressed neem oils, fertilizers, and seeds in our nursery marketplace.
+                {% else %}
+                    بازار میں پودے، بیج، اور کھاد دیکھیں اور اپنی پسندیدہ چیزیں شامل کریں۔
+                {% endif %}
+            </p>
+            <a href="{% url 'marketplace-products' %}" class="px-6 py-3 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-md transition">
+                {% if current_language == 'en' %}Explore Nursery Marketplace{% else %}بازار میں خریداری کریں{% endif %}
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Diagnosis Result — Baghbaan AI
+    {% else %}
+        تشخیص کا نتیجہ — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex items-center justify-between mb-6">
+        <a href="{% url 'diagnose' %}" class="inline-flex items-center text-xs font-semibold text-gray-500 hover:text-brand-primary">
+            <i class="fa-solid {% if is_rtl %}fa-arrow-right{% else %}fa-arrow-left{% endif %} ml-1 mr-1"></i>
+            <span>
+                {% if current_language == 'en' %}
+                    Start New Diagnosis
+                {% else %}
+                    نئی تشخیص کریں
+                {% endif %}
+            </span>
+        </a>
+        <span class="text-xs text-gray-400">
+            {% if current_language == 'en' %}
+                Diagnosis #{{ diagnosis.id }} | {{ diagnosis.created_at|date:"d M Y, H:i" }}
+            {% else %}
+                تشخیص نمبر #{{ diagnosis.id }} | {{ diagnosis.created_at|date:"d M Y, H:i" }}
+            {% endif %}
+        </span>
+    </div>
+
+    <!-- Main Result Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-xl space-y-6">
+        
+        <!-- Top Status Banner -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl {% if diagnosis.confidence >= 60 %}bg-emerald-50 border border-emerald-200{% else %}bg-amber-50 border border-amber-200{% endif %}">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider block mb-1 {% if diagnosis.confidence >= 60 %}text-emerald-800{% else %}text-amber-800{% endif %}">
+                    {% if diagnosis.confidence >= 60 %}
+                        <i class="fa-solid fa-circle-check ml-1 mr-1"></i>
+                        {% if current_language == 'en' %}Diagnosis Complete (High Confidence){% else %}تشخیص مکمل (اعلیٰ اعتماد){% endif %}
+                    {% else %}
+                        <i class="fa-solid fa-triangle-exclamation ml-1 mr-1"></i>
+                        {% if current_language == 'en' %}Uncertain Diagnosis (Low Confidence){% else %}غیر یقینی تشخیص (کم اعتماد){% endif %}
+                    {% endif %}
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900">
+                    {{ diagnosis.detected_disease }}
+                </h1>
+                <p class="text-sm font-semibold text-gray-600 mt-1">
+                    {% if current_language == 'en' %}Plant Species:{% else %}پودا:{% endif %}
+                    <span class="text-emerald-800 font-bold">{{ diagnosis.detected_species }}</span>
+                </p>
+            </div>
+
+            <!-- Confidence Meter -->
+            <div class="text-start sm:text-end bg-white px-5 py-3 rounded-xl border border-gray-100 shadow-sm">
+                <span class="text-xs font-bold text-gray-500 block">
+                    {% if current_language == 'en' %}AI Confidence{% else %}AI اعتماد (Confidence){% endif %}
+                </span>
+                <div class="flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %} mt-1">
+                    <span class="text-2xl font-black {% if diagnosis.confidence >= 60 %}text-emerald-600{% else %}text-amber-600{% endif %}">
+                        {{ diagnosis.confidence|floatformat:1 }}%
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Escalation Banner if Low Confidence -->
+        {% if not diagnosis.is_confident or diagnosis.is_escalated %}
+            <div class="p-4 bg-amber-100/70 border border-amber-300 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-amber-900">
+                <div class="flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                    <i class="fa-solid fa-user-doctor text-xl text-amber-700 ml-2 mr-2"></i>
+                    <div>
+                        <strong>
+                            {% if current_language == 'en' %}Expert Mali Consultation Recommended:{% else %}ماہر مالی سے تصدیق کی سفارش:{% endif %}
+                        </strong>
+                        <span>
+                            {% if current_language == 'en' %}
+                                As AI confidence is below 60%, we strongly recommend consulting a verified gardener or posting in the gardening community.
+                            {% else %}
+                                چونکہ AI اعتماد 60% سے کم ہے، ہم آپ کو تصدیق شدہ مالی یا کمیونٹی سے پوچھنے کا مشورہ دیتے ہیں۔
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{% url 'gardener-directory' %}" class="px-3.5 py-1.5 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-lg whitespace-nowrap transition">
+                        {% if current_language == 'en' %}Find a Mali{% else %}مالی سے رابطہ کریں{% endif %}
+                    </a>
+                    <a href="{% url 'community-home' %}" class="px-3.5 py-1.5 bg-white hover:bg-gray-100 text-amber-900 border border-amber-400 font-bold rounded-lg whitespace-nowrap transition">
+                        {% if current_language == 'en' %}Share in Community{% else %}کمیونٹی میں شیئر کریں{% endif %}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Image and Advice Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Thumbnail -->
+            <div class="md:col-span-4 space-y-3">
+                {% if diagnosis.image %}
+                    <img src="{{ diagnosis.image.url }}" alt="Uploaded leaf photo" class="w-full h-64 object-cover rounded-2xl shadow border border-gray-200">
+                {% else %}
+                    <div class="w-full h-48 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-400 text-3xl">
+                        🍃
+                    </div>
+                {% endif %}
+                <div class="text-[11px] text-gray-500 bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1">
+                    <div>
+                        <strong>{% if current_language == 'en' %}AI Provider:{% else %}ماڈل پرووائیڈر:{% endif %}</strong>
+                        {{ diagnosis.provider_used }}
+                    </div>
+                    <div>
+                        <strong>{% if current_language == 'en' %}Local Weather:{% else %}شہر کا موسم:{% endif %}</strong>
+                        {% if current_language == 'en' %}Synced{% else %}مطابقت شدہ{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Treatment Guide -->
+            <div class="md:col-span-8 space-y-4">
+                <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2 flex items-center">
+                    <i class="fa-solid fa-hand-holding-medical text-emerald-600 ml-2 mr-2"></i>
+                    {% if current_language == 'en' %}
+                        Recommended Treatment Protocol
+                    {% else %}
+                        تجویز کردہ علاج و اقدامات (Treatment Protocol)
+                    {% endif %}
+                </h3>
+
+                <!-- Primary Treatment Box (Bilingual conditional) -->
+                <div class="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100 text-sm leading-relaxed text-gray-800 space-y-3 whitespace-pre-line">
+                    {% if current_language == 'en' and diagnosis.advice_en %}
+                        {{ diagnosis.advice_en }}
+                    {% else %}
+                        {{ diagnosis.advice_ur|default:diagnosis.advice_en }}
+                    {% endif %}
+                </div>
+
+                <!-- Multilingual Collapsible -->
+                <details class="text-xs text-gray-600 border border-gray-200 rounded-xl p-3 bg-gray-50">
+                    <summary class="font-bold text-gray-800 cursor-pointer">
+                        {% if current_language == 'en' %}
+                            View Urdu & Roman Urdu versions
+                        {% else %}
+                            انگریزی اور رومن اردو میں نسخہ دیکھیں (English & Roman Urdu)
+                        {% endif %}
+                    </summary>
+                    <div class="mt-3 space-y-3 pt-3 border-t border-gray-200">
+                        {% if diagnosis.advice_ur and current_language == 'en' %}
+                            <div>
+                                <strong class="text-gray-700 block mb-1">اردو نسخہ (Urdu Advice):</strong>
+                                <p class="whitespace-pre-line font-arabic">{{ diagnosis.advice_ur }}</p>
+                            </div>
+                        {% endif %}
+                        {% if diagnosis.advice_en and current_language != 'en' %}
+                            <div>
+                                <strong class="text-gray-700 block mb-1">English Advice:</strong>
+                                <p class="whitespace-pre-line font-sans">{{ diagnosis.advice_en }}</p>
+                            </div>
+                        {% endif %}
+                        {% if diagnosis.advice_roman %}
+                            <div>
+                                <strong class="text-gray-700 block mb-1">Roman Urdu:</strong>
+                                <p class="whitespace-pre-line font-sans">{{ diagnosis.advice_roman }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </details>
+
+                <!-- Safety Disclaimer -->
+                <div class="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800 flex items-start space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                    <i class="fa-solid fa-triangle-exclamation text-base text-red-600 mt-0.5 ml-2 mr-2 flex-shrink-0"></i>
+                    <div>
+                        <strong>{% if current_language == 'en' %}Important Safety Notice:{% else %}ضروری حفاظتی نوٹ:{% endif %}</strong>
+                        {% if current_language == 'en' %}
+                            Always wear protective gloves and a face mask when spraying chemical pesticides. Do not harvest edible crops or fruits within 7 days of treatment.
+                        {% else %}
+                            کیمیائی اسپرے کرتے وقت دستانے اور ماسک کا استعمال کریں۔ کھانے کے پودوں اور سبزیوں پر اسپرے کے کم از کم 7 دن بعد تک پھل نہ توڑیں۔
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Action Toolbar -->
+        <div class="pt-6 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap gap-2">
+                <!-- WhatsApp Share Button -->
+                <a href="https://api.whatsapp.com/send?text={{ diagnosis.detected_disease|urlencode }}%20diagnosis%20on%20Baghbaan%20AI" target="_blank" class="px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white font-semibold text-xs rounded-xl shadow-sm transition flex items-center">
+                    <i class="fa-brands fa-whatsapp text-sm ml-1.5 mr-1.5"></i>
+                    {% if current_language == 'en' %}Share on WhatsApp{% else %}واٹس ایپ پر شیئر کریں{% endif %}
+                </a>
+
+                <!-- Buy in Marketplace -->
+                <a href="{% url 'marketplace-products' %}?q=neem" class="px-4 py-2.5 bg-brand-primary hover:bg-brand-dark text-white font-semibold text-xs rounded-xl shadow-sm transition flex items-center">
+                    <i class="fa-solid fa-cart-shopping ml-1.5 mr-1.5"></i>
+                    {% if current_language == 'en' %}Buy Remedy in Market{% else %}دوا بازار سے خریدیں{% endif %}
+                </a>
+
+                <!-- Add to My Plants -->
+                {% if user.is_authenticated %}
+                    <a href="{% url 'add-user-plant' %}?nickname={{ diagnosis.detected_species }}" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-xs rounded-xl transition flex items-center">
+                        <i class="fa-solid fa-leaf ml-1.5 mr-1.5"></i>
+                        {% if current_language == 'en' %}Save to Digital Garden{% else %}اپنے باغ میں محفوظ کریں{% endif %}
+                    </a>
+                {% endif %}
+            </div>
+
+            <a href="{% url 'chatbot' %}" class="text-xs font-bold text-brand-primary hover:underline flex items-center">
+                <span>
+                    {% if current_language == 'en' %}Ask AI Chatbot more questions{% else %}چیٹ بوٹ سے مزید سوال پوچھیں{% endif %}
+                </span>
+                <i class="fa-solid {% if is_rtl %}fa-arrow-left{% else %}fa-arrow-right{% endif %} mr-1 ml-1"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

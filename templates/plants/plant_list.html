@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Pakistani Plant Encyclopedia — Baghbaan AI
+    {% else %}
+        نباتات انسائیکلوپیڈیا — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Header with Search -->
+    <div class="text-center max-w-3xl mx-auto mb-10">
+        <h1 class="text-3xl font-extrabold text-gray-900">
+            {% if current_language == 'en' %}
+                Digital Encyclopedia of Pakistani Flora
+            {% else %}
+                پاکستانی نباتات کا ڈیجیٹل انسائیکلوپیڈیا
+            {% endif %}
+        </h1>
+        <p class="text-xs text-gray-600 mt-2">
+            {% if current_language == 'en' %}
+                Native & scientific names, watering and fertilizer intervals, sunlight needs, and local weather advisories
+            {% else %}
+                مقامی پودوں کے دیسی و سائنسی نام، پانی اور کھاد کے وقفے، دھوپ کی ضرورت اور موسمی احتیاط
+            {% endif %}
+        </p>
+
+        <!-- Search Bar -->
+        <form method="GET" class="mt-6 flex flex-col sm:flex-row gap-2 justify-center">
+            <div class="relative flex-grow max-w-lg">
+                <input type="text" name="q" value="{{ query }}" placeholder="{% if current_language == 'en' %}Search by Urdu or English name (e.g. Rose, Neem, Jasmine)...{% else %}اردو نام یا انگریزی نام تلاش کریں (مثلاً: گلاب، Neem، مرچ)...{% endif %}" class="w-full pl-4 pr-10 py-3 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary shadow-sm">
+                <button type="submit" class="absolute top-1/2 -translate-y-1/2 {% if is_rtl %}left-3{% else %}right-3{% endif %} text-gray-400 hover:text-brand-primary">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+            {% if selected_category %}
+                <input type="hidden" name="category" value="{{ selected_category }}">
+            {% endif %}
+            <button type="submit" class="px-6 py-3 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-sm transition">
+                {% if current_language == 'en' %}Search{% else %}تلاش کریں{% endif %}
+            </button>
+        </form>
+
+        <!-- Category Filter Pills (Scrollable on mobile, centered on desktop) -->
+        <div class="flex overflow-x-auto sm:flex-wrap justify-start sm:justify-center gap-2 mt-4 pb-2 whitespace-nowrap -mx-4 px-4 sm:mx-0 sm:px-0">
+            <a href="{% url 'plant-list' %}{% if query %}?q={{ query }}{% endif %}" class="px-3.5 py-1.5 rounded-full text-xs font-semibold border transition flex-shrink-0 {% if not selected_category %}bg-brand-dark text-white border-brand-dark{% else %}bg-white text-gray-700 border-gray-200 hover:bg-gray-100{% endif %}">
+                {% if current_language == 'en' %}All Plants{% else %}تمام پودے{% endif %}
+            </a>
+            {% for cat_key, cat_label in categories %}
+                <a href="{% url 'plant-list' %}?category={{ cat_key }}{% if query %}&q={{ query }}{% endif %}" class="px-3.5 py-1.5 rounded-full text-xs font-semibold border transition flex-shrink-0 {% if selected_category == cat_key %}bg-brand-primary text-white border-brand-primary{% else %}bg-white text-gray-700 border-gray-200 hover:bg-gray-100{% endif %}">
+                    {% if current_language == 'en' %}
+                        {% if cat_key == 'VEGETABLE' %}Vegetables
+                        {% elif cat_key == 'FLOWER' %}Flowers
+                        {% elif cat_key == 'FRUIT' %}Fruits
+                        {% elif cat_key == 'TREE' %}Trees
+                        {% elif cat_key == 'HERB' %}Herbs
+                        {% elif cat_key == 'INDOOR' %}Indoor
+                        {% elif cat_key == 'SUCCULENT' %}Succulents
+                        {% else %}{{ cat_label }}{% endif %}
+                    {% else %}
+                        {{ cat_label }}
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Plants Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {% for plant in plants %}
+            <div class="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm card-elevate flex flex-col justify-between group">
+                <div>
+                    {% if plant.image %}
+                        <a href="{% url 'plant-detail' plant.id %}" class="block relative h-48 overflow-hidden bg-emerald-50">
+                            <img src="{{ plant.image.url }}" alt="{{ plant.name_en }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 {% if is_rtl %}right-3{% else %}left-3{% endif %} text-[11px] font-bold px-3 py-1 rounded-full bg-brand-dark/85 backdrop-blur-md text-emerald-200 shadow-sm">
+                                {% if current_language == 'en' %}
+                                    {% if plant.category == 'VEGETABLE' %}Vegetable
+                                    {% elif plant.category == 'FLOWER' or plant.category == 'ORNAMENTAL' %}Flower / Ornamental
+                                    {% elif plant.category == 'FRUIT' %}Fruit
+                                    {% elif plant.category == 'TREE' %}Tree
+                                    {% elif plant.category == 'HERB' %}Herb
+                                    {% elif plant.category == 'INDOOR' %}Indoor
+                                    {% elif plant.category == 'SUCCULENT' %}Succulent
+                                    {% else %}{{ plant.get_category_display }}{% endif %}
+                                {% else %}
+                                    {{ plant.get_category_display }}
+                                {% endif %}
+                            </span>
+                        </a>
+                    {% endif %}
+                    <div class="p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            {% if not plant.image %}
+                                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                                    {% if current_language == 'en' %}
+                                        {{ plant.category }}
+                                    {% else %}
+                                        {{ plant.get_category_display }}
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                            <span class="text-xs text-gray-400 italic">{{ plant.scientific_name }}</span>
+                        </div>
+
+                        <h2 class="text-xl font-bold text-gray-900">
+                            {% if current_language == 'en' %}
+                                {{ plant.name_en }}
+                            {% else %}
+                                {{ plant.name_ur }}
+                            {% endif %}
+                        </h2>
+                        <p class="text-xs text-gray-500 font-medium">
+                            {% if current_language == 'en' %}
+                                {% if plant.name_roman %}Common: {{ plant.name_roman }}{% else %}{{ plant.scientific_name }}{% endif %}
+                            {% else %}
+                                {{ plant.name_en }} {% if plant.name_roman %}({{ plant.name_roman }}){% endif %}
+                            {% endif %}
+                        </p>
+
+                        <p class="text-xs text-gray-600 mt-3 line-clamp-3 leading-relaxed">
+                            {% if current_language == 'en' and plant.description_en %}
+                                {{ plant.description_en }}
+                            {% else %}
+                                {{ plant.description_ur }}
+                            {% endif %}
+                        </p>
+
+                        <!-- Care Highlights -->
+                        <div class="mt-4 pt-3 border-t border-gray-100 grid grid-cols-2 gap-2 text-xs text-gray-600">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-droplet text-blue-500 ml-1.5 mr-1.5 text-xs"></i>
+                                <span>
+                                    {% if current_language == 'en' %}Water: {{ plant.watering_interval_days }}d{% else %}ہر {{ plant.watering_interval_days }} دن بعد پانی{% endif %}
+                                </span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-sun text-amber-500 ml-1.5 mr-1.5 text-xs"></i>
+                                <span>{{ plant.sunlight_requirement }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-flask text-emerald-600 ml-1.5 mr-1.5 text-xs"></i>
+                                <span>
+                                    {% if current_language == 'en' %}Fertilizer: {{ plant.fertilizer_interval_days }}d{% else %}کھاد: {{ plant.fertilizer_interval_days }} دن{% endif %}
+                                </span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-house-chimney text-purple-600 ml-1.5 mr-1.5 text-xs"></i>
+                                <span>
+                                    {% if plant.is_indoor_suitable %}
+                                        {% if current_language == 'en' %}Indoor{% else %}انڈور پودا{% endif %}
+                                    {% else %}
+                                        {% if current_language == 'en' %}Outdoor{% else %}آؤٹ ڈور پودا{% endif %}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-5 pb-5 pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <a href="{% url 'plant-detail' plant.id %}" class="text-xs font-bold text-brand-primary hover:underline flex items-center">
+                        <span>
+                            {% if current_language == 'en' %}Full Details & Diseases{% else %}مکمل معلومات و بیماریاں{% endif %}
+                        </span>
+                        <i class="fa-solid {% if is_rtl %}fa-arrow-left{% else %}fa-arrow-right{% endif %} mr-1 ml-1"></i>
+                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'add-user-plant' %}?plant={{ plant.id }}" class="text-xs px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold rounded-lg transition" title="{% if current_language == 'en' %}Add to my garden{% else %}اپنے باغ میں شامل کریں{% endif %}">
+                            {% if current_language == 'en' %}+ Add to Garden{% else %}+ اپنے باغ میں لائیں{% endif %}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-span-full text-center py-16 text-gray-400">
+                <i class="fa-solid fa-leaf text-4xl mb-3 text-gray-300"></i>
+                <p class="text-sm">
+                    {% if current_language == 'en' %}No plants found matching your search.{% else %}کوئی پودا نہیں ملا۔ کوئی دوسرا لفظ تلاش کریں۔{% endif %}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

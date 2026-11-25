@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        {{ product.title_en }} — Marketplace | Baghbaan AI
+    {% else %}
+        {{ product.title_ur }} — باغبانی بازار باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Breadcrumb -->
+    <nav class="flex text-xs text-gray-500 mb-6 space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+        <a href="{% url 'home' %}" class="hover:text-brand-primary">{% if current_language == 'en' %}Home{% else %}ہوم{% endif %}</a>
+        <span>/</span>
+        <a href="{% url 'marketplace-products' %}" class="hover:text-brand-primary">{% if current_language == 'en' %}Marketplace{% else %}بازار{% endif %}</a>
+        <span>/</span>
+        <span class="text-gray-900 font-semibold">{% if current_language == 'en' %}{{ product.title_en }}{% else %}{{ product.title_ur }}{% endif %}</span>
+    </nav>
+
+    <div class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 lg:p-10">
+            <!-- Product Images -->
+            <div>
+                <div class="rounded-2xl overflow-hidden bg-emerald-50 border border-gray-100 flex items-center justify-center min-h-[340px]">
+                    {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" alt="{{ product.title }}" class="w-full h-80 md:h-96 object-cover">
+                    {% else %}
+                        <div class="text-6xl text-emerald-600">📦</div>
+                    {% endif %}
+                </div>
+
+                {% if product.gallery_images.all %}
+                    <div class="grid grid-cols-4 gap-3 mt-4">
+                        {% for gimg in product.gallery_images.all %}
+                            <img src="{{ gimg.image.url }}" alt="{{ product.title }}" class="w-full h-20 object-cover rounded-xl border border-gray-200">
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Product Details & Purchase Form -->
+            <div class="flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
+                            {% if current_language == 'en' %}{{ product.category_en }}{% else %}{{ product.category_ur }}{% endif %}
+                        </span>
+                        {% if product.is_in_stock %}
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-green-100 text-green-700">
+                                <i class="fa-solid fa-check-circle ml-1 mr-1"></i>
+                                {% if current_language == 'en' %}In Stock ({{ product.stock_quantity }}){% else %}اسٹاک موجود ({{ product.stock_quantity }}){% endif %}
+                            </span>
+                        {% else %}
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-red-100 text-red-700">
+                                {% if current_language == 'en' %}Out of Stock{% else %}اسٹاک ختم{% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
+                        {% if current_language == 'en' %}{{ product.title_en }}{% else %}{{ product.title_ur }}{% endif %}
+                    </h1>
+
+                    <div class="mt-4 flex items-baseline space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <span class="text-3xl font-extrabold text-emerald-700">Rs {{ product.price }}</span>
+                        <span class="text-xs text-gray-400">
+                            {% if current_language == 'en' %}per item (Tax included){% else %}فی عدد (ٹیکس شامل ہے){% endif %}
+                        </span>
+                    </div>
+
+                    <!-- COD Assurance Badge -->
+                    <div class="mt-4 p-3 bg-amber-50 rounded-2xl border border-amber-200 flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <i class="fa-solid fa-truck-fast text-amber-600 text-xl ml-2 mr-2 flex-shrink-0"></i>
+                        <div class="text-xs text-amber-900">
+                            <strong>{% if current_language == 'en' %}Cash on Delivery (COD):{% else %}کیش آن ڈیلیوری (Cash on Delivery):{% endif %}</strong>
+                            {% if current_language == 'en' %}
+                                Pay cash safely at your doorstep upon inspecting your parcel.
+                            {% else %}
+                                سامان گھر کی دہلیز پر وصول کر کے اطمینان کے بعد نقد رقم ادا کریں۔
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mt-6">
+                        <h3 class="text-sm font-bold text-gray-900 mb-2">
+                            {% if current_language == 'en' %}Product Details & Care Usage:{% else %}مصنوع کی تفصیلات:{% endif %}
+                        </h3>
+                        <p class="text-xs text-gray-600 leading-relaxed whitespace-pre-line">
+                            {% if current_language == 'en' %}{{ product.description_en }}{% else %}{{ product.description_ur }}{% endif %}
+                        </p>
+                    </div>
+
+                    <!-- Seller Card -->
+                    <div class="mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-gray-400 block font-semibold">
+                                {% if current_language == 'en' %}Verified Nursery / Seller:{% else %}فروخت کنندہ / نرسری:{% endif %}
+                            </span>
+                            <span class="text-xs font-bold text-gray-800">
+                                {% if current_language == 'en' %}{{ product.seller.business_name_en }}{% else %}{{ product.seller.business_name_ur }}{% endif %}
+                            </span>
+                            <span class="text-[10px] text-gray-500 block">
+                                {% if current_language == 'en' %}City:{% else %}شہر:{% endif %} {{ product.seller.city }}
+                            </span>
+                        </div>
+                        <span class="text-xs font-bold px-2 py-1 bg-emerald-100 text-emerald-800 rounded-lg">
+                            <i class="fa-solid fa-shield-halved ml-1 mr-1"></i>
+                            {% if current_language == 'en' %}Verified Nursery{% else %}تصدیق شدہ{% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Add to Cart Action -->
+                <div class="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
+                    {% if product.is_in_stock %}
+                        <form action="{% url 'add-to-cart' product.id %}" method="POST" class="flex-grow flex gap-2">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}" class="w-20 px-3 py-2.5 border border-gray-300 rounded-xl text-center text-sm font-bold focus:ring-2 focus:ring-brand-primary">
+                            <button type="submit" class="flex-grow py-3 px-6 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center">
+                                <i class="fa-solid fa-cart-plus mr-2 ml-2"></i>
+                                {% if current_language == 'en' %}Add to Shopping Cart{% else %}ٹوکری میں شامل کریں{% endif %}
+                            </button>
+                        </form>
+                    {% else %}
+                        <button disabled class="w-full py-3 px-6 bg-gray-200 text-gray-500 font-bold text-xs rounded-xl cursor-not-allowed">
+                            {% if current_language == 'en' %}Currently Out of Stock{% else %}فی الحال اسٹاک ختم ہے{% endif %}
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

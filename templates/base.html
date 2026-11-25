@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}" dir="{% if is_rtl %}rtl{% else %}ltr{% endif %}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Baghbaan AI — باغبان اے آئی{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#1b4332',
+                            primary: '#2d6a4f',
+                            light: '#52b788',
+                            mint: '#d8f3dc',
+                            clay: '#d4a373',
+                            rust: '#bc4749',
+                        }
+                    },
+                    fontFamily: {
+                        arabic: ['"Noto Sans Arabic"', 'Inter', 'sans-serif'],
+                        urdu: ['"Noto Sans Arabic"', '"Noto Nastaliq Urdu"', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts: Inter, Noto Sans Arabic, and Noto Nastaliq Urdu -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            font-family: {% if is_rtl %}'Noto Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif{% else %}'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif{% endif %};
+            line-height: 1.65;
+        }
+        .font-nastaliq {
+            font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', serif;
+            line-height: 2.2;
+        }
+        /* RTL Spacing & Direction Rules */
+        [dir="rtl"], [dir="rtl"] * {
+            letter-spacing: normal !important;
+        }
+
+        /* Modern Sleek Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* AI Camera Laser Scanning Animation */
+        @keyframes scanline {
+            0% { top: 0%; opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0.8; }
+        }
+        .scanner-beam {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #10b981, #34d399, #10b981, transparent);
+            box-shadow: 0 0 15px #10b981, 0 0 30px #34d399;
+            animation: scanline 2.2s ease-in-out infinite alternate;
+        }
+
+        /* Center Elevated Mobile Tab Glowing Ring */
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .pulse-ring-btn {
+            animation: pulse-ring 2.4s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        /* Card Hover Elevation */
+        .card-elevate {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-elevate:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px -12px rgba(45, 106, 79, 0.16);
+        }
+
+        /* Notification & Cart Badges - Strict Fixed Size Circle */
+        .badge-count {
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            max-width: 18px !important;
+            min-height: 18px !important;
+            max-height: 18px !important;
+            line-height: 1 !important;
+            font-size: 10px !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 50% !important;
+            aspect-ratio: 1 / 1 !important;
+            font-weight: 700 !important;
+            box-sizing: border-box !important;
+            text-align: center !important;
+            flex-shrink: 0 !important;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Top Announcement / Weather Ticker Bar -->
+    <div class="bg-brand-dark text-emerald-100 text-xs py-2 px-4 flex justify-between items-center border-b border-emerald-800 min-h-[40px]">
+        <div class="flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
+            <span class="leading-relaxed flex items-center gap-1.5 py-0.5">
+                {% if current_language == 'en' %}
+                    🌱 <strong>Baghbaan AI</strong> — Pakistan's First Smart Gardening Companion
+                {% else %}
+                    <svg class="inline-block w-4 h-3 rounded-sm shadow-sm flex-shrink-0" viewBox="0 0 640 480"><path fill="#01411c" d="M0 0h640v480H0z"/><path fill="#fff" d="M0 0h160v480H0z"/><circle cx="395" cy="240" r="120" fill="#fff"/><circle cx="420" cy="225" r="105" fill="#01411c"/><polygon fill="#fff" points="405,175 412,197 435,197 416,211 423,233 405,219 387,233 394,211 375,197 398,197"/></svg>
+                    <span><strong>باغبان اے آئی</strong> — پاکستان کا پہلا اردو سمارٹ باغبانی پلیٹ فارم</span>
+                {% endif %}
+            </span>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5 text-xs font-semibold">
+                <i class="fa-solid fa-language text-brand-light"></i>
+                <a href="{% url 'set-language' 'ur' %}" class="hover:underline {% if current_language == 'ur' %}font-bold text-white bg-emerald-800/80 px-2 py-0.5 rounded-md{% endif %}">اردو</a>
+                <span class="text-emerald-500">|</span>
+                <a href="{% url 'set-language' 'en' %}" class="hover:underline {% if current_language == 'en' %}font-bold text-white bg-emerald-800/80 px-2 py-0.5 rounded-md{% endif %}">English</a>
+            </div>
+            {% if user.is_authenticated %}
+                <span class="text-emerald-300 text-xs hidden sm:inline">| {{ user.get_role_display }} ({{ user.city }})</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 py-1.5 flex-nowrap">
+                <!-- Brand Logo -->
+                <div class="flex items-center flex-shrink-0">
+                    <a href="{% url 'home' %}" class="flex items-center gap-2.5 group">
+                        <div class="w-10 h-10 rounded-xl bg-brand-primary flex items-center justify-center text-white text-xl shadow-md group-hover:scale-105 transition flex-shrink-0">
+                            🌱
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <span class="text-lg sm:text-xl font-extrabold text-brand-dark leading-none tracking-tight">Baghbaan <span class="text-brand-light">AI</span></span>
+                            <span class="text-[11px] text-gray-500 font-semibold leading-tight mt-1">
+                                {% if current_language == 'en' %}Smart Garden Companion{% else %}باغبان اے آئی{% endif %}
+                            </span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation Links (Compact & Bilingual, Prevents Line Wrapping) -->
+                <div class="hidden lg:flex items-center space-x-1 xl:space-x-1.5 {% if is_rtl %}space-x-reverse{% endif %} text-xs xl:text-sm font-medium">
+                    <a href="{% url 'home' %}" class="px-2.5 xl:px-3 py-2 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 transition whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-house text-gray-400"></i>
+                        <span>{% if current_language == 'en' %}Home{% else %}ہوم{% endif %}</span>
+                    </a>
+                    <a href="{% url 'diagnose' %}" class="px-3 xl:px-3.5 py-2 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition shadow-sm whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>{% if current_language == 'en' %}AI Doctor{% else %}AI ڈاکٹر{% endif %}</span>
+                    </a>
+                    <a href="{% url 'plant-list' %}" class="px-2.5 xl:px-3 py-2 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 transition whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-book-open text-gray-400"></i>
+                        <span>{% if current_language == 'en' %}Plants{% else %}نباتات{% endif %}</span>
+                    </a>
+                    <a href="{% url 'care-calendar' %}" class="px-2.5 xl:px-3 py-2 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 transition whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-calendar-check text-gray-400"></i>
+                        <span>{% if current_language == 'en' %}Care Calendar{% else %}کیلنڈر{% endif %}</span>
+                    </a>
+                    <a href="{% url 'garden-list' %}" class="px-2.5 xl:px-3 py-2 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 transition whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-trowel text-gray-400"></i>
+                        <span>{% if current_language == 'en' %}Services{% else %}باغات و مالی{% endif %}</span>
+                    </a>
+                    <a href="{% url 'marketplace-products' %}" class="px-2.5 xl:px-3 py-2 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 transition whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-shop text-gray-400"></i>
+                        <span>{% if current_language == 'en' %}Marketplace{% else %}بازار{% endif %}</span>
+                    </a>
+                    <a href="{% url 'community-home' %}" class="px-2.5 xl:px-3 py-2 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 transition whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-users text-gray-400"></i>
+                        <span>{% if current_language == 'en' %}Community{% else %}برادری{% endif %}</span>
+                    </a>
+                </div>
+
+                <!-- User Controls / Auth Buttons -->
+                <div class="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
+                    <!-- Shopping Cart Icon -->
+                    <a href="{% url 'cart' %}" class="relative p-2 text-gray-600 hover:text-brand-primary hover:bg-gray-100 rounded-full transition flex-shrink-0" title="Shopping Cart">
+                        <i class="fa-solid fa-cart-shopping text-base sm:text-lg"></i>
+                        {% if cart_count > 0 %}
+                            <span class="badge-count absolute -top-1 {% if is_rtl %}-left-1{% else %}-right-1{% endif %} inline-flex items-center justify-center text-white bg-brand-clay shadow">
+                                {{ cart_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+
+                    {% if user.is_authenticated %}
+                        <!-- Notifications Bell -->
+                        <a href="{% url 'notifications' %}" class="relative p-2 text-gray-600 hover:text-brand-primary hover:bg-gray-100 rounded-full transition flex-shrink-0" title="Notifications">
+                            <i class="fa-solid fa-bell text-base sm:text-lg"></i>
+                            {% if unread_notifications_count > 0 %}
+                                <span class="badge-count absolute -top-1 {% if is_rtl %}-left-1{% else %}-right-1{% endif %} inline-flex items-center justify-center text-white bg-red-600 shadow">
+                                    {{ unread_notifications_count }}
+                                </span>
+                            {% endif %}
+                        </a>
+
+                        <!-- Dashboard / Profile Menu -->
+                        <a href="{% url 'dashboard' %}" class="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl border border-gray-200 hover:border-brand-primary transition flex-shrink-0">
+                            <div class="w-7 h-7 rounded-full bg-brand-mint text-brand-dark flex items-center justify-center font-bold text-xs">
+                                {{ user.username|slice:":1"|upper }}
+                            </div>
+                            <span class="text-xs sm:text-sm font-semibold hidden sm:inline">{{ user.first_name|default:user.username }}</span>
+                        </a>
+
+                        <a href="{% url 'logout' %}" class="text-gray-400 hover:text-red-600 text-sm p-1.5 flex-shrink-0" title="{% if current_language == 'en' %}Logout{% else %}لاگ آؤٹ{% endif %}">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-xs sm:text-sm font-semibold text-gray-700 hover:text-brand-primary px-2.5 py-1.5 whitespace-nowrap flex-shrink-0">
+                            {% if current_language == 'en' %}Log In{% else %}لاگ ان{% endif %}
+                        </a>
+                        <a href="{% url 'register' %}" class="hidden sm:inline-flex text-xs sm:text-sm font-bold text-white bg-brand-primary hover:bg-brand-dark px-3.5 py-1.5 rounded-xl shadow-sm transition whitespace-nowrap flex-shrink-0 items-center justify-center">
+                            {% if current_language == 'en' %}Join Now{% else %}شامل ہوں{% endif %}
+                        </a>
+                    {% endif %}
+
+                    <!-- Mobile Hamburger Button -->
+                    <button id="mobile-menu-btn" type="button" class="lg:hidden p-2 rounded-xl text-gray-600 hover:text-brand-primary hover:bg-gray-100 focus:outline-none flex-shrink-0" aria-label="Toggle navigation menu">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu Drawer -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-xl">
+            <!-- Mobile Language Switcher Pill Toggle -->
+            <div class="p-3 bg-emerald-50/80 rounded-2xl border border-emerald-100 flex items-center justify-between">
+                <span class="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                    <i class="fa-solid fa-language text-brand-primary"></i>
+                    <span>{% if current_language == 'en' %}App Language:{% else %}ایپ کی زبان:{% endif %}</span>
+                </span>
+                <div class="flex items-center gap-1.5">
+                    <a href="{% url 'set-language' 'ur' %}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {% if current_language == 'ur' %}bg-emerald-700 text-white shadow-sm{% else %}bg-white text-gray-700 border border-gray-200 hover:bg-gray-100{% endif %}">
+                        <svg class="inline-block w-3.5 h-2.5 rounded-sm flex-shrink-0" viewBox="0 0 640 480"><path fill="#01411c" d="M0 0h640v480H0z"/><path fill="#fff" d="M0 0h160v480H0z"/><circle cx="395" cy="240" r="120" fill="#fff"/><circle cx="420" cy="225" r="105" fill="#01411c"/><polygon fill="#fff" points="405,175 412,197 435,197 416,211 423,233 405,219 387,233 394,211 375,197 398,197"/></svg>
+                        <span>اردو</span>
+                    </a>
+                    <a href="{% url 'set-language' 'en' %}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {% if current_language == 'en' %}bg-emerald-700 text-white shadow-sm{% else %}bg-white text-gray-700 border border-gray-200 hover:bg-gray-100{% endif %}">
+                        <span>🇬🇧 English</span>
+                    </a>
+                </div>
+            </div>
+
+            {% if user.is_authenticated %}
+                <!-- Mobile User Profile Card -->
+                <div class="p-3 bg-gray-50 rounded-2xl border border-gray-200 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-full bg-brand-mint text-brand-dark flex items-center justify-center font-bold text-sm">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-gray-900 block">{{ user.display_name_en|default:user.username }}</span>
+                            <span class="text-[10px] text-gray-500">{% if current_language == 'en' %}{{ user.get_role_display_en }}{% else %}{{ user.get_role_display_ur }}{% endif %} • {{ user.city }}</span>
+                        </div>
+                    </div>
+                    <a href="{% url 'dashboard' %}" class="px-3 py-1 bg-brand-primary text-white text-xs font-bold rounded-xl shadow-sm">
+                        {% if current_language == 'en' %}Dashboard{% else %}ڈیش بورڈ{% endif %}
+                    </a>
+                </div>
+            {% endif %}
+
+            <div class="space-y-1 pt-1">
+                <a href="{% url 'home' %}" class="flex items-center px-3 py-2.5 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 text-sm font-medium transition">
+                    <i class="fa-solid fa-house ml-2 mr-2 text-brand-primary w-5 text-center"></i>
+                    <span>{% if current_language == 'en' %}Home{% else %}ہوم{% endif %}</span>
+                </a>
+                <a href="{% url 'diagnose' %}" class="flex items-center px-3 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-bold shadow-sm transition">
+                    <i class="fa-solid fa-camera ml-2 mr-2 w-5 text-center"></i>
+                    <span>{% if current_language == 'en' %}AI Plant Doctor{% else %}AI پلانٹ ڈاکٹر{% endif %}</span>
+                </a>
+                <a href="{% url 'plant-list' %}" class="flex items-center px-3 py-2.5 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 text-sm font-medium transition">
+                    <i class="fa-solid fa-book-open ml-2 mr-2 text-brand-primary w-5 text-center"></i>
+                    <span>{% if current_language == 'en' %}Pakistani Plant Encyclopedia{% else %}نباتات انسائیکلوپیڈیا{% endif %}</span>
+                </a>
+                <a href="{% url 'care-calendar' %}" class="flex items-center px-3 py-2.5 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 text-sm font-medium transition">
+                    <i class="fa-solid fa-calendar-check ml-2 mr-2 text-brand-primary w-5 text-center"></i>
+                    <span>{% if current_language == 'en' %}Smart Care Calendar{% else %}دیکھ بھال کیلنڈر{% endif %}</span>
+                </a>
+                <a href="{% url 'my-plants' %}" class="flex items-center px-3 py-2.5 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 text-sm font-medium transition">
+                    <i class="fa-solid fa-seedling ml-2 mr-2 text-brand-primary w-5 text-center"></i>
+                    <span>{% if current_language == 'en' %}My Digital Garden{% else %}میری نباتات (ڈیجیٹل باغ){% endif %}</span>
+                </a>
+                <a href="{% url 'garden-list' %}" class="flex items-center px-3 py-2.5 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 text-sm font-medium transition">
+                    <i class="fa-solid fa-trowel ml-2 mr-2 text-brand-primary w-5 text-center"></i>
+                    <span>{% if current_language == 'en' %}Garden Services & Mali{% else %}باغات و مالی خدمات{% endif %}</span>
+                </a>
+                <a href="{% url 'marketplace-products' %}" class="flex items-center px-3 py-2.5 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 text-sm font-medium transition">
+                    <i class="fa-solid fa-shop ml-2 mr-2 text-brand-primary w-5 text-center"></i>
+                    <span>{% if current_language == 'en' %}Cash on Delivery Market{% else %}باغبانی بازار (COD){% endif %}</span>
+                </a>
+                <a href="{% url 'community-home' %}" class="flex items-center px-3 py-2.5 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 text-sm font-medium transition">
+                    <i class="fa-solid fa-users ml-2 mr-2 text-brand-primary w-5 text-center"></i>
+                    <span>{% if current_language == 'en' %}Gardening Community & Chat{% else %}برادری و چیٹ{% endif %}</span>
+                </a>
+                <a href="{% url 'chatbot' %}" class="flex items-center px-3 py-2.5 rounded-xl text-teal-800 bg-teal-50 hover:bg-teal-100 text-sm font-bold transition">
+                    <i class="fa-solid fa-robot ml-2 mr-2 text-teal-600 w-5 text-center"></i>
+                    <span>{% if current_language == 'en' %}AI Gardening Chatbot{% else %}اردو باغبانی چیٹ بوٹ{% endif %}</span>
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'order-list' %}" class="flex items-center px-3 py-2.5 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 text-sm font-medium transition">
+                        <i class="fa-solid fa-box ml-2 mr-2 text-brand-primary w-5 text-center"></i>
+                        <span>{% if current_language == 'en' %}My Orders{% else %}میرے آرڈرز{% endif %}</span>
+                    </a>
+                    <a href="{% url 'logout' %}" class="flex items-center px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 text-sm font-medium transition">
+                        <i class="fa-solid fa-right-from-bracket ml-2 mr-2 text-red-500 w-5 text-center"></i>
+                        <span>{% if current_language == 'en' %}Logout{% else %}لاگ آؤٹ{% endif %}</span>
+                    </a>
+                {% else %}
+                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100">
+                        <a href="{% url 'login' %}" class="py-2.5 text-center font-bold text-xs rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50">
+                            {% if current_language == 'en' %}Log In{% else %}لاگ ان{% endif %}
+                        </a>
+                        <a href="{% url 'register' %}" class="py-2.5 text-center font-bold text-xs rounded-xl bg-brand-primary text-white hover:bg-brand-dark shadow-sm">
+                            {% if current_language == 'en' %}Join Now{% else %}شامل ہوں{% endif %}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Global Alert Messages -->
+    {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 mt-4 w-full">
+            {% for message in messages %}
+                <div class="p-4 rounded-xl mb-3 flex items-center justify-between shadow-sm {% if message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% elif message.tags == 'warning' %}bg-amber-50 text-amber-800 border border-amber-200{% elif message.tags == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                    <div class="flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <i class="fa-solid {% if message.tags == 'error' %}fa-circle-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% elif message.tags == 'success' %}fa-circle-check{% else %}fa-circle-info{% endif %} text-lg"></i>
+                        <span class="font-medium text-sm">{{ message }}</span>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 text-sm">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content Area -->
+    <main class="flex-grow pb-24 lg:pb-0">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Floating Chatbot Action Button (Elevated above mobile dock) -->
+    <a href="{% url 'chatbot' %}" class="fixed bottom-20 lg:bottom-6 {% if is_rtl %}left-4 sm:left-6{% else %}right-4 sm:right-6{% endif %} z-40 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white p-3.5 rounded-full shadow-2xl flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %} group transition transform hover:scale-110" title="{% if current_language == 'en' %}AI Gardening Chatbot{% else %}باغبانی چیٹ بوٹ{% endif %}">
+        <i class="fa-solid fa-headset text-xl"></i>
+        <span class="text-xs font-bold max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out px-0 group-hover:px-1">
+            {% if current_language == 'en' %}Garden AI Chat{% else %}باغبانی چیٹ بوٹ{% endif %}
+        </span>
+    </a>
+
+    <!-- Native App-Style Mobile Bottom Navigation Dock (Visible on Mobile/Tablet screens < lg) -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl py-1.5 px-2">
+        <div class="grid grid-cols-5 items-center text-center">
+            <!-- 1. Home Tab -->
+            <a href="{% url 'home' %}" class="flex flex-col items-center justify-center py-1 text-gray-600 hover:text-brand-primary active:scale-95 transition">
+                <i class="fa-solid fa-house text-base mb-0.5"></i>
+                <span class="text-[10px] font-bold tracking-tight">{% if current_language == 'en' %}Home{% else %}ہوم{% endif %}</span>
+            </a>
+
+            <!-- 2. Plant Encyclopedia Tab -->
+            <a href="{% url 'plant-list' %}" class="flex flex-col items-center justify-center py-1 text-gray-600 hover:text-brand-primary active:scale-95 transition">
+                <i class="fa-solid fa-book-open text-base mb-0.5"></i>
+                <span class="text-[10px] font-bold tracking-tight">{% if current_language == 'en' %}Plants{% else %}نباتات{% endif %}</span>
+            </a>
+
+            <!-- 3. AI Plant Doctor (Hero Center Floating Tab) -->
+            <a href="{% url 'diagnose' %}" class="flex flex-col items-center justify-center group relative -mt-5 active:scale-95 transition">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-lg flex items-center justify-center border-4 border-white group-hover:scale-105 transition pulse-ring-btn">
+                    <i class="fa-solid fa-camera text-lg"></i>
+                </div>
+                <span class="text-[10px] font-extrabold text-emerald-800 tracking-tight mt-0.5">{% if current_language == 'en' %}Doctor{% else %}ڈاکٹر{% endif %}</span>
+            </a>
+
+            <!-- 4. Care Calendar Tab -->
+            <a href="{% url 'care-calendar' %}" class="flex flex-col items-center justify-center py-1 text-gray-600 hover:text-brand-primary active:scale-95 transition">
+                <i class="fa-solid fa-calendar-check text-base mb-0.5"></i>
+                <span class="text-[10px] font-bold tracking-tight">{% if current_language == 'en' %}Care{% else %}دیکھ بھال{% endif %}</span>
+            </a>
+
+            <!-- 5. Marketplace / Cart Tab -->
+            <a href="{% url 'marketplace-products' %}" class="flex flex-col items-center justify-center py-1 text-gray-600 hover:text-brand-primary active:scale-95 transition relative">
+                <div class="relative">
+                    <i class="fa-solid fa-shop text-base mb-0.5"></i>
+                    {% if cart_count > 0 %}
+                        <span class="badge-count absolute -top-1.5 -right-2 bg-brand-clay text-white">
+                            {{ cart_count }}
+                        </span>
+                    {% endif %}
+                </div>
+                <span class="text-[10px] font-bold tracking-tight">{% if current_language == 'en' %}Market{% else %}بازار{% endif %}</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 border-t border-gray-800 mt-16 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Col 1: About -->
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <span class="text-2xl">🌱</span>
+                        <span class="text-lg font-bold text-white">Baghbaan AI</span>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        {% if current_language == 'en' %}
+                            Pakistan's premier AI-powered smart gardening companion. Instant plant disease diagnosis, local weather care scheduling, and verified gardener services in one unified platform.
+                        {% else %}
+                            پاکستان کا پہلا اردو آرٹیفیشل انٹیلیجنس پر مبنی باغبانی رہبر۔ پودوں کے امراض کی تصویری تشخیص، مقامی موسمی دیکھ بھال، اور تصدیق شدہ مالی خدمات کا ایک پلیٹ فارم۔
+                        {% endif %}
+                    </p>
+                    <p class="text-xs text-emerald-400 font-medium">
+                        BS Information Engineering Technology<br/>
+                        University of Lahore, Lahore
+                    </p>
+                </div>
+
+                <!-- Col 2: AI Doctor & Tools -->
+                <div>
+                    <h3 class="text-white font-semibold text-sm mb-3">
+                        {% if current_language == 'en' %}AI Doctor & Smart Care{% else %}پلانٹ ڈاکٹر اور دیکھ بھال{% endif %}
+                    </h3>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="{% url 'diagnose' %}" class="hover:text-emerald-400 transition">{% if current_language == 'en' %}Leaf Disease Diagnosis{% else %}بیمار پتے کی تصویر سے تشخیص{% endif %}</a></li>
+                        <li><a href="{% url 'chatbot' %}" class="hover:text-emerald-400 transition">{% if current_language == 'en' %}AI Gardening Chatbot{% else %}اردو باغبانی چیٹ بوٹ{% endif %}</a></li>
+                        <li><a href="{% url 'care-calendar' %}" class="hover:text-emerald-400 transition">{% if current_language == 'en' %}Weather Care Calendar{% else %}موسمی دیکھ بھال کیلنڈر{% endif %}</a></li>
+                        <li><a href="{% url 'my-plants' %}" class="hover:text-emerald-400 transition">{% if current_language == 'en' %}My Digital Garden{% else %}میری نباتات (ڈیجیٹل باغ){% endif %}</a></li>
+                        <li><a href="{% url 'plant-list' %}" class="hover:text-emerald-400 transition">{% if current_language == 'en' %}Pakistani Plant Encyclopedia{% else %}پاکستانی نباتات انسائیکلوپیڈیا{% endif %}</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Services & Market -->
+                <div>
+                    <h3 class="text-white font-semibold text-sm mb-3">
+                        {% if current_language == 'en' %}Services & Marketplace{% else %}باغبانی خدمات و بازار{% endif %}
+                    </h3>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><a href="{% url 'gardener-directory' %}" class="hover:text-emerald-400 transition">{% if current_language == 'en' %}Find Nearby Gardeners{% else %}قریبی مالی تلاش کریں{% endif %}</a></li>
+                        <li><a href="{% url 'garden-list' %}" class="hover:text-emerald-400 transition">{% if current_language == 'en' %}Garden Budgets & Tasks{% else %}باغ کا بجٹ اور اخراجات{% endif %}</a></li>
+                        <li><a href="{% url 'marketplace-products' %}" class="hover:text-emerald-400 transition">{% if current_language == 'en' %}Cash on Delivery Products{% else %}کیش آن ڈیلیوری سامان{% endif %}</a></li>
+                        <li><a href="{% url 'seller-apply' %}" class="hover:text-emerald-400 transition">{% if current_language == 'en' %}Nursery Seller Apply{% else %}نرسری سیلر رجسٹریشن{% endif %}</a></li>
+                        <li><a href="{% url 'community-home' %}" class="hover:text-emerald-400 transition">{% if current_language == 'en' %}Gardening Community Groups{% else %}باغبانی برادری گروپس{% endif %}</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Supervisor & Project Specs -->
+                <div>
+                    <h3 class="text-white font-semibold text-sm mb-3">
+                        {% if current_language == 'en' %}Project Credentials{% else %}پروجیکٹ تفصیلات{% endif %}
+                    </h3>
+                    <div class="text-xs text-gray-400 space-y-1.5">
+                        <p><strong class="text-gray-200">{% if current_language == 'en' %}Technology:{% else %}ٹیکنالوجی:{% endif %}</strong> Django, DRF, SQLite WAL, Channels</p>
+                        <p><strong class="text-gray-200">REST API Docs:</strong> <a href="/api/v1/schema/swagger-ui/" class="text-emerald-400 hover:underline">Swagger UI</a> | <a href="/api/v1/schema/redoc/" class="text-emerald-400 hover:underline">Redoc</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-800 text-center text-xs text-gray-500 flex flex-col sm:flex-row justify-between items-center">
+                <span>© 2026 Baghbaan AI. {% if current_language == 'en' %}All rights reserved.{% else %}جملہ حقوق محفوظ ہیں۔{% endif %}</span>
+                <span class="mt-2 sm:mt-0">{% if current_language == 'en' %}Smart Garden Companion for Pakistan{% else %}پاکستان کا اسمارٹ باغبانی پلیٹ فارم{% endif %}</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Responsive mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', function() {
+                const isHidden = mobileMenu.classList.contains('hidden');
+                const icon = mobileMenuBtn.querySelector('i');
+                if (isHidden) {
+                    mobileMenu.classList.remove('hidden');
+                    if (icon) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-xmark');
+                    }
+                } else {
+                    mobileMenu.classList.add('hidden');
+                    if (icon) {
+                        icon.classList.remove('fa-xmark');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            });
+        }
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Gardening AI Assistant & Voice Chat — Baghbaan AI
+    {% else %}
+        باغبانی چیٹ بوٹ — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden flex flex-col h-[75vh]">
+        
+        <!-- Chat Header -->
+        <div class="p-4 bg-gradient-to-r from-emerald-800 to-brand-primary text-white flex items-center justify-between">
+            <div class="flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl">
+                    🤖
+                </div>
+                <div>
+                    <h2 class="text-base font-bold">
+                        {% if current_language == 'en' %}
+                            Baghbaan Assistant (Gardening AI)
+                        {% else %}
+                            باغبان اسسٹنٹ (Gardening Chatbot)
+                        {% endif %}
+                    </h2>
+                    <p class="text-xs text-emerald-200">
+                        {% if current_language == 'en' %}
+                            Specialized in Pakistani flora, organic fertilizers, and local pest control
+                        {% else %}
+                            صرف پودوں، کھاد اور بیماریوں کے علاج پر مامور ماہر
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %} text-xs">
+                <a href="{% url 'chatbot-clear' %}" onclick="return confirm('{% if current_language == 'en' %}Clear all chat messages?{% else %}کیا آپ تمام چیٹ صاف کرنا چاہتے ہیں؟{% endif %}')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-xl text-[11px] text-emerald-100 transition flex items-center gap-1.5" title="{% if current_language == 'en' %}Clear Chat History{% else %}چیٹ صاف کریں{% endif %}">
+                    <i class="fa-solid fa-trash-can text-[10px]"></i>
+                    <span>{% if current_language == 'en' %}Clear{% else %}صاف کریں{% endif %}</span>
+                </a>
+                <div class="flex items-center space-x-1.5 {% if is_rtl %}space-x-reverse{% endif %}">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="font-semibold">{% if current_language == 'en' %}Online{% else %}آن لائن{% endif %}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Question Chips -->
+        <div class="p-3 bg-emerald-50/70 border-b border-emerald-100 flex items-center gap-2 overflow-x-auto text-xs whitespace-nowrap">
+            <span class="text-gray-500 font-bold ml-1 mr-1">
+                {% if current_language == 'en' %}Quick Prompts:{% else %}فوری سوالات:{% endif %}
+            </span>
+            {% if current_language == 'en' %}
+                <button type="button" onclick="sendQuickPrompt('How much water and sunlight does Desi Rose need in Pakistan?')" class="px-3 py-1 bg-white hover:bg-emerald-100 rounded-full border border-emerald-200 text-emerald-800 transition">
+                    🌹 Rose Care Tips
+                </button>
+                <button type="button" onclick="sendQuickPrompt('How to prepare and spray organic neem oil for whitefly control?')" class="px-3 py-1 bg-white hover:bg-emerald-100 rounded-full border border-emerald-200 text-emerald-800 transition">
+                    🪰 Neem Oil Spray Method
+                </button>
+                <button type="button" onclick="sendQuickPrompt('How to prepare fertile potting soil (bhal) for containers?')" class="px-3 py-1 bg-white hover:bg-emerald-100 rounded-full border border-emerald-200 text-emerald-800 transition">
+                    🪴 Potting Soil Mix
+                </button>
+                <button type="button" onclick="sendQuickPrompt('Why are my Money Plant leaves turning yellow?')" class="px-3 py-1 bg-white hover:bg-emerald-100 rounded-full border border-emerald-200 text-emerald-800 transition">
+                    🌿 Money Plant Care
+                </button>
+            {% else %}
+                <button type="button" onclick="sendQuickPrompt('دیسی گلاب کو کتنا پانی اور دھوپ درکار ہے؟')" class="px-3 py-1 bg-white hover:bg-emerald-100 rounded-full border border-emerald-200 text-emerald-800 transition">
+                    🌹 گلاب کی دیکھ بھال
+                </button>
+                <button type="button" onclick="sendQuickPrompt('سفید مکھی کے خاتمے کے لیے نیم کا تیل کیسے اسپرے کریں؟')" class="px-3 py-1 bg-white hover:bg-emerald-100 rounded-full border border-emerald-200 text-emerald-800 transition">
+                    🪰 نیم آئل اسپرے کا طریقہ
+                </button>
+                <button type="button" onclick="sendQuickPrompt('گملے کے لیے اچھی زرخیز مٹی (بھل) کیسے تیار کی جاتی ہے؟')" class="px-3 py-1 bg-white hover:bg-emerald-100 rounded-full border border-emerald-200 text-emerald-800 transition">
+                    🪴 گملے کی مٹی کی تیاری
+                </button>
+                <button type="button" onclick="sendQuickPrompt('منی پلانٹ کے پتے پیلے کیوں پڑتے ہیں؟')" class="px-3 py-1 bg-white hover:bg-emerald-100 rounded-full border border-emerald-200 text-emerald-800 transition">
+                    🌿 منی پلانٹ کی دیکھ بھال
+                </button>
+            {% endif %}
+        </div>
+
+        <!-- Message History List -->
+        <div id="messages-container" class="flex-grow p-6 overflow-y-auto space-y-4 bg-gray-50/50">
+            <!-- Default Welcome Bubble -->
+            <div class="flex items-start space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs flex-shrink-0">
+                    🌱
+                </div>
+                <div class="bg-white p-4 rounded-2xl {% if is_rtl %}rounded-tr-none{% else %}rounded-tl-none{% endif %} border border-gray-200 shadow-sm max-w-lg text-sm text-gray-800 leading-relaxed">
+                    {% if current_language == 'en' %}
+                        Hello! I am Baghbaan AI Assistant. You can ask me any gardening question about plant diseases, fertilizer intervals, seasonal vegetables, and potting soil in English or Urdu. Click the microphone button to ask via voice.
+                    {% else %}
+                        السلام علیکم! میں باغبان اے آئی اسسٹنٹ ہوں۔ آپ مجھ سے پودوں کی بیماریوں، کھاد کے اوقات، موسم سرما/گرما کی سبزیوں اور گملوں کی تیاری کے متعلق اردو یا انگریزی میں پوچھ سکتے ہیں۔ آواز کے ذریعے پوچھنے کے لیے مائیک کا بٹن دبائیں۔
+                    {% endif %}
+                </div>
+            </div>
+
+            {% for msg in history %}
+                {% if msg.is_user %}
+                    <div class="flex items-start justify-end space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <div class="bg-brand-primary text-white p-4 rounded-2xl shadow-sm max-w-lg text-sm leading-relaxed">
+                            {{ msg.text }}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="flex items-start space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs flex-shrink-0">
+                            🌱
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm max-w-lg text-sm text-gray-800 leading-relaxed whitespace-pre-line">
+                            {{ msg.text }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Input Bar with Speech Recognition -->
+        <div class="p-4 bg-white border-t border-gray-200">
+            <form id="chat-form" method="POST" class="flex items-center gap-2">
+                {% csrf_token %}
+                <button type="button" id="voice-btn" class="p-3 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-600 transition flex items-center justify-center" title="{% if current_language == 'en' %}Speak via Microphone{% else %}آواز سے بولیں (اردو وائس){% endif %}">
+                    <i class="fa-solid fa-microphone text-lg" id="mic-icon"></i>
+                </button>
+                <input type="text" name="message" id="chat-input" placeholder="{% if current_language == 'en' %}Ask any gardening question in English or Urdu...{% else %}باغبانی کا کوئی بھی سوال اردو یا انگریزی میں لکھیں...{% endif %}" autocomplete="off" required class="flex-grow px-4 py-3 text-sm rounded-2xl border border-gray-300 focus:ring-2 focus:ring-brand-primary focus:border-brand-primary">
+                <button type="submit" class="px-6 py-3 bg-brand-primary hover:bg-brand-dark text-white font-bold text-sm rounded-2xl shadow-md transition flex items-center">
+                    <i class="fa-solid fa-paper-plane mr-1.5 ml-1.5"></i>
+                    <span>{% if current_language == 'en' %}Send{% else %}ارسال{% endif %}</span>
+                </button>
+            </form>
+            <div id="voice-status" class="hidden text-xs text-emerald-600 mt-1 font-semibold flex items-center">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping ml-1 mr-1"></span>
+                <span>
+                    {% if current_language == 'en' %}Listening... Please speak your question{% else %}سماعت جاری ہے... براہ کرم سوال بولیں (اردو){% endif %}
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const container = document.getElementById('messages-container');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const isRtl = {{ is_rtl|yesno:"true,false" }};
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    function scrollToBottom() {
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
+    scrollToBottom();
+
+    // Format any server-rendered messages on initial load
+    document.querySelectorAll('#messages-container .whitespace-pre-line').forEach(el => {
+        el.innerHTML = formatText(el.innerText || el.textContent);
+    });
+
+    function formatText(text) {
+        // Simple markdown bold formatting & line breaks
+        let safe = text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return safe;
+    }
+
+    function appendUserMessage(text) {
+        const div = document.createElement('div');
+        div.className = `flex items-start justify-end space-x-3 ${isRtl ? 'space-x-reverse' : ''}`;
+        div.innerHTML = `
+            <div class="bg-brand-primary text-white p-4 rounded-2xl shadow-sm max-w-lg text-sm leading-relaxed whitespace-pre-line">
+                ${formatText(text)}
+            </div>
+        `;
+        container.appendChild(div);
+        scrollToBottom();
+    }
+
+    function appendTypingIndicator() {
+        const div = document.createElement('div');
+        div.id = 'typing-indicator';
+        div.className = `flex items-start space-x-3 ${isRtl ? 'space-x-reverse' : ''}`;
+        div.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs flex-shrink-0 animate-pulse">
+                🌱
+            </div>
+            <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-sm max-w-xs text-xs text-gray-500 flex items-center gap-2">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>{% if current_language == 'en' %}Baghbaan AI is typing...{% else %}باغبان اے آئی جواب تیار کر رہا ہے...{% endif %}</span>
+            </div>
+        `;
+        container.appendChild(div);
+        scrollToBottom();
+    }
+
+    function removeTypingIndicator() {
+        const el = document.getElementById('typing-indicator');
+        if (el) el.remove();
+    }
+
+    function appendBotMessage(text) {
+        removeTypingIndicator();
+        const div = document.createElement('div');
+        div.className = `flex items-start space-x-3 ${isRtl ? 'space-x-reverse' : ''}`;
+        div.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs flex-shrink-0">
+                🌱
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm max-w-lg text-sm text-gray-800 leading-relaxed whitespace-pre-line">
+                ${formatText(text)}
+            </div>
+        `;
+        container.appendChild(div);
+        scrollToBottom();
+    }
+
+    async function handleSendMessage(message) {
+        if (!message || !message.trim()) return;
+        const text = message.trim();
+        chatInput.value = '';
+        appendUserMessage(text);
+        appendTypingIndicator();
+
+        const formData = new FormData();
+        formData.append('message', text);
+        formData.append('csrfmiddlewaretoken', csrfToken);
+        formData.append('ajax', '1');
+        formData.append('language', '{{ current_language }}');
+
+        try {
+            const resp = await fetch('{% url "chatbot" %}', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: formData
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                appendBotMessage(data.reply);
+            } else {
+                removeTypingIndicator();
+                chatForm.submit();
+            }
+        } catch (err) {
+            removeTypingIndicator();
+            chatForm.submit();
+        }
+    }
+
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const val = chatInput.value;
+        handleSendMessage(val);
+    });
+
+    function sendQuickPrompt(text) {
+        handleSendMessage(text);
+    }
+
+    // Voice Input using Web Speech API
+    const voiceBtn = document.getElementById('voice-btn');
+    const micIcon = document.getElementById('mic-icon');
+    const voiceStatus = document.getElementById('voice-status');
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = '{{ current_language }}' === 'en' ? 'en-US' : 'ur-PK';
+        recognition.interimResults = false;
+
+        voiceBtn.addEventListener('click', function() {
+            recognition.start();
+            voiceStatus.classList.remove('hidden');
+            micIcon.classList.add('text-red-500');
+        });
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            voiceStatus.classList.add('hidden');
+            micIcon.classList.remove('text-red-500');
+            handleSendMessage(transcript);
+        };
+
+        recognition.onerror = function() {
+            voiceStatus.classList.add('hidden');
+            micIcon.classList.remove('text-red-500');
+        };
+
+        recognition.onend = function() {
+            voiceStatus.classList.add('hidden');
+            micIcon.classList.remove('text-red-500');
+        };
+    } else {
+        voiceBtn.style.display = 'none';
+    }
+</script>
+{% endblock %}

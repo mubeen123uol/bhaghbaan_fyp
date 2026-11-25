@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Find Verified Mali & Supervisors — Baghbaan AI
+    {% else %}
+        قریبی مالی تلاش کریں — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="text-center max-w-3xl mx-auto mb-10">
+        <h1 class="text-3xl font-extrabold text-gray-900">
+            {% if current_language == 'en' %}
+                Verified Mali & Horticulture Supervisor Directory
+            {% else %}
+                تصدیق شدہ مالی و نگران ڈائریکٹری
+            {% endif %}
+        </h1>
+        <p class="text-xs text-gray-600 mt-2">
+            {% if current_language == 'en' %}
+                Find experienced garden specialists (*Mali*) and certified supervisors near you with GPS proximity and direct chat
+            {% else %}
+                اپنے قریب تجربہ کار مالی (*Mali*) اور ہارٹیکلچر ماہرین تلاش کریں، فاصلہ معلوم کریں اور براہِ راست رابطہ کریں۔
+            {% endif %}
+        </p>
+
+        <!-- Filters Form -->
+        <form method="GET" class="mt-6 flex flex-wrap gap-3 justify-center items-center">
+            <div>
+                <select name="city" class="px-4 py-2.5 text-xs rounded-xl border border-gray-300">
+                    <option value="Lahore" {% if city == 'Lahore' %}selected{% endif %}>Lahore (لاہور)</option>
+                    <option value="Karachi" {% if city == 'Karachi' %}selected{% endif %}>Karachi (کراچی)</option>
+                    <option value="Islamabad" {% if city == 'Islamabad' %}selected{% endif %}>Islamabad (اسلام آباد)</option>
+                    <option value="Rawalpindi" {% if city == 'Rawalpindi' %}selected{% endif %}>Rawalpindi (راولپنڈی)</option>
+                    <option value="Faisalabad" {% if city == 'Faisalabad' %}selected{% endif %}>Faisalabad (فیصل آباد)</option>
+                    <option value="Multan" {% if city == 'Multan' %}selected{% endif %}>Multan (ملتان)</option>
+                </select>
+            </div>
+            <div>
+                <select name="role" class="px-4 py-2.5 text-xs rounded-xl border border-gray-300">
+                    <option value="">{% if current_language == 'en' %}All Professional Roles{% else %}تمام کردار (All Roles){% endif %}</option>
+                    <option value="GARDENER" {% if selected_role == 'GARDENER' %}selected{% endif %}>{% if current_language == 'en' %}Gardeners (Mali){% else %}صرف مالی (Gardeners){% endif %}</option>
+                    <option value="SUPERVISOR" {% if selected_role == 'SUPERVISOR' %}selected{% endif %}>{% if current_language == 'en' %}Supervisors{% else %}صرف نگران (Supervisors){% endif %}</option>
+                </select>
+            </div>
+            <button type="submit" class="px-6 py-2.5 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-sm transition">
+                {% if current_language == 'en' %}Filter{% else %}تلاش کریں{% endif %}
+            </button>
+        </form>
+    </div>
+
+    <!-- Professionals Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for p in professionals %}
+            <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold px-3 py-1 rounded-full {% if p.user.role == 'SUPERVISOR' %}bg-purple-100 text-purple-800{% else %}bg-emerald-100 text-emerald-800{% endif %}">
+                            {% if current_language == 'en' %}
+                                {% if p.user.role == 'SUPERVISOR' %}Supervisor{% else %}Gardener (Mali){% endif %}
+                            {% else %}
+                                {{ p.user.get_role_display }}
+                            {% endif %}
+                        </span>
+                        <span class="text-xs font-bold text-emerald-600 flex items-center">
+                            <i class="fa-solid fa-location-dot ml-1 mr-1"></i>
+                            {% if current_language == 'en' %}
+                                {{ p.distance_km }} km away
+                            {% else %}
+                                {{ p.distance_km }} کلومیٹر دور
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %} mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-brand-mint text-brand-dark flex items-center justify-center font-bold text-lg flex-shrink-0">
+                            {{ p.user.first_name|slice:":1"|default:p.user.username|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-gray-900">
+                                {% if current_language == 'en' %}{{ p.user.display_name_en }}{% else %}{{ p.user.display_name_ur }}{% endif %}
+                            </h3>
+                            <p class="text-xs text-gray-500">
+                                {{ p.user.city }} • 
+                                {% if current_language == 'en' %}
+                                    {{ p.user.years_of_experience }} yrs exp
+                                {% else %}
+                                    {{ p.user.years_of_experience }} سال کا تجربہ
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    {% if p.user.bio %}
+                        <p class="text-xs text-gray-600 line-clamp-3 leading-relaxed mb-4">
+                            {{ p.user.bio }}
+                        </p>
+                    {% endif %}
+
+                    <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs flex justify-between items-center">
+                        <span class="text-gray-500">
+                            {% if current_language == 'en' %}Hourly Rate:{% else %}اجرت (فی گھنٹہ):{% endif %}
+                        </span>
+                        <strong class="text-emerald-800">
+                            Rs {{ p.user.hourly_rate|floatformat:0 }}{% if current_language == 'en' %}/hr{% else %}/گھنٹہ{% endif %}
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gray-100 flex items-center gap-2">
+                    <a href="{% url 'start-direct-chat' p.user.id %}" class="flex-grow py-2.5 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-sm text-center transition flex items-center justify-center">
+                        <i class="fa-solid fa-comments ml-1.5 mr-1.5"></i>
+                        {% if current_language == 'en' %}Contact & Direct Chat{% else %}رابطہ و چیٹ کریں{% endif %}
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-span-full text-center py-12 text-gray-400 text-xs">
+                {% if current_language == 'en' %}
+                    No verified gardeners or supervisors found in this city.
+                {% else %}
+                    اس شہر میں فی الحال کوئی تصدیق شدہ مالی دستیاب نہیں۔
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

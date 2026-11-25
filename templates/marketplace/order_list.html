@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        My Orders — Baghbaan AI
+    {% else %}
+        میرے آرڈرز — باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">
+                {% if current_language == 'en' %}
+                    My Purchases (COD Orders)
+                {% else %}
+                    میرے خریداری آرڈرز (Orders History)
+                {% endif %}
+            </h1>
+            <p class="text-xs text-gray-500 mt-1">
+                {% if current_language == 'en' %}
+                    Order history, dispatch status, and delivery tracking
+                {% else %}
+                    آپ کے تمام کیش آن ڈیلیوری آرڈرز کی تفصیلی ٹریکنگ
+                {% endif %}
+            </p>
+        </div>
+        <a href="{% url 'marketplace-products' %}" class="px-4 py-2 bg-brand-primary hover:bg-brand-dark text-white font-semibold text-xs rounded-xl shadow-sm transition">
+            {% if current_language == 'en' %}Browse Marketplace{% else %}بازار میں خریداری کریں{% endif %}
+        </a>
+    </div>
+
+    {% if orders %}
+        <div class="space-y-4">
+            {% for ord in orders %}
+                <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:border-emerald-200 transition flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <div class="flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %} mb-1">
+                            <span class="text-sm font-bold text-gray-900">
+                                {% if current_language == 'en' %}Order #{{ ord.id }}{% else %}آرڈر #{{ ord.id }}{% endif %}
+                            </span>
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full {% if ord.status == 'DELIVERED' %}bg-emerald-100 text-emerald-800{% elif ord.status == 'SHIPPED' %}bg-blue-100 text-blue-800{% else %}bg-amber-100 text-amber-800{% endif %}">
+                                {% if current_language == 'en' %}
+                                    {% if ord.status == 'DELIVERED' %}Delivered
+                                    {% elif ord.status == 'SHIPPED' %}Shipped / Out for Delivery
+                                    {% elif ord.status == 'CONFIRMED' %}Confirmed
+                                    {% elif ord.status == 'CANCELLED' %}Cancelled
+                                    {% else %}Pending{% endif %}
+                                {% else %}
+                                    {{ ord.get_status_display }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500">
+                            {{ ord.created_at|date:"d M Y, H:i" }} • {{ ord.items.count }} {% if current_language == 'en' %}items{% else %}آئٹمز{% endif %}
+                        </p>
+                        <p class="text-xs text-gray-700 mt-1">
+                            {% if current_language == 'en' %}Address:{% else %}پتہ:{% endif %} {{ ord.shipping_address }}, {{ ord.shipping_city }}
+                        </p>
+                    </div>
+
+                    <div class="flex items-center space-x-4 {% if is_rtl %}space-x-reverse{% endif %} w-full sm:w-auto justify-between sm:justify-end">
+                        <span class="text-base font-extrabold text-emerald-700">Rs {{ ord.total_amount }}</span>
+                        <a href="{% url 'order-detail' ord.id %}" class="px-4 py-2 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 font-bold text-xs rounded-xl transition">
+                            {% if current_language == 'en' %}Receipt & Tracking &rarr;{% else %}رسید و ٹریکنگ &larr;{% endif %}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-white rounded-3xl p-12 text-center border border-gray-200 shadow-sm max-w-md mx-auto">
+            <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-3"></i>
+            <h3 class="text-base font-bold text-gray-800">
+                {% if current_language == 'en' %}No Orders Yet{% else %}کوئی آرڈر نہیں ملا{% endif %}
+            </h3>
+            <p class="text-xs text-gray-500 mt-1 mb-6">
+                {% if current_language == 'en' %}
+                    You haven't placed any Cash on Delivery orders from nursery marketplace yet.
+                {% else %}
+                    آپ نے ابھی تک نرسری مارکیٹ سے کوئی آرڈر بک نہیں کیا۔
+                {% endif %}
+            </p>
+            <a href="{% url 'marketplace-products' %}" class="px-6 py-3 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-xl shadow-md transition">
+                {% if current_language == 'en' %}Explore Nursery Products{% else %}پروڈکٹس دیکھیں{% endif %}
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

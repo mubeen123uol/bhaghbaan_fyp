@@ -1,0 +1,498 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        Baghbaan AI — Smart Gardening Companion for Pakistan
+    {% else %}
+        باغبان اے آئی — ہوم پیج | Baghbaan AI
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="relative bg-gradient-to-br from-emerald-900 via-brand-dark to-teal-950 text-white overflow-hidden py-16 sm:py-24">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#52b788_1px,transparent_1px)] [background-size:16px_16px]"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Left/Right Text Content -->
+            <div class="lg:col-span-7 space-y-6 text-center lg:text-start">
+                <div class="inline-flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %} bg-emerald-800/60 border border-emerald-600/40 px-3.5 py-1.5 rounded-full text-xs font-semibold text-emerald-300">
+                    <span>
+                        {% if current_language == 'en' %}
+                            ✨ AI-Powered Smart Gardening Companion for Pakistan
+                        {% else %}
+                            ✨ مصنوعی ذہانت اور مقامی باغبانی کا سنگم
+                        {% endif %}
+                    </span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold {% if is_rtl %}leading-[1.9] sm:leading-[1.8] space-y-3 font-arabic py-1{% else %}leading-tight sm:leading-snug space-y-2{% endif %}">
+                    <span class="block {% if is_rtl %}pb-1{% endif %}">
+                        {% if current_language == 'en' %}
+                            Instant Plant Disease Diagnosis
+                        {% else %}
+                            اپنے پودوں کے امراض کی
+                        {% endif %}
+                    </span>
+                    <span class="block text-emerald-300 {% if is_rtl %}pt-1{% endif %}">
+                        {% if current_language == 'en' %}
+                            & Smart Garden Care in Pakistan
+                        {% else %}
+                            فوری تصویری تشخیص اور اردو علاج
+                        {% endif %}
+                    </span>
+                </h1>
+                <p class="text-base sm:text-lg text-emerald-100/90 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                    {% if current_language == 'en' %}
+                        Tailored for Pakistani climate, native flora (Rose, Neem, Jasmine, Guava), and regional pests. Organic neem remedies, localized weather care calendar, verified gardeners, and Cash on Delivery nursery products.
+                    {% else %}
+                        پاکستانی موسم، دیسی پودوں (گلاب، نیم، موتیا، امرود) اور مقامی بیماریوں کے عین مطابق۔ کیمیائی و گھریلو دیسی نسخے، روزانہ موسمی دیکھ بھال، تصدیق شدہ مالی اور کیش آن ڈیلیوری نرسری سامان۔
+                    {% endif %}
+                </p>
+
+                <!-- Diagnostic Hero Action -->
+                <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                    <a href="{% url 'diagnose' %}" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold text-base shadow-xl transform hover:-translate-y-0.5 transition flex items-center justify-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <i class="fa-solid fa-camera text-xl ml-2 mr-2"></i>
+                        <span>
+                            {% if current_language == 'en' %}Diagnose Plant Leaf{% else %}بیمار پودے کی تصویر اپلوڈ کریں{% endif %}
+                        </span>
+                    </a>
+                    <a href="{% url 'chatbot' %}" class="w-full sm:w-auto px-6 py-4 rounded-xl bg-emerald-950/60 hover:bg-emerald-800/60 border border-emerald-500/30 text-emerald-200 font-semibold text-base transition flex items-center justify-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                        <i class="fa-solid fa-comments text-lg ml-2 mr-2"></i>
+                        <span>
+                            {% if current_language == 'en' %}Garden AI Chatbot{% else %}صوتی یا تحریری باغبانی چیٹ{% endif %}
+                        </span>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 pt-6 border-t border-emerald-800/50 text-center">
+                    <div>
+                        <div class="text-2xl font-bold text-white">40+</div>
+                        <div class="text-xs text-emerald-200">
+                            {% if current_language == 'en' %}Pakistani Plants{% else %}پاکستانی نباتات{% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-white">85%+</div>
+                        <div class="text-xs text-emerald-200">
+                            {% if current_language == 'en' %}AI Accuracy{% else %}درست AI تشخیص{% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-white">100%</div>
+                        <div class="text-xs text-emerald-200">
+                            {% if current_language == 'en' %}Cash on Delivery{% else %}کیش آن ڈیلیوری{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Weather & Live Widget -->
+            <div class="lg:col-span-5">
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 shadow-2xl text-white">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+                        <div class="flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                            <i class="fa-solid fa-cloud-sun text-3xl text-amber-300"></i>
+                            <div>
+                                <h3 class="font-bold text-base">
+                                    {{ weather.city }}, {% if current_language == 'en' %}Pakistan{% else %}پاکستان{% endif %}
+                                </h3>
+                                <p class="text-xs text-emerald-200">{{ weather.weather_condition }}</p>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="text-3xl font-extrabold">{{ weather.temperature }}°C</span>
+                        </div>
+                    </div>
+
+                    <!-- Weather-Aware Garden Advice Card -->
+                    <div class="bg-emerald-950/60 border border-emerald-500/30 rounded-xl p-4 space-y-2 text-xs">
+                        <div class="flex items-center text-emerald-300 font-semibold">
+                            <i class="fa-solid fa-seedling mr-1.5 ml-1.5 text-sm"></i>
+                            <span>
+                                {% if current_language == 'en' %}Today's Weather Advisory:{% else %}آج کے دن باغبانی کی خصوصی ہدایت:{% endif %}
+                            </span>
+                        </div>
+                        <p class="text-emerald-100 leading-relaxed">
+                            {% if weather.forecast_24h_rain_mm >= 5.0 %}
+                                {% if current_language == 'en' %}
+                                    Rain expected ({{ weather.forecast_24h_rain_mm }}mm). Avoid over-watering outdoor pots today.
+                                {% else %}
+                                    بارش متوقع ہے ({{ weather.forecast_24h_rain_mm }}mm)۔ کھلے گملوں میں اضافی پانی جمع نہ ہونے دیں اور آج پودوں کو پانی نہ دیں۔
+                                {% endif %}
+                            {% elif weather.temperature >= 35.0 %}
+                                {% if current_language == 'en' %}
+                                    Extreme heat ({{ weather.temperature }}°C). Water plants early in the morning or late evening to protect foliage from scorching.
+                                {% else %}
+                                    موسم شدید گرم ہے ({{ weather.temperature }}°C)۔ پودوں کو صبح سویرے یا شام کو پانی دیں تاکہ پتے جھلسنے سے محفوظ رہیں۔
+                                {% endif %}
+                            {% else %}
+                                {% if current_language == 'en' %}
+                                    Pleasant weather. Ideal day for gentle soil aeration, trimming old leaves, and organic fertilizer application.
+                                {% else %}
+                                    موسم معتدل اور خوشگوار ہے۔ گملوں میں ہلکی گڈی کریں اور پرانے پتوں کی کٹائی کے لیے موزوں دن ہے۔
+                                {% endif %}
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <!-- Quick Camera Upload Mini-Widget with Interactive Scanner -->
+                    <div class="mt-6 pt-4 border-t border-white/10">
+                        <div class="relative rounded-2xl overflow-hidden border border-emerald-500/40 shadow-inner bg-emerald-950/80 mb-4 group">
+                            <div class="scanner-beam"></div>
+                            <img src="/media/sample_leaves/rose_black_spot.jpg" alt="Leaf Scanner Demo" class="w-full h-36 object-cover opacity-85 group-hover:scale-105 transition duration-500">
+                            
+                            <!-- Floating Interactive Badges -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 p-3 flex flex-col justify-between">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/90 text-white backdrop-blur-md flex items-center gap-1 shadow">
+                                        <i class="fa-solid fa-radar text-[9px] animate-pulse"></i>
+                                        <span>{% if current_language == 'en' %}AI Live Scanner{% else %}AI لائیو اسکینر{% endif %}</span>
+                                    </span>
+                                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-black/60 text-emerald-300 backdrop-blur-md">
+                                        98.4% {% if current_language == 'en' %}Accuracy{% else %}اعتماد{% endif %}
+                                    </span>
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="text-xs font-bold text-white block drop-shadow-sm">
+                                        🌹 {% if current_language == 'en' %}Desi Rose Leaf Curl & Spot{% else %}دیسی گلاب کے پتے پر سیاہ دھبے{% endif %}
+                                    </span>
+                                    <span class="text-[10px] text-emerald-200 block drop-shadow-sm">
+                                        ✓ {% if current_language == 'en' %}Organic Neem Solution Available{% else %}نامیاتی نیم آئل نسخہ دستیاب ہے{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 1-Click Interactive Demo Buttons -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-[11px] text-emerald-200 font-semibold">
+                                <span>{% if current_language == 'en' %}Test sample leaves instantly:{% else %}نمونے کے پتے سے فوری ٹیسٹ کریں:{% endif %}</span>
+                                <a href="{% url 'diagnose' %}" class="text-white hover:underline font-bold text-[10px]">{% if current_language == 'en' %}All Samples &rarr;{% else %}تمام نمونے &larr;{% endif %}</a>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 text-center text-[10px] font-bold">
+                                <a href="{% url 'diagnose' %}" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white transition flex flex-col items-center gap-1 active:scale-95">
+                                    <span class="text-base">🌹</span>
+                                    <span class="truncate w-full">{% if current_language == 'en' %}Rose Spot{% else %}گلاب دھبے{% endif %}</span>
+                                </a>
+                                <a href="{% url 'diagnose' %}" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white transition flex flex-col items-center gap-1 active:scale-95">
+                                    <span class="text-base">🍋</span>
+                                    <span class="truncate w-full">{% if current_language == 'en' %}Lemon Curl{% else %}لیموں پتے{% endif %}</span>
+                                </a>
+                                <a href="{% url 'diagnose' %}" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white transition flex flex-col items-center gap-1 active:scale-95">
+                                    <span class="text-base">🍅</span>
+                                    <span class="truncate w-full">{% if current_language == 'en' %}Tomato Blight{% else %}ٹماٹر جھلساؤ{% endif %}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Features Grid -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center max-w-3xl mx-auto mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">
+            {% if current_language == 'en' %}Key Features of Baghbaan AI{% else %}باغبان اے آئی کی خصوصی خصوصیات{% endif %}
+        </h2>
+        <p class="mt-3 text-sm text-gray-600">
+            {% if current_language == 'en' %}
+                Bridging traditional Pakistani gardening with modern artificial intelligence, local weather sync, and community support.
+            {% else %}
+                ہم روایتی باغبانی کو جدید ٹیکنالوجی سے آسان، سستا اور ہر پاکستانی کے لیے قابلِ فہم بناتے ہیں۔
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm card-elevate relative overflow-hidden group">
+            <div class="h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400 absolute top-0 left-0 right-0"></div>
+            <div class="w-14 h-14 rounded-2xl bg-emerald-100/70 text-emerald-700 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition shadow-inner">
+                🔬
+            </div>
+            <h3 class="text-lg font-extrabold text-gray-900 mb-2">
+                {% if current_language == 'en' %}Multimodal AI Plant Doctor{% else %}ملٹی ماڈل AI پلانٹ ڈاکٹر{% endif %}
+            </h3>
+            <p class="text-xs text-gray-600 leading-relaxed">
+                {% if current_language == 'en' %}
+                    Instant visual detection of whitefly, powdery mildew, and leaf curl from photos. Includes traditional organic neem oil recipes and chemical treatment guidelines.
+                {% else %}
+                    تصویر اپلوڈ کرتے ہی سیکنڈوں میں پودے کا مرض، سفید مکھی، پاؤڈری ملڈیو یا وائرس کی پہچان۔ ساتھ ہی دیسی نیم آئل نسخے اور زرعی ادویات کی مکمل رہنمائی۔
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm card-elevate relative overflow-hidden group">
+            <div class="h-1.5 bg-gradient-to-r from-teal-500 to-cyan-400 absolute top-0 left-0 right-0"></div>
+            <div class="w-14 h-14 rounded-2xl bg-teal-100/70 text-teal-700 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition shadow-inner">
+                ⛅
+            </div>
+            <h3 class="text-lg font-extrabold text-gray-900 mb-2">
+                {% if current_language == 'en' %}Weather-Aware Care Calendar{% else %}موسم آگاہ دیکھ بھال کیلنڈر{% endif %}
+            </h3>
+            <p class="text-xs text-gray-600 leading-relaxed">
+                {% if current_language == 'en' %}
+                    Dynamic watering and fertilizing schedules automatically delay irrigation when heavy rain is forecast across Pakistani cities.
+                {% else %}
+                    ہر پودے کے لیے خودکار شیڈول۔ اگر کل بارش متوقع ہو تو سسٹم پانی دینے کا ٹاسک خود بخود اگلے دن پر منتقل کر دیتا ہے۔
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm card-elevate relative overflow-hidden group">
+            <div class="h-1.5 bg-gradient-to-r from-emerald-600 to-green-500 absolute top-0 left-0 right-0"></div>
+            <div class="w-14 h-14 rounded-2xl bg-green-100/70 text-green-700 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition shadow-inner">
+                👨‍🌾
+            </div>
+            <h3 class="text-lg font-extrabold text-gray-900 mb-2">
+                {% if current_language == 'en' %}Verified Mali Services & Tasks{% else %}قریبی مالی خدمات اور 5 اسٹیٹ ٹریکنگ{% endif %}
+            </h3>
+            <p class="text-xs text-gray-600 leading-relaxed">
+                {% if current_language == 'en' %}
+                    Locate verified gardeners in your neighborhood. Assign tasks and track execution through a 5-state lifecycle with photo verification.
+                {% else %}
+                    اپنے محلے اور شہر کے تصدیق شدہ مالی تلاش کریں۔ کام تفویض کریں اور تصویری ثبوت کے ساتھ رپورٹ منظور کریں۔
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm card-elevate relative overflow-hidden group">
+            <div class="h-1.5 bg-gradient-to-r from-amber-500 to-orange-400 absolute top-0 left-0 right-0"></div>
+            <div class="w-14 h-14 rounded-2xl bg-amber-100/70 text-amber-700 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition shadow-inner">
+                🛒
+            </div>
+            <h3 class="text-lg font-extrabold text-gray-900 mb-2">
+                {% if current_language == 'en' %}Cash on Delivery Marketplace{% else %}کیش آن ڈیلیوری مارکیٹ{% endif %}
+            </h3>
+            <p class="text-xs text-gray-600 leading-relaxed">
+                {% if current_language == 'en' %}
+                    Order organic compost, pure neem oil, terracotta pots, and seasonal seeds delivered to your door with Cash on Delivery payment.
+                {% else %}
+                    کھاد، نیم آئل، پکے مٹی کے گملے اور موسمی سبزیوں کے بیج اپنے گھر کی دہلیز پر منگوائیں اور ادائیگی سامان موصول ہونے پر کریں۔
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm card-elevate relative overflow-hidden group">
+            <div class="h-1.5 bg-gradient-to-r from-blue-500 to-indigo-400 absolute top-0 left-0 right-0"></div>
+            <div class="w-14 h-14 rounded-2xl bg-blue-100/70 text-blue-700 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition shadow-inner">
+                💬
+            </div>
+            <h3 class="text-lg font-extrabold text-gray-900 mb-2">
+                {% if current_language == 'en' %}Real-Time Community & Chat{% else %}ریئل ٹائم باغبانی برادری و چیٹ{% endif %}
+            </h3>
+            <p class="text-xs text-gray-600 leading-relaxed">
+                {% if current_language == 'en' %}
+                    Connect with fellow urban gardeners, join city-based groups, share cutting tips, and consult horticulture experts.
+                {% else %}
+                    اپنے شہر کے کچن گارڈنرز سے جڑیں، پودوں کے تبادلے کی بات چیت کریں اور ماہر نگرانوں سے براہِ راست مشورہ کریں۔
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm card-elevate relative overflow-hidden group">
+            <div class="h-1.5 bg-gradient-to-r from-purple-500 to-pink-400 absolute top-0 left-0 right-0"></div>
+            <div class="w-14 h-14 rounded-2xl bg-purple-100/70 text-purple-700 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition shadow-inner">
+                📶
+            </div>
+            <h3 class="text-lg font-extrabold text-gray-900 mb-2">
+                {% if current_language == 'en' %}Offline Knowledge Base{% else %}آف لائن نالج بیس فال بیک{% endif %}
+            </h3>
+            <p class="text-xs text-gray-600 leading-relaxed">
+                {% if current_language == 'en' %}
+                    Built-in encyclopedia of 40+ native Pakistani plants and diseases remains available even during cloud API or connectivity outages.
+                {% else %}
+                    انٹرنیٹ یا بیرونی سروس منقطع ہونے کی صورت میں 40 سے زائد مقامی پودوں اور بیماریوں کا ذخیرہ ہمیشہ دستیاب رہتا ہے۔
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Interactive Visual Before & After Healing Showcase -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    <div class="bg-gradient-to-br from-emerald-900 via-brand-dark to-teal-950 rounded-3xl p-6 sm:p-12 text-white shadow-2xl relative overflow-hidden">
+        <!-- Botanical Ambient Background Shapes -->
+        <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-teal-500/10 blur-3xl pointer-events-none"></div>
+
+        <div class="text-center max-w-2xl mx-auto mb-10 relative z-10">
+            <span class="px-3.5 py-1 rounded-full bg-emerald-800/80 text-emerald-300 text-xs font-bold border border-emerald-600/40 inline-flex items-center gap-1.5 shadow-sm">
+                <span>✨</span> {% if current_language == 'en' %}Real Diagnostic Proof{% else %}تصدیق شدہ طبی نتائج{% endif %}
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold mt-3">
+                {% if current_language == 'en' %}
+                    From Plant Disease to Full Recovery in 7 Days
+                {% else %}
+                    بیمار پودے سے مکمل صحت یابی — صرف 7 دنوں میں
+                {% endif %}
+            </h2>
+            <p class="text-xs sm:text-sm text-emerald-200/90 mt-2">
+                {% if current_language == 'en' %}
+                    See how Baghbaan AI's organic remedies cure common Pakistani pests & fungi naturally without harsh chemicals.
+                {% else %}
+                    دیکھیں کیسے باغبان اے آئی کے دیسی نامیاتی نسخے پودوں کو کیمیائی زہر کے بغیر قدرتی طور پر تندرست بناتے ہیں۔
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- 3 Stage Comparison Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+            <!-- Stage 1: Before -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-red-500/30 flex flex-col justify-between">
+                <div>
+                    <div class="relative h-44 rounded-xl overflow-hidden mb-4 border border-red-400/40">
+                        <img src="/media/sample_leaves/rose_black_spot.jpg" alt="Infected Rose" class="w-full h-full object-cover">
+                        <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-red-600 text-white font-bold text-[10px] shadow">
+                            {% if current_language == 'en' %}Day 0: Diseased{% else %}پہلا دن: بیمار پودا{% endif %}
+                        </span>
+                    </div>
+                    <h3 class="text-sm font-extrabold text-red-300">
+                        {% if current_language == 'en' %}Severe Black Spot Fungus{% else %}گلاب کا سیاہ داغ اور پیلا پن{% endif %}
+                    </h3>
+                    <p class="text-xs text-gray-200 mt-1 leading-relaxed">
+                        {% if current_language == 'en' %}
+                            Yellowing margins, premature leaf drop, and stunted flower buds caused by high humidity.
+                        {% else %}
+                            پتے تیزی سے پیلے ہو کر جھڑ رہے تھے اور پھول کی کلیاں کھلنے سے قبل مرجھا رہی تھیں۔
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stage 2: AI Organic Prescription -->
+            <div class="bg-gradient-to-b from-emerald-800/80 to-teal-900/80 backdrop-blur-md rounded-2xl p-5 border-2 border-emerald-400/60 shadow-xl flex flex-col justify-between relative">
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-emerald-500 text-white font-black text-[10px] shadow uppercase tracking-wider">
+                    {% if current_language == 'en' %}Baghbaan AI Cure{% else %}AI تجویز کردہ نسخہ{% endif %}
+                </span>
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-700/60 flex items-center justify-center text-2xl mx-auto mb-3 mt-2 shadow-inner">
+                        🍃
+                    </div>
+                    <h3 class="text-sm font-black text-emerald-200 text-center mb-3">
+                        {% if current_language == 'en' %}Organic Cold-Pressed Neem Formula{% else %}خالص دیسی نیم آئل اسپرے نسخہ{% endif %}
+                    </h3>
+                    <ul class="text-xs text-emerald-100 space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-400 font-bold">1.</span>
+                            <span>{% if current_language == 'en' %}Mix 5ml pure organic neem oil + 2ml liquid soap in 1L warm water.{% else %}1 لیٹر نیم گرم پانی میں 5 ملی لیٹر دیسی نیم کا تیل ملائیں۔{% endif %}</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-400 font-bold">2.</span>
+                            <span>{% if current_language == 'en' %}Spray underside of all infected leaves at sunset.{% else %}سورج ڈھلنے کے وقت پتوں کی نچلی سطح پر مکمل اسپرے کریں۔{% endif %}</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-400 font-bold">3.</span>
+                            <span>{% if current_language == 'en' %}Till pot soil and dress with 2 handfuls of aged cow compost.{% else %}گملے کی مٹی میں گڈی کر کے دو مٹھی دیسی کھاد ملائیں۔{% endif %}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="pt-4 mt-4 border-t border-emerald-700/50 text-center">
+                    <a href="{% url 'diagnose' %}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold text-xs rounded-xl shadow transition">
+                        <span>{% if current_language == 'en' %}Test Your Plant Free{% else %}اپنے پودے کا فری ٹیسٹ کریں{% endif %}</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stage 3: After -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-emerald-400/40 flex flex-col justify-between">
+                <div>
+                    <div class="relative h-44 rounded-xl overflow-hidden mb-4 border border-emerald-400/40">
+                        <img src="/media/plants/rose.jpg" alt="Healed Rose" class="w-full h-full object-cover">
+                        <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-bold text-[10px] shadow">
+                            {% if current_language == 'en' %}Day 7: Full Recovery{% else %}ساتواں دن: 100% صحتیاب{% endif %}
+                        </span>
+                    </div>
+                    <h3 class="text-sm font-extrabold text-emerald-300">
+                        {% if current_language == 'en' %}Lush Growth & Red Blooms{% else %}سرسبز شادابی اور نئے گلاب{% endif %}
+                    </h3>
+                    <p class="text-xs text-gray-200 mt-1 leading-relaxed">
+                        {% if current_language == 'en' %}
+                            Fungal spores eliminated. 4 new lateral branches sprouted with fresh fragrant rose blossoms.
+                        {% else %}
+                            پھپھوندی کے تمام داغ ختم، پودے میں نئی شاخیں اور تازہ سرخ گلاب کھل اٹھے۔
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Plants Section -->
+<div class="bg-emerald-50/50 py-16 border-y border-emerald-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">
+                    {% if current_language == 'en' %}Pakistani Flora Encyclopedia{% else %}پاکستانی نباتات کا خزانہ{% endif %}
+                </h2>
+                <p class="text-xs text-gray-600 mt-1">
+                    {% if current_language == 'en' %}Plants that thrive in Pakistan's unique soil and climate conditions{% else %}ہمارے مقامی موسم اور مٹی میں خوب پھلنے پھولنے والے پودے{% endif %}
+                </p>
+            </div>
+            <a href="{% url 'plant-list' %}" class="text-xs font-semibold text-brand-primary hover:underline flex items-center">
+                <span>{% if current_language == 'en' %}Browse All Plants (40+){% else %}تمام پودے دیکھیں (40+){% endif %}</span>
+                <i class="fa-solid {% if is_rtl %}fa-arrow-left mr-1.5 ml-1.5{% else %}fa-arrow-right ml-1.5 mr-1.5{% endif %}"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for plant in featured_plants %}
+                <div class="bg-white rounded-3xl border border-gray-200/80 shadow-sm card-elevate overflow-hidden flex flex-col justify-between group">
+                    <div>
+                        <!-- Plant Photography Header -->
+                        <div class="relative h-48 overflow-hidden bg-emerald-50">
+                            {% if plant.image %}
+                                <img src="{{ plant.image.url }}" alt="{{ plant.name_en }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-4xl bg-emerald-100">🌿</div>
+                            {% endif %}
+                            <span class="absolute top-3 {% if is_rtl %}right-3{% else %}left-3{% endif %} text-[10px] font-bold px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-md text-emerald-800 shadow-sm">
+                                {{ plant.get_category_display }}
+                            </span>
+                        </div>
+
+                        <div class="p-6">
+                            <span class="text-[11px] text-gray-400 italic block mb-1">{{ plant.scientific_name }}</span>
+                            <h3 class="text-xl font-bold text-gray-900">
+                                {% if current_language == 'en' %}{{ plant.name_en }}{% else %}{{ plant.name_ur }}{% endif %}
+                            </h3>
+                            <p class="text-xs text-brand-primary font-semibold mt-0.5">
+                                {% if current_language == 'en' %}{{ plant.name_ur }}{% else %}{{ plant.name_en }}{% endif %}
+                            </p>
+                            <p class="text-xs text-gray-600 mt-3 line-clamp-2 leading-relaxed">
+                                {% if current_language == 'en' %}{{ plant.description_en|default:plant.description_ur }}{% else %}{{ plant.description_ur }}{% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="px-6 pb-5 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 bg-gray-50/50">
+                        <span class="font-medium flex items-center gap-1.5">
+                            <i class="fa-solid fa-droplet text-blue-500"></i>
+                            {% if current_language == 'en' %}Every {{ plant.watering_interval_days }} days{% else %}ہر {{ plant.watering_interval_days }} دن بعد پانی{% endif %}
+                        </span>
+                        <a href="{% url 'plant-detail' plant.id %}" class="font-bold text-brand-primary hover:underline flex items-center gap-1">
+                            <span>{% if current_language == 'en' %}Care Guide{% else %}مکمل رہنمائی{% endif %}</span>
+                            <i class="fa-solid {% if is_rtl %}fa-arrow-left text-[10px]{% else %}fa-arrow-right text-[10px]{% endif %}"></i>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

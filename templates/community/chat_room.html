@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        {{ room.name_en }} — Chat Room | Baghbaan AI
+    {% else %}
+        {{ room.name_ur }} — چیٹ روم | باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden flex flex-col h-[75vh]">
+        
+        <!-- Room Header -->
+        <div class="p-4 bg-brand-primary text-white flex items-center justify-between">
+            <div class="flex items-center space-x-3 {% if is_rtl %}space-x-reverse{% endif %}">
+                <a href="{% url 'community-home' %}" class="text-white hover:text-emerald-200 p-1">
+                    <i class="fa-solid {% if is_rtl %}fa-arrow-right{% else %}fa-arrow-left{% endif %}"></i>
+                </a>
+                <div>
+                    <h2 class="text-base font-bold">
+                        {% if current_language == 'en' %}{{ room.name_en }}{% else %}{{ room.name_ur }}{% endif %}
+                    </h2>
+                    <span class="text-[10px] text-emerald-200 block">
+                        {% if current_language == 'en' %}{{ room.room_type_en }}{% else %}{{ room.room_type_ur }}{% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %} text-xs">
+                <span id="ws-indicator" class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span id="ws-status">
+                    {% if current_language == 'en' %}Live Connected{% else %}لائیو جڑا ہوا{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Messages Stream Container -->
+        <div id="chat-messages-container" class="flex-grow p-6 overflow-y-auto space-y-4 bg-gray-50/50">
+            {% for msg in chat_messages %}
+                <div class="flex items-start {% if msg.sender == user %}justify-end{% else %}justify-start{% endif %} space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                    {% if msg.sender != user %}
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                            {{ msg.sender.username|slice:":1"|upper }}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="max-w-md p-3.5 rounded-2xl text-xs leading-relaxed {% if msg.sender == user %}bg-brand-primary text-white rounded-tl-none{% else %}bg-white border border-gray-200 text-gray-800 rounded-tr-none shadow-sm{% endif %}">
+                        {% if msg.sender != user %}
+                            <strong class="text-emerald-700 block mb-0.5">
+                                {% if current_language == 'en' %}{{ msg.sender.display_name_en }}{% else %}{{ msg.sender.display_name_ur }}{% endif %}
+                            </strong>
+                        {% endif %}
+                        <p class="whitespace-pre-line">{{ msg.content }}</p>
+                        {% if msg.image_attachment %}
+                            <img src="{{ msg.image_attachment.url }}" alt="Attachment" class="mt-2 rounded-lg max-h-48 object-cover">
+                        {% endif %}
+                        <span class="block text-[9px] mt-1 text-end {% if msg.sender == user %}text-emerald-200{% else %}text-gray-400{% endif %}">
+                            {{ msg.created_at|date:"H:i" }}
+                        </span>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-xs text-gray-400 text-center py-10" id="empty-notice">
+                    {% if current_language == 'en' %}
+                        No messages in this room yet. Say hello to get started!
+                    {% else %}
+                        اس روم میں ابھی کوئی پیغام نہیں ہے۔ پہلا سلام بھیجیں!
+                    {% endif %}
+                </p>
+            {% endfor %}
+        </div>
+
+        <!-- Input Bar with WebSocket Send + HTTP Fallback -->
+        <div class="p-4 bg-white border-t border-gray-200">
+            <form id="chat-input-form" method="POST" enctype="multipart/form-data" class="flex items-center gap-2">
+                {% csrf_token %}
+                <input type="text" name="content" id="message-input" placeholder="{% if current_language == 'en' %}Type your message here...{% else %}اپنا پیغام یہاں لکھیں...{% endif %}" autocomplete="off" required class="flex-grow px-4 py-3 text-xs rounded-2xl border border-gray-300 focus:ring-2 focus:ring-brand-primary">
+                
+                <label class="p-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl cursor-pointer transition" title="{% if current_language == 'en' %}Attach photo{% else %}تصویر اٹیچ کریں{% endif %}">
+                    <i class="fa-solid fa-paperclip text-sm"></i>
+                    <input type="file" name="image_attachment" id="image-input" accept="image/*" class="hidden">
+                </label>
+
+                <button type="submit" id="send-btn" class="px-6 py-3 bg-brand-primary hover:bg-brand-dark text-white font-bold text-xs rounded-2xl shadow-md transition flex items-center">
+                    <i class="fa-solid fa-paper-plane mr-1.5 ml-1.5"></i>
+                    <span>{% if current_language == 'en' %}Send{% else %}بھیجیں{% endif %}</span>
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const roomId = "{{ room.id }}";
+    const currentUserId = {{ user.id }};
+    const currentUserName = "{{ user.first_name|default:user.username }}";
+    const messagesContainer = document.getElementById('chat-messages-container');
+    const inputForm = document.getElementById('chat-input-form');
+    const messageInput = document.getElementById('message-input');
+    const imageInput = document.getElementById('image-input');
+    const emptyNotice = document.getElementById('empty-notice');
+    const wsIndicator = document.getElementById('ws-indicator');
+    const wsStatus = document.getElementById('ws-status');
+
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Channels WebSocket Initialization
+    const wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const wsUrl = `${wsScheme}://${window.location.host}/ws/chat/${roomId}/`;
+    let chatSocket = null;
+
+    try {
+        chatSocket = new WebSocket(wsUrl);
+
+        chatSocket.onopen = function() {
+            wsIndicator.className = "inline-block w-2.5 h-2.5 rounded-full bg-emerald-400";
+            wsStatus.textContent = "{{ current_language }}" === "en" ? "Live Connected" : "لائیو جڑا ہوا";
+        };
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            if (emptyNotice) emptyNotice.remove();
+
+            const isMe = (data.sender_id === currentUserId);
+            const bubble = document.createElement('div');
+            bubble.className = `flex items-start ${isMe ? 'justify-end' : 'justify-start'} space-x-2 {% if is_rtl %}space-x-reverse{% endif %}`;
+            
+            bubble.innerHTML = `
+                ${!isMe ? `<div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold flex-shrink-0">${data.sender_name.slice(0,1).toUpperCase()}</div>` : ''}
+                <div class="max-w-md p-3.5 rounded-2xl text-xs leading-relaxed ${isMe ? 'bg-brand-primary text-white rounded-tl-none' : 'bg-white border border-gray-200 text-gray-800 rounded-tr-none shadow-sm'}">
+                    ${!isMe ? `<strong class="text-emerald-700 block mb-0.5">${data.sender_name}</strong>` : ''}
+                    <p class="whitespace-pre-line">${data.content}</p>
+                    <span class="block text-[9px] mt-1 text-end ${isMe ? 'text-emerald-200' : 'text-gray-400'}">${data.created_at}</span>
+                </div>
+            `;
+            messagesContainer.appendChild(bubble);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        };
+
+        chatSocket.onclose = function() {
+            wsIndicator.className = "inline-block w-2.5 h-2.5 rounded-full bg-amber-400";
+            wsStatus.textContent = "{{ current_language }}" === "en" ? "Offline (HTTP Mode)" : "آف لائن (HTTP موڈ)";
+        };
+    } catch (err) {
+        console.warn("WebSocket not supported, falling back to HTTP POST.", err);
+    }
+
+    // Intercept form submit if WebSocket is active and no image file is being attached
+    inputForm.addEventListener('submit', function(e) {
+        if (chatSocket && chatSocket.readyState === WebSocket.OPEN && !imageInput.files.length) {
+            e.preventDefault();
+            const text = messageInput.value.trim();
+            if (text) {
+                chatSocket.send(JSON.stringify({ 'message': text }));
+                messageInput.value = '';
+            }
+        }
+    });
+</script>
+{% endblock %}

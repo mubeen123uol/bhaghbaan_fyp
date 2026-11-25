@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if current_language == 'en' %}
+        AI Plant Doctor — Leaf Disease Diagnosis | Baghbaan AI
+    {% else %}
+        AI پلانٹ ڈاکٹر — تصویری تشخیص | باغبان اے آئی
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center mb-8">
+        <span class="inline-block p-3 rounded-2xl bg-emerald-100 text-emerald-800 text-3xl mb-3">
+            🔬
+        </span>
+        <h1 class="text-3xl font-extrabold text-gray-900">
+            {% if current_language == 'en' %}
+                AI Plant Doctor (Disease Diagnosis)
+            {% else %}
+                AI پلانٹ ڈاکٹر (مرض کی تشخیص)
+            {% endif %}
+        </h1>
+        <p class="text-xs text-gray-600 mt-2 max-w-xl mx-auto leading-relaxed">
+            {% if current_language == 'en' %}
+                Take or upload a clear photo of your affected plant, leaf, flower, or fruit. Artificial Intelligence will recognize the disease and recommend instant organic neem and chemical treatments.
+            {% else %}
+                اپنے متاثرہ پودے، پتے، پھول یا پھل کی صاف تصویر لیں یا اپلوڈ کریں۔ مصنوعی ذہانت مرض کو پہچان کر فوری دیسی اور کیمیائی علاج تجویز کرے گی۔
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Upload Card with Advanced Viewfinder Scanner -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-xl relative overflow-hidden">
+        
+        <!-- Live Diagnostic Quality Check Chips -->
+        <div class="flex flex-wrap items-center justify-center gap-2 mb-6 text-[11px] font-semibold text-gray-600">
+            <span class="px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full border border-emerald-200 flex items-center gap-1.5 shadow-sm">
+                <span>☀️</span> {% if current_language == 'en' %}Good Natural Light{% else %}اچھی قدرتی روشنی{% endif %}
+            </span>
+            <span class="px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full border border-emerald-200 flex items-center gap-1.5 shadow-sm">
+                <span>🍃</span> {% if current_language == 'en' %}Single Leaf / Affected Spot{% else %}پتے کا متاثرہ حصہ{% endif %}
+            </span>
+            <span class="px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full border border-emerald-200 flex items-center gap-1.5 shadow-sm">
+                <span>🎯</span> {% if current_language == 'en' %}Sharp Focus (6–12 Inches){% else %}صاف اور فوکس شدہ تصویر{% endif %}
+            </span>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" id="diagnosis-form" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Drag and Drop Box with Viewfinder Corners -->
+            <div class="border-2 border-dashed border-emerald-300 hover:border-emerald-500 rounded-3xl p-6 sm:p-10 text-center bg-gradient-to-b from-emerald-50/40 via-white to-emerald-50/20 hover:from-emerald-50/60 transition cursor-pointer relative group" id="drop-zone">
+                <input type="file" name="image" id="file-input" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                
+                <!-- Viewfinder Corner Accents -->
+                <div class="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-emerald-600 rounded-tl pointer-events-none"></div>
+                <div class="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-emerald-600 rounded-tr pointer-events-none"></div>
+                <div class="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-emerald-600 rounded-bl pointer-events-none"></div>
+                <div class="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-emerald-600 rounded-br pointer-events-none"></div>
+
+                <div id="upload-prompt" class="space-y-4">
+                    <div class="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto text-2xl group-hover:scale-110 transition shadow-inner">
+                        <i class="fa-solid fa-camera-retro"></i>
+                    </div>
+                    <div>
+                        <span class="text-base font-extrabold text-gray-800 block">
+                            {% if current_language == 'en' %}
+                                Tap to take photo or drop leaf image
+                            {% else %}
+                                تصویر کھینچنے یا اپلوڈ کرنے کے لیے کلک کریں
+                            {% endif %}
+                        </span>
+                        <span class="text-xs text-gray-500 block mt-1">
+                            {% if current_language == 'en' %}
+                                Supports JPEG, PNG, WEBP (Smartphone Camera or Gallery)
+                            {% else %}
+                                موبائل کیمرہ یا گیلری سے JPEG یا PNG تصویر
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <!-- Dual Touch Action Buttons for Mobile -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2 max-w-md mx-auto">
+                        <button type="button" onclick="document.getElementById('file-input').click()" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-95">
+                            <i class="fa-solid fa-camera text-sm"></i>
+                            <span>{% if current_language == 'en' %}Take Live Photo (Camera){% else %}کیمرہ کھولیں (لائیو تصویر){% endif %}</span>
+                        </button>
+                        <button type="button" onclick="document.getElementById('file-input').click()" class="w-full sm:w-auto px-5 py-2.5 bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs rounded-xl border border-gray-200 shadow-sm transition flex items-center justify-center gap-2 active:scale-95">
+                            <i class="fa-regular fa-images text-sm text-brand-primary"></i>
+                            <span>{% if current_language == 'en' %}Choose from Gallery{% else %}گیلری سے تصویر منتخب کریں{% endif %}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Image Preview Container with Laser Scanline -->
+                <div id="preview-container" class="hidden relative space-y-4">
+                    <div class="relative inline-block max-w-full overflow-hidden rounded-2xl shadow-lg border-2 border-emerald-500">
+                        <div id="scanner-line" class="scanner-beam"></div>
+                        <img id="image-preview" src="#" alt="Preview" class="max-h-72 max-w-full mx-auto object-contain">
+                    </div>
+                    <div class="flex items-center justify-center gap-2">
+                        <span id="file-name" class="text-xs font-semibold text-gray-700 block"></span>
+                        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    </div>
+                    <div>
+                        <button type="button" id="change-image-btn" class="px-4 py-1.5 rounded-xl text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 transition inline-flex items-center gap-1.5 z-20 relative">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>{% if current_language == 'en' %}Choose Different Photo{% else %}دوسری تصویر منتخب کریں{% endif %}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive 1-Click Sample Test Leaves Gallery -->
+            <div class="p-4 bg-emerald-50/40 rounded-2xl border border-emerald-100">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-extrabold text-gray-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles text-brand-primary"></i>
+                        <span>{% if current_language == 'en' %}Instant 1-Click Demo Leaves (Tap to test):{% else %}نمونے کے بیمار پتوں سے فوری ٹیسٹ (کلک کریں):{% endif %}</span>
+                    </span>
+                    <span class="text-[10px] text-emerald-800 font-bold bg-white px-2.5 py-0.5 rounded-full border border-emerald-200 shadow-sm">
+                        {% if current_language == 'en' %}⚡ Click to Load{% else %}⚡ ایک کلک ٹیسٹ{% endif %}
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                    <!-- Sample 1: Rose Black Spot -->
+                    <button type="button" onclick="loadSampleLeaf('/media/sample_leaves/rose_black_spot.jpg', 'Rose Black Spot Fungal')" class="group p-2 rounded-xl border border-gray-200 hover:border-emerald-500 hover:shadow-md transition bg-white text-start flex flex-col items-center">
+                        <div class="w-full h-14 rounded-lg overflow-hidden mb-1.5 border border-gray-100 relative">
+                            <img src="/media/sample_leaves/rose_black_spot.jpg" alt="Rose Black Spot" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            <span class="absolute bottom-0.5 right-0.5 bg-black/70 text-white text-[8px] px-1 rounded font-bold">Rose</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-gray-800 text-center truncate w-full">{% if current_language == 'en' %}Rose Black Spot{% else %}گلاب سیاہ دھبے{% endif %}</span>
+                    </button>
+
+                    <!-- Sample 2: Citrus Leaf Curl -->
+                    <button type="button" onclick="loadSampleLeaf('/media/sample_leaves/citrus_leaf_curl.jpg', 'Citrus Leaf Curl Virus')" class="group p-2 rounded-xl border border-gray-200 hover:border-emerald-500 hover:shadow-md transition bg-white text-start flex flex-col items-center">
+                        <div class="w-full h-14 rounded-lg overflow-hidden mb-1.5 border border-gray-100 relative">
+                            <img src="/media/sample_leaves/citrus_leaf_curl.jpg" alt="Citrus Leaf Curl" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            <span class="absolute bottom-0.5 right-0.5 bg-black/70 text-white text-[8px] px-1 rounded font-bold">Lemon</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-gray-800 text-center truncate w-full">{% if current_language == 'en' %}Citrus Leaf Curl{% else %}سٹرس پتے مڑنا{% endif %}</span>
+                    </button>
+
+                    <!-- Sample 3: Tomato Early Blight -->
+                    <button type="button" onclick="loadSampleLeaf('/media/sample_leaves/tomato_early_blight.jpg', 'Tomato Early Blight')" class="group p-2 rounded-xl border border-gray-200 hover:border-emerald-500 hover:shadow-md transition bg-white text-start flex flex-col items-center">
+                        <div class="w-full h-14 rounded-lg overflow-hidden mb-1.5 border border-gray-100 relative">
+                            <img src="/media/sample_leaves/tomato_early_blight.jpg" alt="Tomato Early Blight" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            <span class="absolute bottom-0.5 right-0.5 bg-black/70 text-white text-[8px] px-1 rounded font-bold">Tomato</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-gray-800 text-center truncate w-full">{% if current_language == 'en' %}Tomato Blight{% else %}ٹماٹر جھلساؤ{% endif %}</span>
+                    </button>
+
+                    <!-- Sample 4: Whitefly Infestation -->
+                    <button type="button" onclick="loadSampleLeaf('/media/sample_leaves/whitefly_pest.jpg', 'Whitefly Pest Infestation')" class="group p-2 rounded-xl border border-gray-200 hover:border-emerald-500 hover:shadow-md transition bg-white text-start flex flex-col items-center">
+                        <div class="w-full h-14 rounded-lg overflow-hidden mb-1.5 border border-gray-100 relative">
+                            <img src="/media/sample_leaves/whitefly_pest.jpg" alt="Whitefly Pest" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            <span class="absolute bottom-0.5 right-0.5 bg-black/70 text-white text-[8px] px-1 rounded font-bold">Pest</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-gray-800 text-center truncate w-full">{% if current_language == 'en' %}Whitefly Pest{% else %}سفید مکھی حملہ{% endif %}</span>
+                    </button>
+
+                    <!-- Sample 5: Powdery Mildew -->
+                    <button type="button" onclick="loadSampleLeaf('/media/sample_leaves/powdery_mildew.jpg', 'Powdery Mildew Fungal')" class="group p-2 rounded-xl border border-gray-200 hover:border-emerald-500 hover:shadow-md transition bg-white text-start flex flex-col items-center col-span-2 sm:col-span-1">
+                        <div class="w-full h-14 rounded-lg overflow-hidden mb-1.5 border border-gray-100 relative">
+                            <img src="/media/sample_leaves/powdery_mildew.jpg" alt="Powdery Mildew" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            <span class="absolute bottom-0.5 right-0.5 bg-black/70 text-white text-[8px] px-1 rounded font-bold">Fungus</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-gray-800 text-center truncate w-full">{% if current_language == 'en' %}Powdery Mildew{% else %}پاؤڈری ملڈیو{% endif %}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Parameters Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">
+                        {% if current_language == 'en' %}
+                            Advice Language
+                        {% else %}
+                            علاج کی زبان (Advice Language)
+                        {% endif %}
+                    </label>
+                    <select name="language" class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary">
+                        <option value="en" {% if current_language == 'en' %}selected{% endif %}>English</option>
+                        <option value="ur" {% if current_language == 'ur' %}selected{% endif %}>اردو (Urdu)</option>
+                        <option value="ur_ro">Roman Urdu</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">
+                        {% if current_language == 'en' %}
+                            Your City (For Climate Context)
+                        {% else %}
+                            آپ کا شہر (موسمی سفارشات کے لیے)
+                        {% endif %}
+                    </label>
+                    <input type="text" name="city" value="{{ user.city|default:'Lahore' }}" class="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-brand-primary">
+                </div>
+            </div>
+
+            <!-- Instructions Notice -->
+            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 text-xs text-gray-600 space-y-1">
+                <div class="font-bold text-gray-800 flex items-center">
+                    <i class="fa-solid fa-circle-info text-blue-500 ml-1.5 mr-1.5"></i>
+                    {% if current_language == 'en' %}
+                        Tips for accurate diagnosis:
+                    {% else %}
+                        بہترین تشخیص کے لیے ہدایات:
+                    {% endif %}
+                </div>
+                <ul class="list-disc list-inside space-y-0.5 text-gray-500 pr-4 pl-4">
+                    {% if current_language == 'en' %}
+                        <li>Take photo in bright natural light so leaf veins, spots, and lesions are clear.</li>
+                        <li>Take a close-up photo focused on the affected part of the leaf.</li>
+                        <li>Non-plant objects (furniture, cars, pets) will be rejected automatically.</li>
+                    {% else %}
+                        <li>تصویر اچھی روشنی میں لیں تاکہ پتے کی رگیں اور دھبے واضح نظر آئیں۔</li>
+                        <li>پتے کے متاثرہ حصے کا قریبی (Close-up) فوٹو لیں۔</li>
+                        <li>غیر متعلقہ اشیاء (فرنیچر، گاڑی، پالتو جانور) کی تصویر مسترد کر دی جائے گی۔</li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <button type="submit" id="submit-btn" class="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-base rounded-2xl shadow-xl transition flex items-center justify-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %}">
+                <i class="fa-solid fa-stethoscope text-xl ml-2 mr-2"></i>
+                <span id="btn-text">
+                    {% if current_language == 'en' %}
+                        Diagnose Leaf Disease Now
+                    {% else %}
+                        تصویر کی جانچ اور تشخیص کریں
+                    {% endif %}
+                </span>
+            </button>
+        </form>
+
+        <!-- Loading Spinner (Hidden by default) -->
+        <div id="loading-state" class="hidden text-center py-8 space-y-4">
+            <div class="relative w-20 h-20 mx-auto">
+                <div class="w-20 h-20 border-4 border-emerald-100 border-t-emerald-600 rounded-full animate-spin"></div>
+                <div class="absolute inset-0 flex items-center justify-center text-2xl">
+                    🌿
+                </div>
+            </div>
+            <div>
+                <h3 class="text-base font-extrabold text-gray-800" id="loading-step-title">
+                    {% if current_language == 'en' %}
+                        AI Doctor is Analyzing Leaf Pathogens...
+                    {% else %}
+                        AI پلانٹ ڈاکٹر پتے کے امراض کا معائنہ کر رہا ہے...
+                    {% endif %}
+                </h3>
+                <p class="text-xs text-emerald-700 font-semibold mt-1" id="loading-step-sub">
+                    {% if current_language == 'en' %}
+                        Scanning chlorosis, spot patterns, and fungal spores...
+                    {% else %}
+                        پتے کی رگوں، پیلے پن اور پھپھوندی کے داغوں کی جانچ جاری ہے...
+                    {% endif %}
+                </p>
+                <div class="w-48 h-1.5 bg-gray-100 rounded-full mx-auto mt-4 overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full animate-pulse w-3/4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('file-input');
+    const uploadPrompt = document.getElementById('upload-prompt');
+    const previewContainer = document.getElementById('preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    const fileName = document.getElementById('file-name');
+    const changeBtn = document.getElementById('change-image-btn');
+    const form = document.getElementById('diagnosis-form');
+    const loadingState = document.getElementById('loading-state');
+    const submitBtn = document.getElementById('submit-btn');
+
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                fileName.textContent = file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + ' MB)';
+                uploadPrompt.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    changeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        fileInput.value = '';
+        uploadPrompt.classList.remove('hidden');
+        previewContainer.classList.add('hidden');
+    });
+
+    async function loadSampleLeaf(url, label) {
+        try {
+            const resp = await fetch(url);
+            const blob = await resp.blob();
+            const file = new File([blob], label.toLowerCase().replace(/[^a-z0-9]/g, '_') + '.jpg', { type: 'image/jpeg' });
+            
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            imagePreview.src = url;
+            fileName.textContent = label + ' (Sample Demo)';
+            uploadPrompt.classList.add('hidden');
+            previewContainer.classList.remove('hidden');
+
+            document.getElementById('drop-zone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } catch (e) {
+            console.error('Error loading sample leaf', e);
+        }
+    }
+
+    form.addEventListener('submit', function() {
+        form.classList.add('opacity-40', 'pointer-events-none');
+        loadingState.classList.remove('hidden');
+    });
+</script>
+{% endblock %}
