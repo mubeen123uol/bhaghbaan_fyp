@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: baghbaan-ai
+    runtime: python
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: daphne -b 0.0.0.0 -p $PORT baghbaan.asgi:application
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.10"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: DEFAULT_CITY
+        value: "Lahore"
+      - key: DEFAULT_LATITUDE
+        value: "31.5204"
+      - key: DEFAULT_LONGITUDE
+        value: "74.3587"
+      - key: AI_CONFIDENCE_THRESHOLD
+        value: "60.0"
+      - key: AI_DAILY_QUOTA_LIMIT
+        value: "1000"
