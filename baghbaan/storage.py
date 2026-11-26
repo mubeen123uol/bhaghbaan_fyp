@@ -61,7 +61,7 @@ def bootstrap_storage(base_dir=None):
             if src.is_file():
                 rel = src.relative_to(source_media)
                 dst = target_media / rel
-                if not dst.exists():
+                if not dst.exists() or src.stat().st_size != dst.stat().st_size:
                     dst.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy2(src, dst)
                     media_copied += 1
