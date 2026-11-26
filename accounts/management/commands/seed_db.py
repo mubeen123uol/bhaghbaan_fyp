@@ -1045,12 +1045,11 @@ class Command(BaseCommand):
                     'status': 'APPROVED',
                 }
             )
-            if not prod_obj.main_image:
-                for prefix, img_path in product_image_map.items():
-                    if prefix in prod_obj.title:
-                        prod_obj.main_image = img_path
-                        prod_obj.save(update_fields=['main_image'])
-                        break
+            for prefix, img_path in product_image_map.items():
+                if prefix in prod_obj.title:
+                    prod_obj.main_image = img_path
+                    prod_obj.save(update_fields=['main_image'])
+                    break
 
         self.stdout.write(f"  -> Successfully seeded {len(products)} marketplace agricultural products & tools.")
 
