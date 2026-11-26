@@ -8,6 +8,7 @@ class Plant(models.Model):
         ('HERB', 'Herbs / جڑی بوٹیاں'),
         ('TREE', 'Trees / سایہ دار درخت'),
         ('SUCCULENT', 'Cactus & Succulents / کیکٹس'),
+        ('INDOOR', 'Indoor & Air Purifiers / انڈور و ایئر پیوریفائر'),
     )
 
     name_en = models.CharField(max_length=120)

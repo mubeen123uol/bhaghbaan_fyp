@@ -48,6 +48,9 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
+# Scratch
+scratch/
+
 # Android build & signing secrets
 android_app/.gradle/
 android_app/build/

@@ -139,8 +139,8 @@ class Command(BaseCommand):
             }
         )
 
-        # 2. Curated Pakistani Plants (40+ Species)
-        self.stdout.write("Seeding 40+ Pakistani indigenous and common home garden plants...")
+        # 2. Curated Pakistani Plants (60+ Botanical Profiles)
+        self.stdout.write("Seeding 60+ Pakistani indigenous and common home garden plants...")
         plants_data = [
             # Ornamental / Flowers
             ("Desi Gulab (Rose)", "دیسی گلاب", "Desi Gulab", "Rosa damascena", "ORNAMENTAL",
@@ -158,7 +158,7 @@ class Command(BaseCommand):
              "پاکستان کا قومی پھول، سفید پنکھڑیوں والی خوبصورت بیل جو دیواروں اور جالیوں پر خوب چڑھتی ہے۔",
              2, 30, "Monsoon", "Full Sun to Partial Shade", False, "National flower, hardy across all provinces of Pakistan."),
 
-            ("Money Plant", "منی پلانٹ", "Money Plant", "Epipremnum aureum", "ORNAMENTAL",
+            ("Money Plant", "منی پلانٹ", "Money Plant", "Epipremnum aureum", "INDOOR",
              "Heart-shaped hardy climber suitable for indoor jars, balconies, and water pots.",
              "دل کی شکل کے پتوں والی سدا بہار بیل۔ گھر کے اندر، پانی کی بوتلوں اور بالکونی کے گملوں میں آسانی سے اگتی ہے۔",
              3, 45, "Spring", "Partial Shade to Low Light", True, "Avoid direct harsh sunlight in Pakistani summers to prevent leaf scorching."),
@@ -193,6 +193,83 @@ class Command(BaseCommand):
              "سردیوں کا مقبول پھول جو نومبر سے اپریل تک گملوں اور کیاریوں کو رنگین رکھتا ہے۔",
              2, 15, "None", "Full Sun", False, "Requires frequent feeding during peak winter bloom."),
 
+            ("Gul-e-Dawoodi / Chrysanthemum", "گل داؤدی", "Gul-e-Dawoodi", "Chrysanthemum morifolium", "ORNAMENTAL",
+             "The celebrated monarch of Pakistani winter flower shows, bursting in magnificent multi-colored blooms.",
+             "پاکستان میں موسم خزاں اور سرما کا سب سے بڑا روایتی نمائش کا پھول۔ سینکڑوں اقسام اور رنگوں میں دل موہ لیتا ہے۔",
+             2, 15, "Post-flowering (Feb)", "Full Sun", False, "Pinch growing tips until September to create bushy domes loaded with flower buds."),
+
+            ("Dahlia", "ڈاہلیا (شاہانہ پھول)", "Dahlia", "Dahlia pinnata", "ORNAMENTAL",
+             "Spectacular giant dinner-plate blooms in dazzling scarlet, crimson, and dual-tone hues for winter borders.",
+             "موسم سرما کا دیوہیکل اور شاہانہ پھول جس کی گہری رنگت اور بڑی پنکھڑیاں ہر دیکھنے والے کو مسحور کر دیتی ہیں۔",
+             2, 15, "None", "Full Sun", False, "Stake tall flower stems securely against strong winter gusts and feed with potash."),
+
+            ("Gazania", "گزانیہ (سورج مکھی نما)", "Gazania", "Gazania rigens", "ORNAMENTAL",
+             "Brilliant daisy-like blooms with eye-catching ring patterns that open wide in dazzling Pakistani sunshine.",
+             "سورج کی روشنی میں کھلنے والا انتہائی روشن پھول جو کم پانی اور سخت دھوپ میں بھی کیاریوں کو قالین بنا دیتا ہے۔",
+             3, 30, "None", "Full Direct Sun", False, "Flowers close at sunset and on cloudy days; excellent for rooftop pots and borders."),
+
+            ("Geranium", "جیرانیم (عطری پھول)", "Geranium", "Pelargonium hortorum", "ORNAMENTAL",
+             "Ever-blooming container favourite with velvety scalloped leaves and vivid clusters of coral and red petals.",
+             "گملوں اور بالکونیوں کا سدا بہار ساتھی جس کے خوبصورت سرخ، گلابی اور نارنجی گچھے مہینوں کھلے رہتے ہیں۔",
+             3, 25, "Spring", "Full Sun to Partial Afternoon Shade", False, "Avoid wetting leaves while watering; deadhead faded flower stems to spur fresh buds."),
+
+            ("Hybrid Sadabahar", "ہائبرڈ سدا بہار", "Hybrid Sadabahar", "Catharanthus roseus nanus", "ORNAMENTAL",
+             "Dwarf heat-tolerant miracle flower continuously blooming under blazing 45°C Punjab summer sun.",
+             "شدید ترین گرمی اور لو میں بھی بغیر رکے پھول دینے والا بونا پودا جو گملوں میں رنگ برنگے قالین بچھا دیتا ہے۔",
+             3, 45, "Anytime", "Full Sun", False, "Requires zero maintenance; thrives on neglect in well-draining garden soil."),
+
+            # Indoor Air Purifiers & Houseplants
+            ("Snake Plant / Sansevieria", "سانپ پودا (سنسویریا)", "Snake Plant", "Sansevieria trifasciata", "INDOOR",
+             "Indestructible architectural succulent that releases oxygen at night and filters toxic airborne pollutants.",
+             "انتہائی سخت جان انڈور پودا جو رات کے وقت آکسیجن خارج کرتا ہے اور ہوا سے نقصان دہ زہریلی گیسوں کو صاف کرتا ہے۔ کم پانی میں بھی سالوں شاداب رہتا ہے۔",
+             10, 60, "None", "Low to Bright Indirect Light", True, "Top NASA air purifier; overwatering causes root rot, keep soil mostly dry in winter."),
+
+            ("Spider Plant / Chlorophytum", "مکڑی پودا (مکڑی بیل)", "Spider Plant", "Chlorophytum comosum", "INDOOR",
+             "Air-purifying hanging plant with arching green-and-white striped leaves producing baby plantlets.",
+             "خوبصورت دھاری دار پتوں والا پودا جس سے چھوٹے ننھے پودے لٹکتے ہیں۔ کمرے کی ہوا سے کاربن مونو آکسائیڈ اور زہریلے مادے جذب کرتا ہے۔",
+             4, 30, "Spring", "Bright Indirect Light", True, "Safe for cats and dogs; thrives in drawing rooms and shaded balconies across Pakistan."),
+
+            ("Peace Lily", "پیس للی (امن کا پھول)", "Peace Lily", "Spathiphyllum wallisii", "INDOOR",
+             "Glossy dark green leaves with graceful pure white spathes that bloom indoors in low light.",
+             "گہرے سبز چمکدار پتوں اور پرسکون سفید پھولوں والا اندرونی پودا جو نمی اور ٹھنڈک پسند کرتا ہے۔ کمرے کی فضا کو تروتازہ رکھتا ہے۔",
+             3, 30, "Post-bloom", "Low to Medium Indirect Light", True, "Droops noticeably when thirsty; instantly perks up after a refreshing drink."),
+
+            ("Areca Palm", "اریکا پام", "Areca Palm", "Dypsis lutescens", "INDOOR",
+             "Lush feathery tropical palm that humidifies dry indoor air and adds luxury aesthetics to rooms.",
+             "گھنے پروں جیسے پتوں والا خوبصورت پام جو پاکستانی ڈرائنگ رومز اور برآمدوں کو سرسبز بناتا ہے اور خشک ہوا میں قدرتی نمی لاتا ہے۔",
+             3, 30, "Spring", "Bright Filtered Light", True, "Needs well-draining potting mix and misting during dry hot summer months in Punjab."),
+
+            ("Fiddle Leaf Fig", "فڈل لیف فگ", "Fiddle Leaf Fig", "Ficus lyrata", "INDOOR",
+             "High-end architectural plant boasting dramatic broad violin-shaped leaves for modern interiors.",
+             "وائلن کی شکل کے بڑے اور پرکشش پتوں والا شاندار پودا جو جدید گھروں کے اندرونی حصوں کی خوبصورتی میں بے پناہ اضافہ کرتا ہے۔",
+             5, 45, "Spring", "Bright Indirect Light", True, "Wipe broad leaves monthly with a damp cotton cloth to remove urban dust deposits."),
+
+            ("Golden Pothos / Marble Queen", "ماربل کوئین منی پلانٹ", "Marble Queen Pothos", "Epipremnum aureum 'Marble Queen'", "INDOOR",
+             "Striking white and green marbled variegation on heart-shaped climbing and cascading foliage.",
+             "سفید اور سبز رنگ کے سنگ مرمر جیسے دلکش پتوں والی بیل جو بالکونیوں اور کمروں کی جالیوں پر خوبصورت نظر آتی ہے۔",
+             4, 30, "Summer", "Bright Indirect Light", True, "Higher light preserves rich white variegation; highly resilient in local soils."),
+
+            # Succulents & Drought Tolerant
+            ("Aloe Vera / Ghee Kawar", "ایلوویرا (گھیگوار)", "Aloe Vera", "Aloe barbadensis miller", "SUCCULENT",
+             "Succulent with medicinal gel for skin burns, hair care, and digestion.",
+             "موٹے گودے دار پتوں والا سخت جان پودا جس کا جیل جلد کی خوبصورتی، جلنے اور بالوں کے لیے لاجواب ہے۔",
+             7, 90, "None", "Indirect Bright Sun", True, "Overwatering kills Aloe Vera; let soil dry completely between waterings."),
+
+            ("Jade Plant / Lucky Plant", "جیڈ پلانٹ (لکی منی ٹری)", "Jade Plant", "Crassula ovata", "SUCCULENT",
+             "Fleshy oval emerald leaves on woody stems, symbolizing enduring prosperity and good fortune.",
+             "گودے دار گول پتوں اور لکڑی نما تنے والا پودا جسے برکت اور خوشحالی کی علامت سمجھا جاتا ہے۔ انتہائی کم دیکھ بھال مانگتا ہے۔",
+             7, 60, "Prune tips", "Bright Direct to Indirect Sun", True, "Drought resilient; allow soil to dry out between waterings to prevent soft stems."),
+
+            ("Adenium / Desert Rose", "صحرائی گلاب (ایڈینیم)", "Adenium / Desert Rose", "Adenium obesum", "SUCCULENT",
+             "Bonsai-like swollen succulent trunk crowned with dazzling bell-shaped pink and ruby blooms.",
+             "موٹے تنے اور شاندار شوخ گلابی و سرخ پھولوں والا صحرائی پودا جو شدید گرمی اور تیز دھوپ کا عاشق ہے۔",
+             6, 45, "Late Winter", "Full Direct Sun", False, "Requires gritty sand-rich soil with zero water stagnation; reduce water to minimum in winter."),
+
+            ("Kalanchoe", "کلانچو", "Kalanchoe", "Kalanchoe blossfeldiana", "SUCCULENT",
+             "Compact winter-flowering succulent bearing vibrant dense clusters of red, orange, and yellow blooms.",
+             "سردیوں میں کھلنے والا پرکشش پودا جو گچھوں کی صورت میں شوخ سرخ، پیلے اور گلابی پھول دیتا ہے جو مہینوں تازہ رہتے ہیں۔",
+             5, 30, "Post-flowering", "Bright Sunlight", True, "Perfect tabletop succulent; water only when the top two inches of soil feel dry."),
+
             # Herbs & Kitchen Greens
             ("Pudina / Mint", "پودینہ", "Pudina", "Mentha spicata", "HERB",
              "Fragrant kitchen herb used everyday in Pakistani chutneys and refreshing drinks.",
@@ -214,20 +291,30 @@ class Command(BaseCommand):
              "طبی اور خوشبودار پودا جو مچھروں اور کیڑوں کو قدرتی طور پر بھگاتا ہے۔ چائے اور قہوے میں بھی استعمال ہوتا ہے۔",
              2, 30, "Spring", "Full Sun", False, "Prune flower heads to keep leaf foliage dense and aromatic."),
 
-            ("Aloe Vera / Ghee Kawar", "ایلوویرا (گھیگوار)", "Aloe Vera", "Aloe barbadensis miller", "SUCCULENT",
-             "Succulent with medicinal gel for skin burns, hair care, and digestion.",
-             "موٹے گودے دار پتوں والا سخت جان پودا جس کا جیل جلد کی خوبصورتی، جلنے اور بالوں کے لیے لاجواب ہے۔",
-             7, 90, "None", "Indirect Bright Sun", True, "Overwatering kills Aloe Vera; let soil dry completely between waterings."),
-
             ("Adrak / Ginger", "ادرک", "Adrak", "Zingiber officinale", "HERB",
              "Underground aromatic rhizome cultivated in moist, shaded garden planters.",
              "کھانوں اور قہووں میں روزانہ استعمال ہونے والی جڑ۔ نرم بھل والی مٹی اور جزوی چھاؤں میں اچھی اگتی ہے۔",
              2, 30, "Monsoon", "Partial Shade", False, "Harvest after 8-10 months when leaves turn yellow."),
 
-            ("Lehsan / Garlic", "لہسن", "Lehsan", "Allium sativum", "VEGETABLE",
-             "Pungent winter bulb that doubles as a companion plant repelling pests.",
-             "سرما کی مشہور فصل۔ گملوں میں لونگیں دبا کر آسانی سے اگایا جاتا ہے، کیڑوں کو دور بھگاتا ہے۔",
-             3, 30, "Winter", "Full Sun", False, "Plant cloves in October/November for a bountiful April harvest."),
+            ("Ajwain Leaf / Mexican Mint", "اجوائن کا پتہ (کولیس)", "Ajwain Leaf", "Coleus amboinicus", "HERB",
+             "Thick velvety succulent leaf with intense aromatic thyme/carom scent, used in pakoras and herbal teas.",
+             "موٹے رسیلے اور خوشبودار پتوں والا گھریلو طبی پودا جس کے پکوڑے لذیذ بنتے ہیں اور قہوہ کھانسی و پیٹ درد میں فوری آرام دیتا ہے۔",
+             3, 40, "Spring", "Partial Shade", True, "Propagates instantly from stem cuttings inserted in moist sandy loam."),
+
+            ("Lemongrass", "لیمن گراس (لیموں گھاس)", "Lemongrass", "Cymbopogon citratus", "HERB",
+             "Fast-clumping tropical grass with invigorating citrus aroma; essential for herbal green tea.",
+             "تیزی سے پھیلنے والی خوشبودار لیموں گھاس جس کا سبز قہوہ ہاضمے اور وزن کم کرنے کے لیے دنیا بھر میں مشہور ہے۔",
+             2, 30, "Monsoon", "Full Sun to Partial Shade", False, "Cut leaves regularly to encourage fresh tender aromatic stalks."),
+
+            ("Kasuri Methi", "قصوری میتھی", "Kasuri Methi", "Trigonella foenum-graecum", "HERB",
+             "Legendary fragrant winter herb from Kasur, Punjab, conferring heavenly aroma to Pakistani curries.",
+             "پنجاب کے تاریخی شہر قصور کی عالمی شہرت یافتہ خوشبودار میتھی جو سالن، پراٹھوں اور ساگ کی جان ہے۔",
+             2, 20, "Cut and regrow", "Full Sun", False, "Sow seeds in cool October breeze; multiple cuttings throughout cold winter months."),
+
+            ("Saunf / Sweet Fennel", "سونف کا پودا", "Saunf", "Foeniculum vulgare", "HERB",
+             "Graceful feathery aromatic herb producing sweet edible stalks and medicinal digestion-boosting seeds.",
+             "سردیوں کی خوبصورت جڑی بوٹی جس کے نرم پتے سلاد میں اور بیج کھانوں کے بعد ہاضمے اور ٹھنڈک کے لیے استعمال ہوتے ہیں۔",
+             3, 30, "Spring", "Full Sun", False, "Attracts beneficial pollinators and predatory wasps to protect the garden."),
 
             # Vegetables & Kitchen Garden
             ("Tamatar / Tomato", "ٹماٹر", "Tamatar", "Solanum lycopersicum", "VEGETABLE",
@@ -249,6 +336,11 @@ class Command(BaseCommand):
              "Nutrient-dense iron-rich leafy green, harvestable multiple times in winter.",
              "سردیوں کی ہر دلعزیز سبزی۔ بیج ڈالنے کے صرف چار ہفتوں بعد پتے کاٹنے کے قابل ہو جاتے ہیں۔",
              2, 20, "Cut and come again", "Full Sun to Partial Shade", False, "Cut outer leaves, and the plant regrows multiple times."),
+
+            ("Desi Palak / Broadleaf Spinach", "دیسی پالک (چوڑے پتے)", "Desi Palak", "Spinacia oleracea 'Desi'", "VEGETABLE",
+             "Fast-growing broadleaf green, packed with iron and calcium.",
+             "سردیوں کی غذائیت سے بھرپور دیسی پالک جس کے چوڑے پتے ہر دو ہفتے بعد دوبارہ اگتے ہیں۔",
+             2, 15, "Cut outer leaves", "Full Sun to Partial Shade", False, "Harvest outer leaves with sharp kitchen scissors."),
 
             ("Bhindi / Okra (Ladyfinger)", "بھنڈی", "Bhindi", "Abelmoschus esculentus", "VEGETABLE",
              "Popular summer vegetable producing tender green pods loved by Pakistani families.",
@@ -284,6 +376,11 @@ class Command(BaseCommand):
              "Light, easily digestible summer gourd ideal for high heat conditions.",
              "گرمیوں کی ہلکی اور ہاضم سبزی، برسات کے موسم میں تیزی سے بڑھنے والی بیل۔",
              2, 30, "Monsoon", "Full Sun", False, "Needs trellis support and ample organic compost."),
+
+            ("Lehsan / Garlic", "لہسن", "Lehsan", "Allium sativum", "VEGETABLE",
+             "Pungent winter bulb that doubles as a companion plant repelling pests.",
+             "سرما کی مشہور فصل۔ گملوں میں لونگیں دبا کر آسانی سے اگایا جاتا ہے، کیڑوں کو دور بھگاتا ہے۔",
+             3, 30, "Winter", "Full Sun", False, "Plant cloves in October/November for a bountiful April harvest."),
 
             # Fruit Trees & Saplings
             ("Amrood / Guava", "امرود", "Amrood", "Psidium guajava", "FRUIT",
@@ -321,10 +418,35 @@ class Command(BaseCommand):
              "شکر کے ذائقے جیسا میٹھا پھل، کراچی اور ساحلی علاقوں کی آب و ہوا میں شاندار پھلتا ہے۔",
              4, 60, "Post-harvest", "Full Sun", False, "Evergreen foliage with great resistance to wind."),
 
+            ("Sindh Golden Chikoo", "سندھ گولڈن چیکو", "Sindh Golden Chikoo", "Manilkara zapota 'Sindh Golden'", "FRUIT",
+             "Coastal and southern plain sapodilla producing honey-sweet brown fruits.",
+             "سندھ اور زیریں پنجاب کا پسندیدہ پھل دار درخت جس کے میٹھے اور ذائقے دار چیکو سال میں دو بار تیار ہوتے ہیں۔",
+             4, 45, "Post-harvest", "Full Sun", False, "Loves humid warm climate; requires organic compost top-dressing twice yearly."),
+
             ("Falsa", "فالسہ", "Falsa", "Grewia asiatica", "FRUIT",
              "Tangy cooling purple summer berries used for iconic Pakistani summer sherbets.",
              "گرمیوں کی شدت توڑنے والا ترش و میٹھا پھل جس کا شربت پاکستان بھر میں مقبول ہے۔",
              3, 45, "Severe Winter Pruning", "Full Sun", False, "Hard winter pruning down to 3-4 feet ensures huge crop of sweet berries."),
+
+            ("Red Lady Papaya", "پپیتا (ریڈ لیڈی 786)", "Red Lady Papaya", "Carica papaya 'Red Lady'", "FRUIT",
+             "Dwarf high-yielding sweet hybrid papaya tree producing aromatic salmon-red fruit in under 9 months.",
+             "بونا ہائبرڈ پپیتا جو صرف نو ماہ میں میٹھے، خوشبودار اور سرخ گودے والے پپیتے دیتا ہے۔ گھریلو باغات کے لیے لاجواب ہے۔",
+             2, 20, "None", "Full Sun", False, "Requires excellent drainage; roots rot quickly in standing water during monsoon rains."),
+
+            ("Jamun / Black Plum", "دیسی جامن", "Jamun", "Syzygium cumini", "FRUIT",
+             "Majestic indigenous shade tree yielding dark purple juicy berries renowned for blood sugar control.",
+             "پاکستان کا روایتی درخت جو برسات میں رسیلے کالے جامن دیتا ہے۔ اس کی گٹھلیوں کا سفوف شوگر کے مریضوں کے لیے قدرتی اکسیر ہے۔",
+             4, 60, "Post-harvest", "Full Sun", False, "Deep-rooted and wind-resistant; flourishes across Punjab, Sindh, and KPK."),
+
+            ("Sufi Ber / Desi Jujube", "دیسی صوفی بیر", "Sufi Ber", "Ziziphus mauritiana", "FRUIT",
+             "Extremely tough desert fruit tree producing crisp, sweet-tangy apple-shaped winter berries.",
+             "شدید خشک سالی برداشت کرنے والا دیسی درخت جو سردیوں میں خستہ اور میٹھے گول بیر دیتا ہے۔ پرندوں کی پسندیدہ پناہ گاہ۔",
+             5, 60, "Severe May Pruning", "Full Sun", False, "Prune heavily in May after harvest to stimulate lush new fruiting branches."),
+
+            ("Pothohar Olive / Zaitoon", "زیتون کا پودا (پوٹھوہار)", "Zaitoon", "Olea europaea", "FRUIT",
+             "Evergreen silvery-foliaged blessed tree flourishing in the Pothohar and Chakwal olive valleys.",
+             "قرآنی برکتوں والا سدا بہار درخت جو پنجاب کے پوٹھوہار ریجن اور خیبر پختونخوا میں شاندار پھل اور خالص تیل دیتا ہے۔",
+             5, 90, "Winter", "Full Sun", False, "Thrives on stony, alkaline slopes; highly drought and heat tolerant once established."),
 
             # Indigenous Trees & Shade
             ("Neem", "نیم", "Neem", "Azadirachta indica", "TREE",
@@ -353,7 +475,37 @@ class Command(BaseCommand):
              5, 90, "Winter", "Full Sun", False, "Hardy and drought tolerant across plains of Pakistan.")
         ]
 
+        plant_image_map = {
+            "Ficus carica": "plants/injeer_fig_tree.jpg",
+            "Grewia asiatica": "plants/falsa_berry_bush.jpg",
+            "Chrysanthemum morifolium": "plants/chrysanthemum_morifolium_hd.jpg",
+            "Dahlia pinnata": "plants/dahlia_pinnata_hd.jpg",
+            "Gazania rigens": "plants/gazania_rigens_hd.jpg",
+            "Pelargonium hortorum": "plants/pelargonium_geranium_hd.jpg",
+            "Catharanthus roseus nanus": "plants/catharanthus_roseus_nanus.jpg",
+            "Sansevieria trifasciata": "plants/snake_plant_sansevieria.jpg",
+            "Chlorophytum comosum": "plants/spider_plant_chlorophytum.jpg",
+            "Spathiphyllum wallisii": "plants/peace_lily_indoor_hd.jpg",
+            "Dypsis lutescens": "plants/areca_palm_dypsis.jpg",
+            "Ficus lyrata": "plants/fiddle_leaf_fig.jpg",
+            "Epipremnum aureum 'Marble Queen'": "plants/marble_queen_pothos.jpg",
+            "Crassula ovata": "plants/jade_plant_crassula.jpg",
+            "Adenium obesum": "plants/adenium_desert_rose_hd.jpg",
+            "Kalanchoe blossfeldiana": "plants/kalanchoe_blooming_hd.jpg",
+            "Coleus amboinicus": "plants/ajwain_leaf_potted_hd.jpg",
+            "Cymbopogon citratus": "plants/lemongrass_cymbopogon.jpg",
+            "Trigonella foenum-graecum": "plants/kasuri_methi_trigonella.jpg",
+            "Foeniculum vulgare": "plants/saunf_sweet_fennel_hd.jpg",
+            "Spinacia oleracea 'Desi'": "plants/desi_palak_spinach_hd.jpg",
+            "Manilkara zapota 'Sindh Golden'": "plants/sindh_golden_chikoo.jpg",
+            "Carica papaya 'Red Lady'": "plants/red_lady_papaya_786.jpg",
+            "Syzygium cumini": "plants/desi_jamun_black_plum.jpg",
+            "Ziziphus mauritiana": "plants/sufi_ber_jujube_hd.jpg",
+            "Olea europaea": "plants/pothohar_olive_zaitoon.jpg",
+        }
+
         created_plants = []
+        plant_lookup = {}
         for p in plants_data:
             obj, _ = Plant.objects.get_or_create(
                 scientific_name=p[3],
@@ -372,48 +524,193 @@ class Command(BaseCommand):
                     'climate_notes_pakistan': p[12],
                 }
             )
+            if p[3] in plant_image_map:
+                obj.image = plant_image_map[p[3]]
+                obj.save(update_fields=['image'])
             created_plants.append(obj)
+            plant_lookup[obj.scientific_name] = obj
+            if obj.name_roman:
+                plant_lookup[obj.name_roman.lower()] = obj
 
         self.stdout.write(f"  -> Successfully seeded {len(created_plants)} botanical plant profiles.")
 
-        # 3. Diseases and Treatments
-        self.stdout.write("Seeding plant diseases and treatment protocols...")
+        # 3. Diseases, Agronomic Medicines & Dual Treatments
+        self.stdout.write("Seeding plant diseases, agricultural medicines, and treatment protocols...")
         diseases_data = [
             ("Safaid Makhi (Whitefly)", "سفید مکھی کا حملہ", "Safaid Makhi", "Bemisia tabaci", "HIGH",
              "Tiny white flies under leaves, yellowing of leaves, sooty black mold formation, sticky honeydew.",
              "پتوں کے نیچے سفید رنگ کی باریک مکھیاں اڑتی ہوئی نظر آتی ہیں۔ پتے پیلے پڑ جاتے ہیں اور ان پر کالی پھپھوندی جم جاتی ہے۔",
-             "Spray 5ml organic Neem oil mixed with 2ml liquid soap in 1L water every 4 days. In severe cases, apply Imidacloprid (Confidor) at 1ml per liter.",
-             "ایک لیٹر پانی میں 5 ملی لیٹر نیم کا تیل اور چند قطرے برتن دھونے والا صابن ملا کر شام کے وقت پتوں کے نیچے اسپرے کریں۔ شدید حملے پر ایمیڈاکلوپرڈ (کانفیڈور) 1 ملی لیٹر فی لیٹر کے حساب سے اسپرے کریں۔",
-             "کیمیائی اسپرے کرتے وقت ماسک اور دستانے پہنیں۔ پھل اور سبزی اسپرے کے 7 دن بعد تک استعمال نہ کریں۔"),
+             "Spray 5ml organic cold-pressed Neem oil mixed with 2ml liquid soap in 1L water every 4 days. Hang yellow sticky cards.",
+             "ایک لیٹر پانی میں 5 ملی لیٹر نیم کا تیل اور چند قطرے برتن دھونے والا صابن ملا کر شام کے وقت پتوں کے نیچے اسپرے کریں۔ پیلے چپکنے والے کارڈز لگائیں۔",
+             "Apply Imidacloprid (Confidor 200 SL) at 1ml per liter or Movento at 1ml per liter during severe infestation.",
+             "ایمیڈاکلوپرڈ (کانفیڈور) 1 ملی لیٹر فی لیٹر یا مووینٹو 1 ملی لیٹر فی لیٹر کے حساب سے پتوں کے نیچے اسپرے کریں۔",
+             "کیمیائی اسپرے کرتے وقت ماسک اور دستانے پہنیں۔ پھل اور سبزی اسپرے کے 7 دن بعد تک استعمال نہ کریں۔",
+             ["Solanum lycopersicum", "Capsicum annuum", "Solanum melongena", "Abelmoschus esculentus", "Rosa damascena", "Citrus limon", "Carica papaya 'Red Lady'"]),
 
             ("Powdery Mildew / Safaid Phaphondi", "سفید پھپھوندی (پاؤڈری ملڈیو)", "Safaid Phaphondi", "Erysiphe cichoracearum", "MEDIUM",
              "White talcum powder-like spots appearing on upper leaf surfaces and buds, causing leaf curling and drying.",
              "پتوں کی اوپری سطح پر سفید ٹیلکم پاؤڈر جیسے دھبے نمودار ہوتے ہیں جس سے پتے مڑ کر خشک ہونے لگتے ہیں۔",
-             "Mix 1 part cow milk with 9 parts water and spray in morning sun. For fungicide, apply Wettable Sulphur or Score (Difenoconazole).",
-             "ایک حصہ گائے کا دودھ 9 حصے پانی میں ملا کر صبح کی دھوپ میں اسپرے کریں۔ دیسی لکڑی کی باریک راکھ چھڑکیں۔ کیمیائی علاج میں سلفر پاؤڈر یا اسکور فنگسائیڈ اسپرے کریں۔",
-             "تیز دھوپ اور دوپہر کے وقت سلفر اسپرے نہ کریں ورنہ پتے جل سکتے ہیں۔"),
+             "Mix 1 part fresh cow milk with 9 parts water and spray in morning sun. Dust fine wood ash over wet foliage.",
+             "ایک حصہ گائے کا دودھ 9 حصے پانی میں ملا کر صبح کی دھوپ میں اسپرے کریں۔ دیسی لکڑی کی باریک راکھ چھڑکیں۔",
+             "Apply Wettable Sulphur 80% WP at 2g/L or Score 250 EC (Difenoconazole) at 0.5ml per liter.",
+             "کیمیائی علاج میں سلفر پاؤڈر 2 گرام فی لیٹر یا اسکور فنگسائیڈ آدھا ملی لیٹر فی لیٹر اسپرے کریں۔",
+             "تیز دھوپ اور دوپہر کے وقت سلفر اسپرے نہ کریں ورنہ پتے جل سکتے ہیں۔",
+             ["Rosa damascena", "Cucumis sativus", "Luffa acutangula", "Momordica charantia", "Tagetes erecta", "Chrysanthemum morifolium", "Mentha spicata"]),
 
             ("Leaf Curl Virus / Marorha Rog", "پتہ مروڑ وائرس (مروڑھا روگ)", "Patta Marorha", "Chilli leaf curl virus", "CRITICAL",
              "Leaves curling upwards like a boat, stunted plant growth, thickening of veins, brittle foliage.",
              "پتے کشتی نما اوپر کی طرف مڑ جاتے ہیں، پودے کا قد چھوٹا رہ جاتا ہے اور نئی کونپلیں بننا رک جاتی ہیں۔",
-             "Transmit by whitefly; eliminate vectors using yellow sticky traps and neem spray. Rogue out and burn heavily stunted plants.",
+             "Eliminate whitefly vectors using yellow glue sheets and neem garlic tea. Rogue out and safely burn heavily stunted plants.",
              "یہ وائرس سفید مکھی سے پھیلتا ہے۔ پیلے چپکنے والے کارڈز لگائیں اور بیمار پودوں کو اکھاڑ کر دور دبا دیں تاکہ دوسرے پودے محفوظ رہیں۔",
-             "وائرس کا کوئی براہ راست کیمیائی علاج نہیں ہے؛ صرف سفید مکھی کو مار کر اس کا پھیلاؤ روکا جا سکتا ہے۔"),
+             "Apply systemic insecticide Movento (Spirotetramat) at 1ml/L or Match 50 EC at 1ml/L to control transmitting vector insects.",
+             "وائرس پھیلانے والے کیڑوں کے خاتمے کے لیے مووینٹو 1 ملی لیٹر یا میچ 1 ملی لیٹر فی لیٹر پانی میں اسپرے کریں۔",
+             "وائرس کا کوئی براہ راست کیمیائی علاج نہیں ہے؛ صرف سفید مکھی کو مار کر اس کا پھیلاؤ روکا جا سکتا ہے۔",
+             ["Capsicum annuum", "Solanum lycopersicum", "Carica papaya 'Red Lady'", "Abelmoschus esculentus", "Capsicum annuum grossum"]),
 
             ("Susti Kida / Aphids", "سست کیڑا (تیلا)", "Sust Kida / Tela", "Aphis gossypii", "MEDIUM",
              "Clusters of tiny green/black insects sucking sap on tender new shoots and buds.",
              "نرم کونپلوں اور کلیوں پر سبز اور سیاہ رنگ کے ننھے کیڑوں کا جمگھٹا جو پودے کا رس چوستے ہیں۔",
-             "Blast with strong water jet from garden hose. Spray garlic-chilli tea or mild soapy water.",
+             "Blast with strong water jet from garden hose. Spray garlic-chilli tea or mild soapy water (3ml/L).",
              "تیز پانی کی دھار سے کیڑوں کو دھو دیں۔ لہسن اور ہری مرچ کو پانی میں پکا کر چھان لیں اور پودے پر اسپرے کریں۔",
-             "شام کے وقت اسپرے کریں تاکہ مفید کیڑے (لیڈی برڈ بیٹل) محفوظ رہیں۔"),
+             "Apply Acetamiprid 20% SP at 1g per liter or Confidor at 0.5ml per liter for immediate knock-down.",
+             "ایسیٹامیپرڈ 1 گرام فی لیٹر یا کانفیڈور آدھا ملی لیٹر فی لیٹر پانی میں ملا کر اسپرے کریں۔",
+             "شام کے وقت اسپرے کریں تاکہ مفید کیڑے (لیڈی برڈ بیٹل) محفوظ رہیں۔",
+             ["Rosa damascena", "Coriandrum sativum", "Spinacia oleracea", "Citrus limon", "Chrysanthemum morifolium", "Trigonella foenum-graecum"]),
 
             ("Jad Ki Saran / Root Rot", "جڑوں کی سڑن (روٹ راٹ)", "Jad ki Saran", "Fusarium / Pythium", "HIGH",
              "Wilting of whole plant despite moist soil, blackened mushy decaying roots, foul damp odor.",
              "مٹی میں نمی کے باوجود پودا مرجھا جاتا ہے، گملے سے پودا نکالنے پر جڑیں سیاہ، نرم اور بدبودار نکلتی ہیں۔",
-             "Immediately stop watering. Repot into fresh well-draining bhal soil mixed with river sand. Drench root zone with Carbendazim (Derosal) fungicide.",
-             "فوری طور پر پانی دینا بند کریں۔ پودے کو گملے سے نکال کر سڑی ہوئی جڑیں کاٹیں اور تازہ بھل و ریتلی مٹی میں لگائیں۔ کاربینڈازم فنگسائیڈ کا محلول جڑوں میں ڈالیں۔",
-             "گملے کے پیندے میں نکاسی کا سوراخ ہمیشہ کھلا رکھیں۔ ضرورت سے زیادہ پانی پودے کا سب سے بڑا دشمن ہے۔"),
+             "Immediately stop watering. Repot into fresh well-draining bhal soil mixed with river sand. Dust roots with cinnamon powder.",
+             "فوری طور پر پانی دینا بند کریں۔ پودے کو گملے سے نکال کر سڑی ہوئی جڑیں کاٹیں اور تازہ بھل و ریتلی مٹی میں لگائیں۔ دار چینی پاؤڈر چھڑکیں۔",
+             "Drench root zone thoroughly with Carbendazim 50% WP (Derosal) at 2g/L or Topsin-M at 1.5g/L.",
+             "کاربینڈازم (ڈیروسال) 2 گرام فی لیٹر یا ٹاپسن ایم 1.5 گرام فی لیٹر کا محلول تیار کر کے جڑوں میں ڈالیں۔",
+             "گملے کے پیندے میں نکاسی کا سوراخ ہمیشہ کھلا رکھیں۔ ضرورت سے زیادہ پانی پودے کا سب سے بڑا دشمن ہے۔",
+             ["Epipremnum aureum", "Sansevieria trifasciata", "Aloe barbadensis miller", "Adenium obesum", "Solanum lycopersicum", "Spathiphyllum wallisii"]),
+
+            ("Downy Mildew / Zard Chitki", "ڈاؤنی ملڈیو (زرد چٹکی پھپھوندی)", "Downy Mildew", "Pseudoperonospora cubensis", "HIGH",
+             "Angular yellow-green oily patches on leaf tops with purple-grey downy felt on undersides in cucurbits.",
+             "پتوں کی اوپری سطح پر کونے دار پیلے دھبے اور نچلی سطح پر جامنی سرمئی روئی جیسی پھپھوندی۔ کدو، کھیرے اور توری کے پتے تیزی سے سوکھ جاتے ہیں۔",
+             "Spray solution of 5g baking soda (sodium bicarbonate) and 5ml cold-pressed neem oil in 1L warm water every 5 days.",
+             "ایک لیٹر پانی میں 5 گرام میٹھا سوڈا (بیکنگ سوڈا) اور 5 ملی لیٹر نیم آئل ملا کر پتوں کے نچلے حصے پر اسپرے کریں۔ پودوں کے درمیان ہوا کا گزر بحال رکھیں۔",
+             "Apply Ridomil Gold MZ (Mefenoxam + Mancozeb) at 2.5g per liter or Aliette (Fosetyl-Al) at 2g per liter.",
+             "ریڈومل گولڈ (Ridomil Gold) 2.5 گرام فی لیٹر یا ایلیٹ (Aliette) 2 گرام فی لیٹر پانی میں گھول کر 10 دن کے وقفے سے اسپرے کریں۔",
+             "حفاظتی چشمہ اور دستانے پہنیں۔ اسپرے کے بعد 5 دن تک پھل نہ توڑیں۔",
+             ["Cucumis sativus", "Luffa acutangula", "Momordica charantia", "Spinacia oleracea", "Mentha spicata"]),
+
+            ("Early Blight / Agiti Jhalso", "اگیتی جھلساؤ (آلٹرنیریا داغ)", "Early Blight", "Alternaria solani", "HIGH",
+             "Dark brown to black concentric target rings surrounded by yellow halos on older lower leaves.",
+             "ٹماٹر اور آلو کے پرانے نچلے پتوں پر سیاہ گول نشانے (ٹارگٹ بورڈ نما چھلے) اور پیلا بارڈر۔ پتے سوکھ کر جلنے لگتے ہیں۔",
+             "Prune away all lower infected leaves touching the soil. Mulch heavily with dry straw. Spray aerated compost tea weekly.",
+             "مٹی کے ساتھ لگے ہوئے تمام بیمار پتے کینچی سے کاٹ کر تلف کریں۔ مٹی پر صاف خشک گھاس کی ملچنگ کریں تاکہ پانی کے چھینٹوں سے بیماری نہ پھیلے۔",
+             "Spray Nativo (Tebuconazole + Trifloxystrobin) at 0.65g/L or Score 250 EC (Difenoconazole) at 0.5ml/L every 10-12 days.",
+             "نیٹیوو (Nativo) فنگسائیڈ 0.65 گرام فی لیٹر یا اسکور (Score) آدھا ملی لیٹر فی لیٹر کے حساب سے بیماری دیکھتے ہی اسپرے کریں۔",
+             "سبزی توڑنے کے بعد اسپرے کریں تاکہ کیمیکل کا اثر کھانے میں نہ آئے۔",
+             ["Solanum lycopersicum", "Solanum melongena", "Capsicum annuum grossum"]),
+
+            ("Late Blight / Pachiti Jhalso", "پچھیتی جھلساؤ (فائیٹوف تھورا وباء)", "Late Blight", "Phytophthora infestans", "CRITICAL",
+             "Rapidly spreading water-soaked dark brown greasy lesions on leaves, stems, and fruits with white fungal mold under cool humid conditions.",
+             "ٹھنڈے اور نمی والے موسم میں پتوں، تنے اور ٹماٹروں پر پانی بھرے سیاہ چکنے داغ جو چند دنوں میں پورے پودے کو جلا کر راکھ کر دیتے ہیں۔",
+             "Immediately destroy and bury heavily infected plants. Keep foliage completely dry, improve air circulation, and apply copper soap spray.",
+             "شدید بیمار پودوں کو فوراً جڑوں سمیت اکھاڑ کر زمین میں دبا دیں۔ پتوں پر اوپر سے پانی نہ ڈالیں اور پودوں کو کھلی دھوپ اور ہوا دار جگہ پر رکھیں۔",
+             "Spray Acrobat (Dimethomorph) at 2g/L tank-mixed with Mancozeb (2.5g/L), or Curzate (Cymoxanil + Mancozeb) at 2.5g/L.",
+             "ایکرو بیٹ (Acrobat) 2 گرام فی لیٹر یا کرزیٹ (Curzate) 2.5 گرام فی لیٹر پانی میں ملا کر ہر 7 دن بعد اسپرے کریں۔",
+             "شدید متعدی بیماری ہے؛ کام کرنے کے بعد باغبانی کے تمام اوزار ڈیٹول یا الکوحل سے صاف کریں۔",
+             ["Solanum lycopersicum", "Solanum melongena"]),
+
+            ("Spider Mites / Laal Makri", "لال مکڑی (مکڑی جالا روگ)", "Spider Mites / Laal Makri", "Tetranychus urticae", "HIGH",
+             "Fine delicate silky webbing across leaf undersides, bronzed dusty foliage, tiny yellow speckling, and leaf drop during hot dry spells.",
+             "گرم اور خشک موسم میں پتوں کے نیچے باریک جالا، زرد اور کانسی رنگ کے دھبے اور مائیکروسکوپک ننھی سرخ مکھیاں جو پودے کا رس نچوڑ لیتی ہیں۔",
+             "Blast leaf undersides with high-pressure cold water hose. Spray rosemary oil or pure neem oil (5ml/L) with liquid soap twice weekly.",
+             "پتوں کے نیچے تیز ٹھنڈے پانی کی دھار مار کر جالے توڑیں۔ 5 ملی لیٹر نیم آئل میں چند قطرے مائع صابن ملا کر ہفتے میں دو بار اسپرے کریں۔",
+             "Apply Oberon 240 SC (Spiromesifen) at 1ml/L or Agrimec / Vertimec (Abamectin) at 0.5ml/L targeting leaf undersides thoroughly.",
+             "اوبیرون (Oberon) 1 ملی لیٹر فی لیٹر یا ورٹیمیک (Abamectin) آدھا ملی لیٹر فی لیٹر شام کے وقت پتوں کے نیچے اچھی طرح اسپرے کریں۔",
+             "شدید گرمی کی دوپہر میں اسپرے نہ کریں ورنہ پتے جل سکتے ہیں۔",
+             ["Rosa damascena", "Tagetes erecta", "Solanum lycopersicum", "Solanum melongena", "Citrus limon", "Adenium obesum", "Dahlia pinnata"]),
+
+            ("Mealybugs / Chipi Kida", "ملی بگ (چپی سفید کیڑا)", "Mealybugs / Chipi Kida", "Planococcus citri", "HIGH",
+             "Clusters of soft-bodied insects covered in white powdery cottony wax hiding in leaf axils, sucking sap and causing sticky black mold.",
+             "پودوں کی شاخوں اور پتوں کے جوڑوں میں سفید روئی جیسے چپکے ہوئے کیڑوں کے جھنڈ جو رس چوس کر پودے کو کمزور اور کالا کر دیتے ہیں۔",
+             "Dip cotton swab in 70% isopropyl alcohol and dab directly on mealybug clusters. Spray potassium soap or neem oil emulsified with garlic water.",
+             "روئی کی تیلی کو اسپرٹ (الکوحل) میں بھگو کر کیڑوں پر لگائیں تاکہ ان کا مومی غلاف پگھل جائے۔ پھر لہسن اور نیم کے پانی کا تیز اسپرے کریں۔",
+             "Apply Movento 240 SC (Spirotetramat) at 1ml/L as two-way systemic insecticide, or Confidor (Imidacloprid) root zone drench.",
+             "مووینٹو (Movento) 1 ملی لیٹر فی لیٹر پانی میں ملا کر اسپرے کریں یا کانفیڈور کی جڑوں میں ڈرینچنگ کریں۔",
+             "گھریلو استعمال کے پودوں پر کیمیکل اسپرے کے بعد کم از کم 10 دن تک احتیاط برتیں۔",
+             ["Citrus limon", "Psidium guajava", "Mangifera indica", "Epipremnum aureum", "Rosa damascena", "Ficus lyrata", "Dypsis lutescens"]),
+
+            ("Citrus Canker / Nimbu ka Kankur", "لیموں کا کینکر (کھرنڈ روگ)", "Citrus Canker", "Xanthomonas axonopodis pv. citri", "CRITICAL",
+             "Raised rough corky brown crater-like scabs surrounded by distinct oily yellow halos on leaves, twigs, and lemon citrus fruit rinds.",
+             "لیموں اور مالٹے کے پتوں، شاخوں اور پھل پر ابھرے ہوئے کھردرے بھورے چھالے اور پیلے ہالے جو پھل کی خوبصورتی اور رس ضائع کر دیتے ہیں۔",
+             "Prune out diseased twigs during dry winter weather and burn them. Spray freshly prepared Bordeaux mixture (1:1 copper sulfate and lime).",
+             "موسم سرما کے خشک دنوں میں بیمار شاخیں کاٹ کر جلا دیں۔ تانبے کے سلفیٹ (نیلا تھوتھا) اور بجھے ہوئے چونے کا دیسی بورڈو مکسچر اسپرے کریں۔",
+             "Apply Copper Oxychloride 50% WP (Cuprocaffaro) at 3g/L combined with Streptomycin sulfate antibiotic at 0.5g/L during spring flush.",
+             "کاپر آکسی کلورائیڈ 3 گرام فی لیٹر اور اسٹریپٹو مائیسین اینٹی بائیوٹک 0.5 گرام فی لیٹر نئی پھوٹ کے وقت اسپرے کریں۔",
+             "کٹائی کے اوزاروں کو ہر پودے کے بعد الکوحل سے جراثیم کش کریں۔",
+             ["Citrus limon", "Psidium guajava"]),
+
+            ("Anthracnose / Kaali Saran", "اینتھراکنوز (کالی سڑن و جھلسن)", "Anthracnose", "Colletotrichum gloeosporioides", "HIGH",
+             "Sunken circular dark brown to pitch-black necrotic lesions on leaves, stems, and ripening fruits, oozing pinkish-salmon spore droplets.",
+             "پتوں، شاخوں اور آم و پپیتے کے پھلوں پر گہرے کالے گڑھے نما داغ جن میں برسات کے دوران گلابی رطوبت نکلتی ہے۔ شاخیں اوپر سے نیچے سوکھتی ہیں۔",
+             "Prune infected twigs 4 inches below the infected zone. Spray composted cow urine bio-extract or fermented garlic-chilli tea.",
+             "بیمار شاخ کے متاثرہ حصے سے چار انچ نیچے سے کٹائی کریں۔ لہسن، ہری مرچ اور نیم کے پتوں کا قہوہ پکا کر ٹھنڈا کر کے اسپرے کریں۔",
+             "Apply Topsin-M 70% WP (Thiophanate-Methyl) at 1.5g/L or Antracol (Propineb) at 2.5g/L before and after monsoon rains.",
+             "ٹاپسن ایم (Topsin-M) 1.5 گرام فی لیٹر یا اینٹراکول 2.5 گرام فی لیٹر برسات سے پہلے اور بعد میں اسپرے کریں۔",
+             "پھلوں کی چنائی کے وقت پھل پر داغ نہ لگنے دیں۔",
+             ["Mangifera indica", "Carica papaya 'Red Lady'", "Psidium guajava", "Rosa damascena", "Ficus carica"]),
+
+            ("Damping Off / Poudon ka Girna", "پنیری کا گرنا (ڈیمپنگ آف کالر راٹ)", "Damping Off", "Rhizoctonia solani / Pythium", "CRITICAL",
+             "Newly germinated seedlings develop water-soaked constriction at soil level, topple over, and rot away en masse within 24 hours.",
+             "نئے اگنے والے ننھے پودے زمین کی سطح سے نرم پڑ کر اچانک زمین پر گر جاتے ہیں اور چند ہی گھنٹوں میں پوری پنیری گل سڑ جاتی ہے۔",
+             "Dust soil trays with ground Ceylon cinnamon powder (natural antifungal). Use well-draining sterile river sand and avoid overwatering seeds.",
+             "مٹی کے اوپر دار چینی کا باریک پاؤڈر چھڑکیں جو قدرتی اینٹی فنگل ہے۔ بیجوں کو زیادہ گہرا نہ دبائیں اور صرف اسپرے بوتل سے نمی دیں۔",
+             "Drench nursery seedling beds with Previcur Energy (Propamocarb + Fosetyl) at 1.5ml/L or treat seeds with Thiram 75% WP before sowing.",
+             "پریویکور انرجی (Previcur Energy) 1.5 ملی لیٹر فی لیٹر پانی میں ملا کر پنیری کی جڑوں میں ڈالیں یا بیج بونے سے قبل فنگسائیڈ پاؤڈر لگائیں۔",
+             "پنیری کے برتنوں میں نکاسی کے سوراخ کھلے رکھیں۔",
+             ["Solanum lycopersicum", "Capsicum annuum", "Spinacia oleracea", "Coriandrum sativum", "Tagetes erecta", "Petunia hybrida"]),
+
+            ("Leaf Miner / Patta Kuredne Wala Kida", "پتہ سرنگ کیڑا (لیف مائنر)", "Leaf Miner", "Liriomyza sativae", "MEDIUM",
+             "Silvery translucent winding serpentine tunnels etched inside leaf layers, leading to leaf distortion, drying, and reduced photosynthesis.",
+             "پتوں کے اندر سانپ نما چمکدار سفید لکیریں اور سرنگیں جن کے اندر باریک کیڑا پتے کا سبز مادہ کھاتا ہے، جس سے پتا مڑ کر سوکھ جاتا ہے۔",
+             "Hang yellow sticky glue sheets near foliage to catch adult flies. Spray 5% neem seed kernel extract (NSKE) directly onto mined foliage.",
+             "پودوں کے پاس پیلے چپکنے والے کارڈز لٹکائیں تاکہ اڑنے والی مکھیاں پھنس جائیں۔ نیم کے بیجوں کے مغز کا 5 فیصد عرق اسپرے کریں۔",
+             "Spray Match 50 EC (Lufenuron) at 1ml/L or Tracer / Spinosad at 0.5ml/L penetrating deep into leaf epidermal layers.",
+             "میچ (Match) 1 ملی لیٹر فی لیٹر یا ٹریسر (Spinosad) آدھا ملی لیٹر فی لیٹر اسپرے کریں جو پتے کے اندر داخل ہو کر سرنگ کیڑے کو مارتی ہے۔",
+             "شام کے بعد اسپرے کریں اور پھولوں پر اسپرے سے گریز کریں۔",
+             ["Solanum lycopersicum", "Citrus limon", "Cucumis sativus", "Spinacia oleracea", "Pelargonium hortorum"]),
+
+            ("Blossom End Rot / Penda Sarna", "ٹماٹر کا پیندہ سڑنا (کیلشیم کمی)", "Blossom End Rot", "Physiological Calcium Deficiency", "MEDIUM",
+             "Water-soaked dark leathery sunken black rot appearing at the blossom end (bottom) of tomatoes, bell peppers, and eggplants.",
+             "ٹماٹر اور شملہ مرچ کے پیندے (نچلے حصے) پر سیاہ، چمڑے نما چپٹا گڑھا جو کیلشیم کی کمی اور بے قاعدہ پانی دینے کی وجہ سے ہوتا ہے۔",
+             "Steep crushed eggshells in white vinegar for 48 hours, dilute 1:10 with water and drench roots. Maintain steady uniform soil moisture with drip.",
+             "انڈوں کے باریک چھلکے سرکے میں دو دن بھگو کر پانی میں ملا کر جڑوں میں ڈالیں۔ پودے کو خشک ہونے سے بچائیں اور مستقل نمی رکھیں۔",
+             "Apply foliar spray of Calcium Nitrate (CaNO3) at 2g per liter during active flowering and fruit set, plus agricultural gypsum in soil.",
+             "کیلشیم نائٹریٹ 2 گرام فی لیٹر پانی میں حل کر کے پھول اور پھل بننے کے دوران پتوں پر اسپرے کریں اور گملے میں جپسم کا چمچ ملائیں۔",
+             "بہت زیادہ نائٹروجن کھاد دینے سے گریز کریں کیونکہ یہ کیلشیم کے جذب ہونے کو روکتی ہے۔",
+             ["Solanum lycopersicum", "Capsicum annuum grossum", "Solanum melongena", "Capsicum annuum"]),
+
+            ("Iron Chlorosis / Pila Pan", "پتوں کا پیلا پن (آئرن و مائیکرو نیوٹرینٹ کمی)", "Iron Chlorosis", "Micronutrient Deficiency", "LOW",
+             "New top leaves turn pale yellow to ivory while veins stay conspicuously dark green, caused by high pH alkaline soils locking up iron.",
+             "نئی کونپلیں اور پتے زرد یا سفید ہو جاتے ہیں لیکن پتوں کی رگیں گہری سبز رہتی ہیں۔ یہ پاکستانی الکلائن مٹی میں فولاد کی کمی کی علامت ہے۔",
+             "Drench soil with fermented citrus peel bio-enzyme mixed with diluted sour curd (chaach). Add well-rotted leaf mold compost.",
+             "لیموں اور مالٹے کے چھلکوں سے تیار کردہ بائیو اینزائم یا کھٹی لسی پانی میں ملا کر جڑوں میں ڈالیں تاکہ مٹی کی تیزابیت متوازن ہو۔",
+             "Dissolve Chelated Iron EDDHA 6% (Fe-EDDHA) at 5g in 10 liters of water and drench into root zone, or spray zinc-iron chelate foliar mix.",
+             "چلیٹڈ آئرن (Fe-EDDHA 6%) 5 گرام فی 10 لیٹر پانی میں گھول کر جڑوں میں دیں، پتے 48 گھنٹوں میں دوبارہ گہرے سبز ہو جائیں گے۔",
+             "دوپہر کی سخت دھوپ میں نہ ڈالیں، شام کو نم مٹی میں اپلائی کریں۔",
+             ["Citrus limon", "Psidium guajava", "Rosa damascena", "Jasminum sambac", "Bougainvillea spectabilis"])
         ]
+
+        disease_image_map = {
+            "Pseudoperonospora cubensis": "diseases/disease_downy_mildew.jpg",
+            "Alternaria solani": "diseases/disease_early_blight_tomato.jpg",
+            "Phytophthora infestans": "diseases/disease_late_blight_potato.jpg",
+            "Tetranychus urticae": "diseases/disease_spider_mites_red.jpg",
+            "Planococcus citri": "diseases/disease_mealybugs_cottony.jpg",
+            "Xanthomonas axonopodis pv. citri": "diseases/disease_citrus_canker_scab.jpg",
+            "Colletotrichum gloeosporioides": "diseases/disease_anthracnose_rot.jpg",
+            "Rhizoctonia solani / Pythium": "diseases/disease_damping_off_seedlings.jpg",
+            "Liriomyza sativae": "diseases/disease_leaf_miner_tunnels.jpg",
+            "Physiological Calcium Deficiency": "diseases/disease_blossom_end_rot.jpg",
+            "Micronutrient Deficiency": "diseases/disease_iron_chlorosis_yellowing.jpg",
+        }
 
         for d in diseases_data:
             disease_obj, _ = Disease.objects.get_or_create(
@@ -427,8 +724,17 @@ class Command(BaseCommand):
                     'symptoms_ur': d[6],
                 }
             )
-            # Link to sample plants
-            disease_obj.plants.add(*created_plants[:8])
+            if not disease_obj.sample_image and d[3] in disease_image_map:
+                disease_obj.sample_image = disease_image_map[d[3]]
+                disease_obj.save(update_fields=['sample_image'])
+
+            # Link to specific plant species
+            susceptible_species = d[10] if len(d) > 10 else []
+            for spec in susceptible_species:
+                if spec in plant_lookup:
+                    disease_obj.plants.add(plant_lookup[spec])
+            if not susceptible_species:
+                disease_obj.plants.add(*created_plants[:8])
 
             # Organic Treatment
             Treatment.objects.get_or_create(
@@ -450,11 +756,13 @@ class Command(BaseCommand):
                 defaults={
                     'title_en': f"Agricultural Fungicide / Pesticide for {disease_obj.name_en}",
                     'title_ur': f"{disease_obj.name_ur} کے لیے زرعی کیمیائی دوا",
-                    'instructions_en': d[7],
-                    'instructions_ur': d[8],
-                    'safety_disclaimer_ur': d[9],
+                    'instructions_en': d[9] if len(d) > 9 else d[7],
+                    'instructions_ur': d[10] if len(d) > 11 else (d[8] if len(d) <= 10 else d[10]),
+                    'safety_disclaimer_ur': d[11] if len(d) > 11 else d[9],
                 }
             )
+
+        self.stdout.write(f"  -> Successfully seeded {len(diseases_data)} diseases with dual organic/chemical treatments.")
 
         # 4. User Garden & Plants
         self.stdout.write("Seeding sample gardens, user plants, and tasks...")
@@ -483,7 +791,6 @@ class Command(BaseCommand):
         # Seed UserPlants for Homeowner
         rose_template = Plant.objects.filter(name_roman__icontains='Gulab').first()
         lemon_template = Plant.objects.filter(name_roman__icontains='Nimbu').first()
-        mint_template = Plant.objects.filter(name_roman__icontains='Pudina').first()
 
         up1, _ = UserPlant.objects.get_or_create(
             user=homeowner,
@@ -607,44 +914,127 @@ class Command(BaseCommand):
             }
         )
 
-        # 6. Marketplace Products
-        self.stdout.write("Seeding verified nursery products in marketplace...")
+        # 6. Marketplace Products (Expanded with 22 Agricultural Medicines, Fertilizers & Tools)
+        self.stdout.write("Seeding verified nursery products & agricultural medicines in marketplace...")
         products = [
+            # Medicines & Pest Controls
             ("خالص دیسی نیم کا تیل (Pure Organic Neem Oil 500ml)", 'PESTICIDE',
-             "100% خالص ٹھنڈے طریقہ کار سے تیار شدہ نیم آئل۔ سفید مکھی، تیلا اور پاؤڈری ملڈیو کا قدرتی دشمن۔ پودوں کے لیے بے ضرر۔",
+             "100% خالص ٹھنڈے طریقہ کار سے تیار شدہ نیم آئل۔ سفید مکھی، تیلا اور پاؤڈری ملڈیو کا قدرتی دشمن۔ پودوں کے لیے بے ضرر۔ (100% cold-pressed organic neem oil for natural pest control against whiteflies, aphids, mealybugs, and spider mites. Safe for vegetables and ornamental plants.)",
              Decimal('650.00'), 45),
             
+            ("ریڈومل گولڈ پھپھوندی کش دوا (Ridomil Gold MZ 68 WG Fungicide 250g)", 'PESTICIDE',
+             "ڈاؤنی ملڈیو اور پچھیتی جھلساؤ کے خاتمے کے لیے عالمی شہرت یافتہ سسٹمک فنگسائیڈ۔ سبزیوں اور بیلوں کا شافی علاج۔ (World-renowned systemic fungicide for complete control of downy mildew and late blight on vegetables, gourds, and vines.)",
+             Decimal('1450.00'), 25),
+
+            ("نیٹیوو جدید سسٹمک فنگسائیڈ (Nativo Broad Spectrum Fungicide 100g)", 'PESTICIDE',
+             "ٹماٹر، مرچ اور پھولوں میں اگیتی جھلساؤ، پتوں کے داغ اور اینتھراکنوز کا جدید ترین اینٹی فنگل علاج۔ (Advanced dual-action systemic fungicide targeting early blight, leaf spots, and anthracnose on tomatoes, peppers, and roses.)",
+             Decimal('1850.00'), 20),
+
+            ("مووینٹو سسٹمک کیڑے مار دوا (Movento 240 SC Systemic Insecticide 100ml)", 'PESTICIDE',
+             "دو طرفہ سسٹمک کیڑے مار دوا جو ملی بگ، سفید مکھی اور سست کیڑے کو چھپی ہوئی جگہوں سے ختم کرتی ہے۔ (Two-way systemic insecticide that penetrates plant vascular system to wipe out stubborn mealybugs, whiteflies, and aphids.)",
+             Decimal('1650.00'), 18),
+
+            ("کاپر آکسی کلورائیڈ کاپر فنگسائیڈ (Copper Oxychloride 50% WP 500g)", 'PESTICIDE',
+             "لیموں کے کینکر، بیکٹیریل روگ اور کالی سڑن کے خلاف روایتی و آزمودہ کاپر اسپرے پاؤڈر۔ (Broad-spectrum contact copper fungicide and bactericide specifically recommended for citrus canker, leaf spots, and blights.)",
+             Decimal('950.00'), 35),
+
+            ("اوبیرون سرخ مکڑی مار دوا (Oberon Spider Mite & Whitefly Miticide 100ml)", 'PESTICIDE',
+             "گلاب، سبزیوں اور سجاوٹی پودوں پر سرخ مکڑی کے جالوں اور انڈوں کا خاتمہ کرنے والی معیاری دوا۔ (Specialized miticide that eliminates adult spider mites, nymphs, and eggs on roses, vegetables, and container plants.)",
+             Decimal('1750.00'), 15),
+
+            ("پیلی چپکنے والی کیڑے مار شیٹس (Yellow Sticky Insect Traps Pack of 20)", 'PESTICIDE',
+             "بغیر کسی کیمیکل کے سفید مکھی، لیف مائنر اور مچھروں کو پکڑنے والے ڈبل سائیڈڈ پیلے گلو کارڈز۔ (Non-toxic double-sided yellow glue traps for monitoring and mass trapping whiteflies, leafminers, fungus gnats, and aphids.)",
+             Decimal('600.00'), 50),
+
+            # Organic & Chemical Fertilizers
             ("نامیاتی گلی سڑی گوبر کھاد (Organic Aged Compost 10kg)", 'FERTILIZER',
-             "دو سال پرانی تیار شدہ دیسی کھاد جو مٹی کی زرخیزی اور پھولوں کے سائز میں فوری اضافہ کرتی ہے۔ بالکل بو کے بغیر۔",
+             "دو سال پرانی تیار شدہ دیسی کھاد جو مٹی کی زرخیزی اور پھولوں کے سائز میں فوری اضافہ کرتی ہے۔ بالکل بو کے بغیر۔ (Two-year fully decomposed aged organic cow manure compost. Restores soil biology, enhances aeration, and enriches container soil naturally.)",
              Decimal('400.00'), 80),
-             
+
+            ("این پی کے متوازن کھاد (Balanced NPK 20-20-20 Fertilizer 1kg)", 'FERTILIZER',
+             "پودوں کی مجموعی بڑھوتری، سبز پتوں اور بھرپور پھولوں کے لیے پانی میں حل پذیر معیاری کھاد۔ (Premium 100% water-soluble balanced NPK 20-20-20 macro-nutrient plant food with trace micronutrients for vibrant blooms and deep green leaves.)",
+             Decimal('950.00'), 30),
+
+            ("چلیٹڈ آئرن کھاد 6% (Chelated Iron EDDHA 6% Micronutrient 250g)", 'FERTILIZER',
+             "پیلے پڑے پتوں کو 48 گھنٹوں میں گہرا سبز بنانے والی اعلیٰ ترین چلیٹڈ آئرن کھاد۔ الکلائن مٹی کے لیے اکسیر۔ (Premium EDDHA chelated iron specifically formulated for high pH alkaline Pakistani soils, curing leaf chlorosis and yellowing fast.)",
+             Decimal('750.00'), 40),
+
+            ("سرسوں کی قدرتی کھل کھاد (Pure Organic Mustard Cake Powder 2kg)", 'FERTILIZER',
+             "روایتی سرسوں کی کھل جس کا مائع قہوہ پودوں کو نائٹروجن اور اینٹی فنگل مائیکروبیل طاقت دیتا ہے۔ (Traditional organic mustard oil cake meal rich in nitrogen, phosphorus, and natural compounds that ward off subterranean root pests.)",
+             Decimal('380.00'), 65),
+
+            ("اسٹیمڈ بون میل کھاد (Steamed Bone Meal Phosphorus Fertilizer 2kg)", 'FERTILIZER',
+             "پھولوں اور پھلوں کی تعداد دگنی کرنے اور جڑوں کو مضبوط بنانے والی خالص نامیاتی فاسفورس کھاد۔ (Slow-release organic phosphorus and calcium source ideal for roses, fruit trees, and flowering annuals.)",
+             Decimal('480.00'), 50),
+
+            ("پریمیئم کوکو پیٹ بلاک (Premium Washed Coco Peat Block 5kg)", 'FERTILIZER',
+             "نمی برقرار رکھنے اور جڑوں کو ہوا دار رکھنے والا 100% نامیاتی ناریل برادہ، 75 لیٹر مٹی تیار کرتا ہے۔ (Low-EC washed compressed coconut coir peat block expanding to 75 liters of rich water-retaining potting medium.)",
+             Decimal('650.00'), 40),
+
+            ("پرلائٹ و ورمی کیولائٹ سوائل مکس (Perlite & Vermiculite Aeration Mix 3L)", 'FERTILIZER',
+             "گملے کی مٹی کو ہلکا، نرم اور ہوا دار بنانے والا قدرتی منرل مکسچر جو جڑوں کو سڑنے سے بچاتا ہے۔ (Lightweight sterile volcanic mineral mix that prevents soil compaction and maximizes drainage in pot culture.)",
+             Decimal('550.00'), 30),
+
+            # Live Plants & Seeds
             ("دیسی لال گلاب کا تیار پودا (Desi Red Rose in 12-inch Pot)", 'PLANTS',
-             "خوشبودار دیسی سرخ گلاب کا تندرست اور کلیوں سے لدا پودا، مٹی کے پکے گملے میں تیار شدہ۔",
+             "خوشبودار دیسی سرخ گلاب کا تندرست اور کلیوں سے لدا پودا، مٹی کے پکے گملے میں تیار شدہ۔ (Fragrant native Desi Red Rose established in a 12-inch clay pot with fertile silt mix. Blooming with multiple healthy flower buds.)",
              Decimal('350.00'), 25),
              
             ("کاغذی لیموں کا پیوندی پودا (Grafted Kaghzi Lemon Plant)", 'PLANTS',
-             "دو سالہ پیوندی لیموں کا پودا جو پہلے سال سے ہی وافر پھل دینا شروع کر دیتا ہے۔",
+             "دو سالہ پیوندی لیموں کا پودا جو پہلے سال سے ہی وافر پھل دینا شروع کر دیتا ہے۔ (Two-year-old grafted Kaghzi Lemon sapling acclimated to Pakistani heat. High yield of thin-skinned, extra juicy fragrant lemons.)",
              Decimal('850.00'), 20),
 
+            ("سانپ پودا / سنسویریا (Snake Plant in Ceramic Planter)", 'PLANTS',
+             "ناسا کا منظور شدہ ایئر پیوریفائر پودا جو خوبصورت سیرامک گملے میں لگا ہوا ہے۔ انڈور کمروں کے لیے بہترین۔ (Hardy indoor Sansevieria snake plant in a modern glazed ceramic pot; releases oxygen 24/7.)",
+             Decimal('1150.00'), 15),
+
             ("پریمیئم کچن گارڈن بیج پیکٹ 10 اقسام (Winter Kitchen Garden Seeds)", 'SEEDS',
-             "ٹماٹر، ہری مرچ، پالک، دھنیا، مولی، گاجر، بینگن، سلاد پتہ، میتھی اور مٹر کے اعلیٰ جرمنیشن والے بیج۔",
+             "ٹماٹر، ہری مرچ، پالک، دھنیا، مولی، گاجر، بینگن، سلاد پتہ، میتھی اور مٹر کے اعلیٰ جرمنیشن والے بیج۔ (Premium pack of 10 kitchen garden vegetable seeds with 85%+ germination rate.)",
              Decimal('750.00'), 60),
 
+            # Planters & Pots
             ("روایتی مٹی کے پکے گملے (14-inch Terracotta Clay Pots)", 'POTS',
-             "گجرات کے روایتی مٹی کے بنے ہوئے پکے گملے جن میں پودوں کی جڑیں ٹھنڈی رہتی ہیں اور ہوا کا گزر ہوتا ہے۔",
+             "گجرات کے روایتی مٹی کے بنے ہوئے پکے گملے جن میں پودوں کی جڑیں ٹھنڈی رہتی ہیں اور ہوا کا گزر ہوتا ہے۔ (Traditional Gujrat handcrafted porous terracotta clay pot. Naturally cools root systems during intense summer heat.)",
              Decimal('280.00'), 50),
 
+            # Tools & Smart Hardware
             ("باغبانی کٹر اور کانٹ چھانٹ قینچی (Heavy Duty Garden Pruning Shears)", 'TOOLS',
-             "سٹین لیس سٹیل کا تیز دھار کٹر جو پودوں کی شاخوں کو بغیر نقصان پہنچائے صفائی سے کاٹتا ہے۔",
+             "سٹین لیس سٹیل کا تیز دھار کٹر جو پودوں کی شاخوں کو بغیر نقصان پہنچائے صفائی سے کاٹتا ہے۔ (Heavy-duty ergonomic garden bypass pruning shears with rust-resistant carbon steel blades and safety thumb lock.)",
              Decimal('1200.00'), 15),
 
-            ("این پی کے متوازن کھاد (Balanced NPK 20-20-20 Fertilizer 1kg)", 'FERTILIZER',
-             "پودوں کی مجموعی بڑھوتری، سبز پتوں اور بھرپور پھولوں کے لیے پانی میں حل پذیر معیاری کھاد۔",
-             Decimal('950.00'), 30),
+            ("5 لیٹر ہیوی ڈیوٹی پریشر اسپرے پمپ (5-Liter Garden Pressure Pump Sprayer)", 'TOOLS',
+             "پیتل کی ایڈجسٹ ایبل نوزل اور پریشر ریلیف والو والی معیاری اسپرے بوتل جو کیڑے مار اور فنگسائیڈ اسپرے کے لیے بہترین ہے۔ (5-liter pressurized garden sprayer with adjustable brass nozzle and shoulder strap for even pesticide application.)",
+             Decimal('2100.00'), 12),
+
+            ("3-ان-1 ڈیجیٹل سوائل پی ایچ و نمی میٹر (3-in-1 Soil pH, Moisture & Sunlight Meter)", 'TOOLS',
+             "بغیر بیٹری کے مٹی کی نمی، پی ایچ لیول اور دھوپ کی پیمائش کرنے والا سمارٹ ٹیسٹر میٹر۔ (Precision 3-in-1 probe measuring soil pH, moisture level, and ambient sunlight without batteries.)",
+             Decimal('1650.00'), 20),
+
+            ("خودکار سولر ڈرپ اریگیشن کٹ 30 گملے (Solar Automatic Drip Irrigation 30-Pot Kit)", 'TOOLS',
+             "چھت اور بالکونی کے 30 گملوں کو خودکار طریقے سے وقت پر پانی دینے والا سولر پمپ اور ڈرپ پائپنگ سسٹم۔ (Solar-powered automated drip irrigation system supporting 30 individual planters with programmable timer.)",
+             Decimal('4800.00'), 8),
         ]
 
+        product_image_map = {
+            "ریڈومل گولڈ": "products/ridomil_gold_fungicide_250g.jpg",
+            "نیٹیوو": "products/nativo_fungicide_100g.jpg",
+            "مووینٹو": "products/movento_systemic_insecticide.jpg",
+            "کاپر آکسی کلورائیڈ": "products/copper_oxychloride_500g.jpg",
+            "اوبیرون": "products/oberon_miticide_100ml.jpg",
+            "پیلی چپکنے والی": "products/yellow_sticky_traps_pack20.jpg",
+            "چلیٹڈ آئرن": "products/chelated_iron_eddha_250g.jpg",
+            "سرسوں کی قدرتی": "products/mustard_oil_cake_powder_2kg.jpg",
+            "اسٹیمڈ بون میل": "products/steamed_bone_meal_2kg.jpg",
+            "پریمیئم کوکو پیٹ": "products/compressed_coco_peat_block_5kg.jpg",
+            "پرلائٹ و ورمی کیولائٹ": "products/perlite_vermiculite_mix_3l.jpg",
+            "سانپ پودا": "products/snake_plant_ceramic_pot.jpg",
+            "5 لیٹر ہیوی ڈیوٹی": "products/5_liter_pressure_sprayer_pump.jpg",
+            "3-ان-1 ڈیجیٹل": "products/3_in_1_soil_ph_moisture_meter.jpg",
+            "خودکار سولر ڈرپ": "products/solar_drip_irrigation_kit_30pots.jpg",
+        }
+
         for p in products:
-            Product.objects.get_or_create(
+            prod_obj, _ = Product.objects.get_or_create(
                 seller=seller_profile,
                 title=p[0],
                 defaults={
@@ -655,6 +1045,14 @@ class Command(BaseCommand):
                     'status': 'APPROVED',
                 }
             )
+            if not prod_obj.main_image:
+                for prefix, img_path in product_image_map.items():
+                    if prefix in prod_obj.title:
+                        prod_obj.main_image = img_path
+                        prod_obj.save(update_fields=['main_image'])
+                        break
+
+        self.stdout.write(f"  -> Successfully seeded {len(products)} marketplace agricultural products & tools.")
 
         # 7. Community Groups & Chat Rooms
         self.stdout.write("Seeding community groups and chat rooms...")
@@ -688,6 +1086,16 @@ class Command(BaseCommand):
             sender=supervisor,
             content="وعلیکم السلام احمد بھائی! اکتوبر اور نومبر ٹماٹر کی پنیری لگانے کا بہترین وقت ہے۔ رات کی ٹھنڈ سے بچانے کے لیے پنیری کو کپڑے سے ڈھانپیں۔"
         )
+        Message.objects.get_or_create(
+            room=cr_comm,
+            sender=homeowner,
+            content="پودوں پر سفید مکھی اور لال مکڑی کا حملہ ہو رہا ہے، کوئی دیسی اور محفوظ نسخہ بتائیں؟"
+        )
+        Message.objects.get_or_create(
+            room=cr_comm,
+            sender=supervisor,
+            content="نیم کا تیل 5 ملی لیٹر اور چند قطرے صابن 1 لیٹر نیم گرم پانی میں ملا کر ہر 4 دن بعد شام کو اسپرے کریں۔ ساتھ میں پیلی چپکنے والی شیٹس لگائیں۔"
+        )
 
         # Garden Team Chat Room
         cr_team, _ = ChatRoom.objects.get_or_create(
@@ -705,6 +1113,16 @@ class Command(BaseCommand):
             sender=gardener,
             content="احمد صاحب، ابھی کھاد ڈالنے کے بعد ہلکا پانی دیا ہے۔ اگلے دو دن پانی نہ دیں تاکہ جڑیں کھاد کو اچھی طرح جذب کر لیں۔"
         )
+        Message.objects.get_or_create(
+            room=cr_team,
+            sender=supervisor,
+            content="علی مالی، لیموں کے پودے کے پتوں پر پیلا پن آ رہا ہے۔ کل چلیٹڈ آئرن (Fe-EDDHA) کا 5 گرام کا ہلکا محلول جڑوں میں دیجیے گا۔"
+        )
+        Message.objects.get_or_create(
+            room=cr_team,
+            sender=gardener,
+            content="جی طارق صاحب، میں کل صبح کے وقت نم مٹی میں آئرن کا محلول دے دوں گا۔"
+        )
 
         # Direct Chat Room (Buyer <-> Seller)
         cr_direct, _ = ChatRoom.objects.get_or_create(
@@ -716,12 +1134,12 @@ class Command(BaseCommand):
         Message.objects.get_or_create(
             room=cr_direct,
             sender=homeowner,
-            content="السلام علیکم بلال بھائی! کیا آپ کے پاس دیسی نیم آئل کا 500ml کا پیکٹ دستیاب ہے؟"
+            content="السلام علیکم بلال بھائی! کیا آپ کے پاس دیسی نیم آئل اور ریڈومل گولڈ کا پیکٹ دستیاب ہے؟"
         )
         Message.objects.get_or_create(
             room=cr_direct,
             sender=seller_user,
-            content="وعلیکم السلام! جی بالکل، تازہ تیار شدہ نیم آئل وافر مقدار میں اسٹاک میں موجود ہے۔ آپ کیش آن ڈیلیوری آرڈر کر سکتے ہیں۔"
+            content="وعلیکم السلام! جی بالکل، تازہ تیار شدہ نیم آئل اور ریڈومل گولڈ فنگسائیڈ وافر مقدار میں اسٹاک میں موجود ہے۔ آپ کیش آن ڈیلیوری آرڈر کر سکتے ہیں۔"
         )
 
         self.stdout.write(self.style.SUCCESS("Baghbaan AI database successfully seeded with all sample entities!"))

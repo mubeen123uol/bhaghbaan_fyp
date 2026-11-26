@@ -153,7 +153,22 @@
         </h2>
 
         {% for disease in diseases %}
-            <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm overflow-hidden">
+                {% if disease.sample_image %}
+                    <div class="h-44 sm:h-52 -mx-6 -mt-6 mb-5 overflow-hidden relative group">
+                        <img src="{{ disease.sample_image.url }}" alt="{{ disease.name_en }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-3 left-4 right-4 flex justify-between items-end">
+                            <span class="text-xs font-bold text-white drop-shadow flex items-center gap-1.5">
+                                <i class="fa-solid fa-microscope text-emerald-400"></i>
+                                {% if current_language == 'en' %}Pathological Symptom Specimen{% else %}بیماری کی علامتی تصویر{% endif %}
+                            </span>
+                            <span class="text-[11px] font-mono text-emerald-200 bg-black/40 px-2 py-0.5 rounded backdrop-blur">
+                                {{ disease.scientific_name }}
+                            </span>
+                        </div>
+                    </div>
+                {% endif %}
                 <div class="flex items-center justify-between mb-3 border-b border-gray-100 pb-3">
                     <div>
                         <h3 class="text-lg font-bold text-gray-900">
