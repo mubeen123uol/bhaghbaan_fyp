@@ -1016,6 +1016,14 @@ class Command(BaseCommand):
         ]
 
         product_image_map = {
+            "خالص نامیاتی نیم آئل": "products/neem_oil_500ml.jpg",
+            "خالص پتوں و گوبر کی گلی سڑی کھاد": "products/aged_organic_compost_10kg.jpg",
+            "دیسی لال گلاب کا تیار پودا": "products/desi_red_rose_potted.jpg",
+            "کاغذی لیموں کا پیوندی پودا": "products/grafted_kaghzi_lemon_tree.jpg",
+            "موسمِ سرما کچن گارڈننگ بیج پیکٹ": "products/winter_kitchen_garden_seeds.jpg",
+            "14 انچ روایتی مٹی کے پکے گملے": "products/terracotta_clay_pots_14in.jpg",
+            "ہیوی ڈیوٹی بائی پاس پروننگ کٹر": "products/bypass_pruning_shears.jpg",
+            "این پی کے 20-20-20 متوازن کھاد": "products/npk_20_20_20_fertilizer.jpg",
             "ریڈومل گولڈ": "products/ridomil_gold_fungicide_250g.jpg",
             "نیٹیوو": "products/nativo_fungicide_100g.jpg",
             "مووینٹو": "products/movento_systemic_insecticide.jpg",
