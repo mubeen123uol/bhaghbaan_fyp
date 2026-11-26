@@ -20,6 +20,65 @@ class AIDoctorService:
         image_file.seek(0)
         return hasher.hexdigest()
 
+    @staticmethod
+    def _get_gemini_api_key():
+        """Return configured Gemini API key, or empty string if unset/placeholder."""
+        api_key = (os.getenv('GEMINI_API_KEY', '') or getattr(settings, 'GEMINI_API_KEY', '') or '').strip()
+        if not api_key or api_key == 'your_gemini_api_key_here':
+            return ''
+        return api_key
+
+    @staticmethod
+    def _get_gemini_models():
+        """Return deduplicated candidate Gemini model IDs in priority order."""
+        configured = (os.getenv('GEMINI_MODEL', '') or getattr(settings, 'GEMINI_MODEL', 'gemini-3.6-flash') or 'gemini-3.6-flash').strip()
+        candidates = [
+            configured,
+            'gemini-3.6-flash',
+            'gemini-3-flash-preview',
+            'gemini-3.5-flash-lite',
+            'gemini-3.8-flash',
+        ]
+        seen = set()
+        ordered = []
+        for model_name in candidates:
+            if model_name and model_name not in seen:
+                seen.add(model_name)
+                ordered.append(model_name)
+        return ordered
+
+    @classmethod
+    def _generate_with_gemini(cls, api_key, contents, config=None):
+        """Invoke Google Gen AI SDK with automatic fallback across unavailable/404 or 503-busy model IDs."""
+        from google import genai
+
+        client = genai.Client(api_key=api_key)
+        last_exc = None
+        for model_name in cls._get_gemini_models():
+            try:
+                return client.models.generate_content(
+                    model=model_name,
+                    contents=contents,
+                    config=config,
+                )
+            except Exception as exc:
+                last_exc = exc
+                err_text = str(exc).lower()
+                code = getattr(exc, 'code', None)
+                is_retryable_model_err = (
+                    code in (404, 503)
+                    or 'not found' in err_text
+                    or 'deprecated' in err_text
+                    or 'unavailable' in err_text
+                    or 'high demand' in err_text
+                    or 'deadline' in err_text
+                )
+                if is_retryable_model_err:
+                    logger.warning(f"Gemini model '{model_name}' unavailable ({exc}); trying fallback model.")
+                    continue
+                raise
+        raise last_exc
+
     @classmethod
     def diagnose_image(cls, user, image_file, language='ur', city='Lahore'):
         """
@@ -43,14 +102,12 @@ class AIDoctorService:
         ai_config = AISetting.objects.first()
         threshold = ai_config.confidence_threshold if ai_config else settings.AI_CONFIDENCE_THRESHOLD
 
-        api_key = os.getenv('GEMINI_API_KEY', '') or getattr(settings, 'GEMINI_API_KEY', '')
+        api_key = cls._get_gemini_api_key()
         
-        # Try primary AI Providers (Gemini Vision + Plant.id) if API key configured
-        if api_key and api_key != 'your_gemini_api_key_here':
+        # Try primary AI Provider (Gemini Vision) if API key configured
+        if api_key:
             try:
-                import google.generativeai as genai
-                genai.configure(api_key=api_key)
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                from google.genai import types
 
                 # Step 1: Validate plant & diagnose
                 image_bytes = image_file.read()
@@ -85,15 +142,24 @@ class AIDoctorService:
                 }}
                 """
 
-                response = model.generate_content([
-                    prompt,
-                    {'mime_type': image_file.content_type or 'image/jpeg', 'data': image_bytes}
-                ])
+                response = cls._generate_with_gemini(
+                    api_key=api_key,
+                    contents=[
+                        prompt,
+                        types.Part.from_bytes(
+                            data=image_bytes,
+                            mime_type=getattr(image_file, 'content_type', None) or 'image/jpeg',
+                        ),
+                    ],
+                    config=types.GenerateContentConfig(response_mime_type='application/json'),
+                )
 
                 # Parse JSON
-                clean_text = response.text.strip()
+                clean_text = (response.text or '').strip()
                 if clean_text.startswith('```json'):
                     clean_text = clean_text[7:]
+                elif clean_text.startswith('```'):
+                    clean_text = clean_text[3:]
                 if clean_text.endswith('```'):
                     clean_text = clean_text[:-3]
                 clean_text = clean_text.strip()
@@ -122,6 +188,8 @@ class AIDoctorService:
                 )
                 return diag
 
+            except ValueError:
+                raise
             except Exception as e:
                 logger.warning(f"Gemini API diagnosis failed or not configured, using smart local fallback: {e}")
 
@@ -203,13 +271,11 @@ class AIDoctorService:
         fallback_lang = request_lang or getattr(user, 'preferred_language', 'en') or 'en'
         lang = cls._detect_message_language(user_message, default_lang=fallback_lang)
 
-        api_key = os.getenv('GEMINI_API_KEY', '') or getattr(settings, 'GEMINI_API_KEY', '')
+        api_key = cls._get_gemini_api_key()
 
-        if api_key and api_key != 'your_gemini_api_key_here':
+        if api_key:
             try:
-                import google.generativeai as genai
-                genai.configure(api_key=api_key)
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                from google.genai import types
 
                 if lang == 'en':
                     lang_instruction = "The user is asking in English. You MUST respond entirely in fluent, professional, friendly ENGLISH. Do NOT use Urdu script."
@@ -225,9 +291,16 @@ class AIDoctorService:
                     "local soils (canal silt/bhal), organic remedies (neem oil, cow dung compost), and native flora. "
                     "If the user asks something completely outside gardening (e.g. politics, coding, math), politely decline."
                 )
-                response = model.generate_content(f"{sys_prompt}\n\nUser Question: {user_message}")
-                bot_reply = response.text.strip()
-            except Exception:
+                response = cls._generate_with_gemini(
+                    api_key=api_key,
+                    contents=user_message,
+                    config=types.GenerateContentConfig(system_instruction=sys_prompt),
+                )
+                bot_reply = (response.text or '').strip()
+                if not bot_reply:
+                    bot_reply = cls._get_smart_bot_rule_answer(user_message, lang)
+            except Exception as e:
+                logger.warning(f"Gemini chatbot failed, using smart rule fallback: {e}")
                 bot_reply = cls._get_smart_bot_rule_answer(user_message, lang)
         else:
             bot_reply = cls._get_smart_bot_rule_answer(user_message, lang)

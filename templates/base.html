@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="{{ current_language }}" dir="{% if is_rtl %}rtl{% else %}ltr{% endif %}">
+<html lang="{{ current_language }}" dir="{% if is_rtl %}rtl{% else %}ltr{% endif %}"{% if is_app_view %} class="app-view"{% endif %}>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{% block title %}Baghbaan AI — باغبان اے آئی{% endblock %}</title>
+    <script>
+        if ((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true) {
+            document.documentElement.classList.add('app-view');
+        }
+    </script>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
 
     <!-- Tailwind CSS CDN -->
@@ -127,6 +132,64 @@
             box-sizing: border-box !important;
             text-align: center !important;
             flex-shrink: 0 !important;
+        }
+
+        /* Website View by default on mobile browsers; App View only inside APK / standalone app */
+        #app-bottom-dock {
+            display: none;
+        }
+        html.app-view #app-bottom-dock {
+            display: block;
+        }
+        html.app-view #main-content {
+            padding-bottom: 6rem;
+        }
+        html.app-view #chatbot-fab {
+            bottom: 5rem;
+        }
+        html.app-view #site-footer {
+            display: none;
+        }
+
+        /* Safe-area insets for Android notch / status bar / nav bar */
+        html.app-view body {
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            padding-left: env(safe-area-inset-left, 0px);
+            padding-right: env(safe-area-inset-right, 0px);
+        }
+        /* Compensate the top announcement bar so it doesn't hide behind status bar */
+        html.app-view body > div:first-child {
+            padding-top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+        }
+        /* Bottom dock sits above the Android nav bar */
+        html.app-view #app-bottom-dock {
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.25rem);
+        }
+        /* Chatbot FAB also lifts above nav bar */
+        html.app-view #chatbot-fab {
+            bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        @media (min-width: 1024px) {
+            html.app-view #app-bottom-dock {
+                display: none;
+            }
+            html.app-view #main-content {
+                padding-bottom: 0;
+            }
+            html.app-view #chatbot-fab {
+                bottom: 1.5rem;
+            }
+            html.app-view #site-footer {
+                display: block;
+            }
+            html.app-view body {
+                padding-top: 0;
+                padding-bottom: 0;
+                padding-left: 0;
+                padding-right: 0;
+            }
         }
     </style>
     {% block extra_head %}{% endblock %}
@@ -265,10 +328,10 @@
         <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-xl">
             <!-- Mobile Language Switcher Pill Toggle -->
             <div class="p-3 bg-emerald-50/80 rounded-2xl border border-emerald-100 flex items-center justify-between">
-                <span class="text-xs font-bold text-gray-700 flex items-center gap-1.5">
-                    <i class="fa-solid fa-language text-brand-primary"></i>
-                    <span>{% if current_language == 'en' %}App Language:{% else %}ایپ کی زبان:{% endif %}</span>
-                </span>
+                    <span class="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+                        <i class="fa-solid fa-language text-brand-primary"></i>
+                        <span>{% if is_app_view %}{% if current_language == 'en' %}App Language:{% else %}ایپ کی زبان:{% endif %}{% else %}{% if current_language == 'en' %}Language:{% else %}زبان:{% endif %}{% endif %}</span>
+                    </span>
                 <div class="flex items-center gap-1.5">
                     <a href="{% url 'set-language' 'ur' %}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {% if current_language == 'ur' %}bg-emerald-700 text-white shadow-sm{% else %}bg-white text-gray-700 border border-gray-200 hover:bg-gray-100{% endif %}">
                         <svg class="inline-block w-3.5 h-2.5 rounded-sm flex-shrink-0" viewBox="0 0 640 480"><path fill="#01411c" d="M0 0h640v480H0z"/><path fill="#fff" d="M0 0h160v480H0z"/><circle cx="395" cy="240" r="120" fill="#fff"/><circle cx="420" cy="225" r="105" fill="#01411c"/><polygon fill="#fff" points="405,175 412,197 435,197 416,211 423,233 405,219 387,233 394,211 375,197 398,197"/></svg>
@@ -335,6 +398,12 @@
                     <i class="fa-solid fa-robot ml-2 mr-2 text-teal-600 w-5 text-center"></i>
                     <span>{% if current_language == 'en' %}AI Gardening Chatbot{% else %}اردو باغبانی چیٹ بوٹ{% endif %}</span>
                 </a>
+                {% if not is_app_view %}
+                    <a href="{% url 'download-apk' %}" class="flex items-center px-3 py-2.5 rounded-xl text-emerald-900 bg-emerald-100/80 hover:bg-emerald-200/80 text-sm font-bold transition">
+                        <i class="fa-brands fa-android ml-2 mr-2 text-emerald-700 w-5 text-center"></i>
+                        <span>{% if current_language == 'en' %}Download Android App (APK){% else %}اینڈرائیڈ ایپ (APK) ڈاؤنلوڈ کریں{% endif %}</span>
+                    </a>
+                {% endif %}
                 {% if user.is_authenticated %}
                     <a href="{% url 'order-list' %}" class="flex items-center px-3 py-2.5 rounded-xl text-gray-700 hover:text-brand-primary hover:bg-emerald-50 text-sm font-medium transition">
                         <i class="fa-solid fa-box ml-2 mr-2 text-brand-primary w-5 text-center"></i>
@@ -374,20 +443,20 @@
     {% endif %}
 
     <!-- Main Content Area -->
-    <main class="flex-grow pb-24 lg:pb-0">
+    <main id="main-content" class="flex-grow">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Floating Chatbot Action Button (Elevated above mobile dock) -->
-    <a href="{% url 'chatbot' %}" class="fixed bottom-20 lg:bottom-6 {% if is_rtl %}left-4 sm:left-6{% else %}right-4 sm:right-6{% endif %} z-40 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white p-3.5 rounded-full shadow-2xl flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %} group transition transform hover:scale-110" title="{% if current_language == 'en' %}AI Gardening Chatbot{% else %}باغبانی چیٹ بوٹ{% endif %}">
+    <!-- Floating Chatbot Action Button -->
+    <a id="chatbot-fab" href="{% url 'chatbot' %}" class="fixed bottom-6 {% if is_rtl %}left-4 sm:left-6{% else %}right-4 sm:right-6{% endif %} z-40 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white p-3.5 rounded-full shadow-2xl flex items-center space-x-2 {% if is_rtl %}space-x-reverse{% endif %} group transition transform hover:scale-110" title="{% if current_language == 'en' %}AI Gardening Chatbot{% else %}باغبانی چیٹ بوٹ{% endif %}">
         <i class="fa-solid fa-headset text-xl"></i>
         <span class="text-xs font-bold max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out px-0 group-hover:px-1">
             {% if current_language == 'en' %}Garden AI Chat{% else %}باغبانی چیٹ بوٹ{% endif %}
         </span>
     </a>
 
-    <!-- Native App-Style Mobile Bottom Navigation Dock (Visible on Mobile/Tablet screens < lg) -->
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl py-1.5 px-2">
+    <!-- Native App-Style Mobile Bottom Navigation Dock (Shown only in APK / App View) -->
+    <nav id="app-bottom-dock" class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl py-1.5 px-2">
         <div class="grid grid-cols-5 items-center text-center">
             <!-- 1. Home Tab -->
             <a href="{% url 'home' %}" class="flex flex-col items-center justify-center py-1 text-gray-600 hover:text-brand-primary active:scale-95 transition">
@@ -431,7 +500,7 @@
     </nav>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 border-t border-gray-800 mt-16 text-sm">
+    <footer id="site-footer" class="bg-gray-900 text-gray-300 border-t border-gray-800 mt-16 text-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <!-- Col 1: About -->
@@ -489,6 +558,9 @@
                     <div class="text-xs text-gray-400 space-y-1.5">
                         <p><strong class="text-gray-200">{% if current_language == 'en' %}Technology:{% else %}ٹیکنالوجی:{% endif %}</strong> Django, DRF, SQLite WAL, Channels</p>
                         <p><strong class="text-gray-200">REST API Docs:</strong> <a href="/api/v1/schema/swagger-ui/" class="text-emerald-400 hover:underline">Swagger UI</a> | <a href="/api/v1/schema/redoc/" class="text-emerald-400 hover:underline">Redoc</a></p>
+                        {% if not is_app_view %}
+                            <p><strong class="text-gray-200">{% if current_language == 'en' %}Mobile App:{% else %}موبائل ایپ:{% endif %}</strong> <a href="{% url 'download-apk' %}" class="text-emerald-400 hover:underline">{% if current_language == 'en' %}Download Android APK{% else %}اینڈرائیڈ APK ڈاؤنلوڈ کریں{% endif %}</a></p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

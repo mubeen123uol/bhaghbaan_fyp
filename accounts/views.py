@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.conf import settings
+from django.http import FileResponse, Http404
 from django.utils.translation import gettext as _
 from .models import User, SellerProfile
 from care.models import UserPlant, CareTask
@@ -168,3 +170,18 @@ def seller_apply_view(request):
         return redirect('dashboard')
 
     return render(request, 'accounts/seller_apply.html')
+
+
+def download_apk_view(request):
+    """Serve the signed Baghbaan AI Android APK for direct mobile download."""
+    apk_path = settings.BASE_DIR / 'static' / 'releases' / 'baghbaan-ai.apk'
+    if not apk_path.exists():
+        raise Http404("Android APK is not available.")
+    response = FileResponse(
+        open(apk_path, 'rb'),
+        as_attachment=True,
+        filename='baghbaan-ai.apk',
+        content_type='application/vnd.android.package-archive',
+    )
+    response['Content-Length'] = apk_path.stat().st_size
+    return response

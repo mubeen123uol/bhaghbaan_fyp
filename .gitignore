@@ -47,3 +47,11 @@ db.sqlite3-wal
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Android build & signing secrets
+android_app/.gradle/
+android_app/build/
+android_app/app/build/
+android_app/local.properties
+android_app/keystore.properties
+android_app/*.jks

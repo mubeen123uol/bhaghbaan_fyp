@@ -2,11 +2,14 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+from .storage import resolve_storage_paths
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables
 load_dotenv(BASE_DIR / '.env')
+
+SQLITE_DB_PATH, RESOLVED_MEDIA_ROOT = resolve_storage_paths(BASE_DIR)
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'baghbaan-ai-secure-django-secret-key-2026-fyp')
 DEBUG = os.getenv('DEBUG', 'True').strip().lower() in ('true', '1', 'yes')
@@ -117,7 +120,7 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': SQLITE_DB_PATH,
         'OPTIONS': {
             'timeout': 30,
         }
@@ -156,7 +159,7 @@ STORAGES = {
 }
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = RESOLVED_MEDIA_ROOT
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -215,8 +218,9 @@ SPECTACULAR_SETTINGS = {
 }
 
 # AI Engine & Third-Party Keys
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
-PLANT_ID_API_KEY = os.getenv('PLANT_ID_API_KEY', '')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '').strip()
+GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-3.6-flash').strip() or 'gemini-3.6-flash'
+PLANT_ID_API_KEY = os.getenv('PLANT_ID_API_KEY', '').strip()
 DEFAULT_CITY = os.getenv('DEFAULT_CITY', 'Lahore')
 DEFAULT_LATITUDE = float(os.getenv('DEFAULT_LATITUDE', '31.5204'))
 DEFAULT_LONGITUDE = float(os.getenv('DEFAULT_LONGITUDE', '74.3587'))

@@ -65,6 +65,16 @@
                         </span>
                     </a>
                 </div>
+                {% if not is_app_view %}
+                    <div class="pt-1 flex justify-center lg:justify-start">
+                        <a href="{% url 'download-apk' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-emerald-400/40 text-emerald-100 text-xs font-bold transition shadow-sm">
+                            <i class="fa-brands fa-android text-emerald-300 text-base"></i>
+                            <span>
+                                {% if current_language == 'en' %}Download Android App (APK){% else %}اینڈرائیڈ ایپ (APK) ڈاؤنلوڈ کریں{% endif %}
+                            </span>
+                        </a>
+                    </div>
+                {% endif %}
 
                 <div class="grid grid-cols-3 gap-4 pt-6 border-t border-emerald-800/50 text-center">
                     <div>

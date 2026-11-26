@@ -32,6 +32,7 @@ urlpatterns = [
     path('logout/', acc_views.logout_view, name='logout'),
     path('profile/', acc_views.profile_view, name='profile'),
     path('lang/<str:lang_code>/', acc_views.set_language_view, name='set-language'),
+    path('download/apk/', acc_views.download_apk_view, name='download-apk'),
     path('seller/apply/', acc_views.seller_apply_view, name='seller-apply'),
 
     # Standard Django auth compatibility aliases

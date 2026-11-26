@@ -1,7 +1,49 @@
+import re
+
+_ANDROID_PACKAGE_RE = re.compile(r'^[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)+$')
+
+
+def _detect_app_view(request):
+    """
+    Detect whether the request comes from an installed Android APK/WebView
+    or explicit app-mode override rather than a normal mobile web browser.
+    """
+    session = getattr(request, 'session', None)
+    get_params = getattr(request, 'GET', None)
+    app_param = ''
+    if get_params is not None:
+        app_param = (get_params.get('app') or get_params.get('mode') or '').strip().lower()
+
+    if app_param in ('1', 'true', 'yes', 'app', 'apk'):
+        if session is not None:
+            session['app_view'] = True
+        return True
+    if app_param in ('0', 'false', 'no', 'web', 'site', 'website'):
+        if session is not None:
+            session.pop('app_view', None)
+        return False
+
+    if session is not None and session.get('app_view'):
+        return True
+
+    meta = getattr(request, 'META', {}) or {}
+    ua = (meta.get('HTTP_USER_AGENT') or '').lower()
+    if '; wv)' in ua or ';wv)' in ua:
+        return True
+    if any(token in ua for token in ('baghbaanapp', 'baghbaan-apk', 'baghbaan_apk', 'capacitor', 'cordova')):
+        return True
+
+    x_req = (meta.get('HTTP_X_REQUESTED_WITH') or '').strip()
+    if x_req and x_req.lower() != 'xmlhttprequest' and _ANDROID_PACKAGE_RE.match(x_req):
+        return True
+
+    return False
+
+
 def baghbaan_context(request):
     """
     Context processor to inject unread notification count, shopping cart count,
-    user language, and RTL indicators across all templates.
+    user language, RTL indicators, and app-view flag across all templates.
     """
     context = {
         'unread_notifications_count': 0,
@@ -9,6 +51,7 @@ def baghbaan_context(request):
         'user_role': None,
         'current_language': 'ur',
         'is_rtl': True,
+        'is_app_view': _detect_app_view(request),
     }
 
     # Shopping cart count from session
